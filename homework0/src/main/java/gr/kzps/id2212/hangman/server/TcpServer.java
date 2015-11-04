@@ -42,7 +42,7 @@ public class TcpServer {
 				cSocket = sSocket.accept();
 				LOG.debug("Established connection");
 				// Handle connection in separate thread
-				threadPool.execute(new Handler(cSocket));
+				threadPool.execute(new Acceptor(cSocket));
 				
 			} catch (IOException e) {
 				e.printStackTrace();
