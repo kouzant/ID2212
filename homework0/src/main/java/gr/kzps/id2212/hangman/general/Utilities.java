@@ -1,6 +1,8 @@
 package gr.kzps.id2212.hangman.general;
 
 public class Utilities {
+	
+	// Substitute letters with *, initial response
 	public static String createPattern(String word) {
 		StringBuilder pattern = new StringBuilder();
 		

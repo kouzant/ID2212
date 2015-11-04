@@ -12,10 +12,12 @@ public class Handler {
 	
 	private static final Logger LOG = LogManager.getLogger(Handler.class);
 	
+	private final Dictionary dictionary;
 	private PlayersTracker playersTracker;
 	
-	public Handler(PlayersTracker playersTracker) {
+	public Handler(PlayersTracker playersTracker, Dictionary dictionary) {
 		this.playersTracker = playersTracker;
+		this.dictionary = dictionary;
 	}
 	
 	public byte[] handle(byte[] request) {
@@ -35,8 +37,11 @@ public class Handler {
 			String username = new String(rest); 
 			// Remove any previous reference of that username
 			playersTracker.removePlayer(username);
-			String word = "lala";
+			
+			String word = dictionary.getWord();
+			LOG.debug("Word is {}", word);
 			playersTracker.addPlayer(new Player(username, word));
+			
 			// Send back OpCodes.START pattern
 			String pattern = Utilities.createPattern(word);
 
@@ -55,13 +60,13 @@ public class Handler {
 			// If response is > 1 char then repond 011 or 111
 			LOG.debug("Recieved a guess");
 			
-			return new byte[]{(byte) 0xff};
+			return new byte[]{OpCodes.UNKNOWN};
 			
 		} else {
 			// Unknown command
 			LOG.debug("Unknown command");
 			
-			return new byte[] {(byte) 0xff};
+			return new byte[] {OpCodes.UNKNOWN};
 		}
 	}
 }

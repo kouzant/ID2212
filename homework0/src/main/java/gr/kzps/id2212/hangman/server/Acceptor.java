@@ -13,10 +13,10 @@ public class Acceptor implements Runnable {
 	private final Socket cSocket;
 	private final Handler handler;
 
-	public Acceptor(Socket cSocket, PlayersTracker playersTracker) {
+	public Acceptor(Socket cSocket, PlayersTracker playersTracker, Dictionary dictionary) {
 		this.cSocket = cSocket;
 		
-		handler = new Handler(playersTracker);
+		handler = new Handler(playersTracker, dictionary);
 	}
 
 	@Override
