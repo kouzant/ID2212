@@ -11,9 +11,11 @@ import org.apache.logging.log4j.Logger;
 public class Acceptor implements Runnable {
 	private static final Logger LOG = LogManager.getLogger(Acceptor.class);
 	private final Socket cSocket;
+	private final Handler handler;
 
 	public Acceptor(Socket cSocket) {
 		this.cSocket = cSocket;
+		handler = new Handler();
 	}
 
 	@Override
@@ -30,6 +32,8 @@ public class Acceptor implements Runnable {
 			LOG.debug("Received {} from {}", new Object[] { new String(input),
 					cSocket.getInetAddress().getHostAddress() });
 
+			handler.handle(input);
+			
 			bout.write(input);
 
 			bout.flush();

@@ -11,11 +11,21 @@ public class TcpClient {
 		Socket cSocket = null;
 		
 		try {
+			
+			byte[] op = new byte[] {(byte) 0x00, (byte) 0x11, (byte) 0x00};
+			
+			byte[] rest = "Hello".getBytes();
+			
+			byte[] msg = new byte[op.length + rest.length];
+			
+			System.arraycopy(op, 0, msg, 0, 3);
+			System.arraycopy(rest, 0, msg, op.length, rest.length);
+			
+			System.out.println(new String(msg));
+			
 			cSocket = new Socket("localhost", 8080);
 			InputStream input = cSocket.getInputStream();
 			OutputStream output = cSocket.getOutputStream();
-			
-			byte[] msg = "Hell0".getBytes();
 			output.write(msg);
 			
 			byte[] buffer = new byte[msg.length];
