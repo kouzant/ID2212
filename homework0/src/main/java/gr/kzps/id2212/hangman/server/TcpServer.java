@@ -22,7 +22,6 @@ public class TcpServer {
 		ExecutorService threadPool = Executors.newCachedThreadPool();
 		// Players tracker
 		PlayersTracker playersTracker = new PlayersTracker();
-		Dictionary dictionary = Dictionary.getInstance();
 		
 		ArgumentsParser parser = new ArgumentsParser(args);
 		try {
@@ -45,7 +44,7 @@ public class TcpServer {
 				cSocket = sSocket.accept();
 				LOG.debug("Established connection");
 				// Handle connection in separate thread
-				threadPool.execute(new Acceptor(cSocket, playersTracker, dictionary));
+				threadPool.execute(new Acceptor(cSocket, playersTracker));
 				
 			} catch (IOException e) {
 				e.printStackTrace();

@@ -12,12 +12,10 @@ public class Handler {
 	
 	private static final Logger LOG = LogManager.getLogger(Handler.class);
 	
-	private final Dictionary dictionary;
 	private PlayersTracker playersTracker;
 	
-	public Handler(PlayersTracker playersTracker, Dictionary dictionary) {
+	public Handler(PlayersTracker playersTracker) {
 		this.playersTracker = playersTracker;
-		this.dictionary = dictionary;
 	}
 	
 	public byte[] handle(byte[] request) {
@@ -38,6 +36,7 @@ public class Handler {
 			// Remove any previous reference of that username
 			playersTracker.removePlayer(username);
 			
+			Dictionary dictionary = Dictionary.getInstance();
 			String word = dictionary.getWord();
 			LOG.debug("Word is {}", word);
 			playersTracker.addPlayer(new Player(username, word));

@@ -26,7 +26,11 @@ public class Dictionary {
 	}
 	
 	public static Dictionary getInstance() {
-		return self == null ? new Dictionary() : self;
+		if (self == null) {
+			self = new Dictionary();
+		}
+		
+		return self;
 	}
 	
 	// Get a random word from the dictionary
