@@ -5,6 +5,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import org.apache.commons.cli.CommandLine;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,9 +21,17 @@ public class TcpServer {
 		Socket cSocket = null;
 		ExecutorService threadPool = Executors.newCachedThreadPool();
 		
+		ArgumentsParser parser = new ArgumentsParser(args);
 		try {
-			sSocket = new ServerSocket(PORT);
-			LOG.info("Server started at port {}", PORT);
+			CommandLine cmd = parser.parseArgs();
+			
+			if (cmd.hasOption("port")) {
+				sSocket = new ServerSocket(Integer.parseInt(cmd.getOptionValue("port")));
+			} else {
+				sSocket = new ServerSocket(PORT);
+			}
+			
+			LOG.info("Server started at port {}", sSocket.getLocalPort());
 		} catch (Exception ex) {
 			LOG.error("Something wrong happened!");
 			ex.printStackTrace();
