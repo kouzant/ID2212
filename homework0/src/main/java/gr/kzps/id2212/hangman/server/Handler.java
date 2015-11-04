@@ -1,0 +1,67 @@
+package gr.kzps.id2212.hangman.server;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class Handler implements Runnable {
+	private static final Logger LOG = LogManager.getLogger(Handler.class);
+	private final Socket cSocket;
+	
+	public Handler(Socket cSocket) {
+		this.cSocket = cSocket;
+	}
+	
+	@Override
+	public void run() {
+		try {
+			LOG.debug("New handler");
+			BufferedInputStream bin = new BufferedInputStream(cSocket.getInputStream());
+			BufferedOutputStream bout = new BufferedOutputStream(cSocket.getOutputStream());
+			
+			byte[] input = readStream(bin);
+			
+			LOG.debug("Received {} from {}", new Object[] {new String(input), cSocket.getInetAddress().getHostAddress()});
+			
+			bout.write(input);
+			
+			bout.flush();
+			bin.close();
+			bout.close();
+			cSocket.close();
+			
+		} catch (IOException ex) {
+			LOG.error("Could not open client streams");
+			ex.printStackTrace();
+		}
+	}
+	
+	private byte[] readStream(BufferedInputStream bin) throws IOException {
+		byte[] buffer = new byte[1024];
+		Integer length;
+		Integer bytesRead = 0;
+		
+		while((length = bin.read(buffer, bytesRead, 256)) != -1) {
+			bytesRead += length;
+			
+			if (bytesRead == 1024) {
+				break;
+			}
+			
+			if (bin.available() == 0) {
+				break;
+			}
+		}
+		
+		
+		return Arrays.copyOf(buffer, bytesRead);
+	}
+
+	
+}
