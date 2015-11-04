@@ -12,17 +12,15 @@ public class TcpClient {
 		
 		try {
 			
-			byte[] op = new byte[] {(byte) 0x00, (byte) 0x11, (byte) 0x00};
+			byte opCode = (byte) 0x00;
 			
 			byte[] rest = "Hello".getBytes();
 			
-			byte[] msg = new byte[op.length + rest.length];
+			byte[] msg = new byte[rest.length + 1];
 			
-			System.arraycopy(op, 0, msg, 0, 3);
-			System.arraycopy(rest, 0, msg, op.length, rest.length);
-			
-			System.out.println(new String(msg));
-			
+			msg[0] = opCode;
+			System.arraycopy(rest, 0, msg, 1, rest.length);
+						
 			cSocket = new Socket("localhost", 8080);
 			InputStream input = cSocket.getInputStream();
 			OutputStream output = cSocket.getOutputStream();
