@@ -12,13 +12,11 @@ public class Acceptor implements Runnable {
 	private static final Logger LOG = LogManager.getLogger(Acceptor.class);
 	private final Socket cSocket;
 	private final Handler handler;
-	private PlayersTracker playersTracker;
 
 	public Acceptor(Socket cSocket, PlayersTracker playersTracker) {
 		this.cSocket = cSocket;
-		this.playersTracker = playersTracker;
 		
-		handler = new Handler();
+		handler = new Handler(playersTracker);
 	}
 
 	@Override
@@ -34,9 +32,9 @@ public class Acceptor implements Runnable {
 
 			LOG.debug("Received message from {}", cSocket.getInetAddress().getHostAddress());
 
-			handler.handle(input);
+			byte[] response = handler.handle(input);
 			
-			bout.write(input);
+			bout.write(response);
 
 			bout.flush();
 			bin.close();

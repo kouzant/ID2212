@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Arrays;
 
 public class TcpClient {
 
@@ -14,7 +15,7 @@ public class TcpClient {
 			
 			byte opCode = (byte) 0x00;
 			
-			byte[] rest = "Hello".getBytes();
+			byte[] rest = "antonis".getBytes();
 			
 			byte[] msg = new byte[rest.length + 1];
 			
@@ -30,11 +31,8 @@ public class TcpClient {
 			
 			Integer n = input.read(buffer, 0, buffer.length);
 			
-			if (n != msg.length) {
-				System.out.println("Something is lost...");
-			} else {
-				System.out.println(new String(msg));
-			}
+			byte[] res = Arrays.copyOfRange(buffer, 0, n);
+			System.out.println(new String(res));
 			
 			input.close();
 			output.close();
