@@ -7,12 +7,12 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PlayerTracker {
-	private static final Logger LOG = LogManager.getLogger(PlayerTracker.class);
+public class PlayersTracker {
+	private static final Logger LOG = LogManager.getLogger(PlayersTracker.class);
 	
 	private volatile List<Player> players;
 
-	public PlayerTracker() {
+	public PlayersTracker() {
 		players = new ArrayList<>();
 	}
 

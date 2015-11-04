@@ -5,11 +5,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import gr.kzps.id2212.hangman.server.Player;
-import gr.kzps.id2212.hangman.server.PlayerTracker;
+import gr.kzps.id2212.hangman.server.PlayersTracker;
 
 public class PlayerTrackerTest {
 	public static void main(String[] args) {
-		PlayerTracker players = new PlayerTracker();
+		PlayersTracker players = new PlayersTracker();
 		ExecutorService exec = Executors.newFixedThreadPool(2);
 		PlayerTrackerTest ptt = new PlayerTrackerTest();
 		exec.execute(ptt.new Worker1(players));
@@ -31,9 +31,9 @@ public class PlayerTrackerTest {
 	}
 
 	protected class Worker1 implements Runnable {
-		private PlayerTracker pt;
+		private PlayersTracker pt;
 
-		public Worker1(PlayerTracker pt) {
+		public Worker1(PlayersTracker pt) {
 			this.pt = pt;
 		}
 
@@ -52,9 +52,9 @@ public class PlayerTrackerTest {
 	}
 
 	protected class Worker2 implements Runnable {
-		private PlayerTracker pt;
+		private PlayersTracker pt;
 
-		public Worker2(PlayerTracker pt) {
+		public Worker2(PlayersTracker pt) {
 			this.pt = pt;
 		}
 

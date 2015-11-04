@@ -12,9 +12,9 @@ public class Acceptor implements Runnable {
 	private static final Logger LOG = LogManager.getLogger(Acceptor.class);
 	private final Socket cSocket;
 	private final Handler handler;
-	private PlayerTracker playersTracker;
+	private PlayersTracker playersTracker;
 
-	public Acceptor(Socket cSocket, PlayerTracker playersTracker) {
+	public Acceptor(Socket cSocket, PlayersTracker playersTracker) {
 		this.cSocket = cSocket;
 		this.playersTracker = playersTracker;
 		

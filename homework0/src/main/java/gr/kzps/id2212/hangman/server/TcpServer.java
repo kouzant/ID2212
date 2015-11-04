@@ -21,7 +21,7 @@ public class TcpServer {
 		Socket cSocket = null;
 		ExecutorService threadPool = Executors.newCachedThreadPool();
 		// Players tracker
-		PlayerTracker playersTracker = new PlayerTracker();
+		PlayersTracker playersTracker = new PlayersTracker();
 		
 		ArgumentsParser parser = new ArgumentsParser(args);
 		try {
