@@ -4,6 +4,7 @@ import gr.kzps.id2212.hangman.general.OpCodes;
 import gr.kzps.id2212.hangman.general.Utilities;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -142,6 +143,12 @@ public class Handler {
 			
 		} else {
 			// Unknown command
+			
+			try {
+				TimeUnit.SECONDS.sleep(10);
+			} catch (InterruptedException ex) {
+				ex.printStackTrace();
+			}
 			LOG.debug("Unknown command");
 			
 			return new byte[] {OpCodes.UNKNOWN};
