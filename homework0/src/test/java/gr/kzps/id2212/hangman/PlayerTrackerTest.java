@@ -39,7 +39,7 @@ public class PlayerTrackerTest {
 
 		@Override
 		public void run() {
-			Player player = new Player("antonis", "skata");
+			Player player = new Player("antonis", "skata", "***");
 			System.err.println("Worker 1");
 			pt.addPlayer(player);
 			Player ret = pt.removePlayer("antonis");
@@ -60,7 +60,7 @@ public class PlayerTrackerTest {
 
 		@Override
 		public void run() {
-			Player player = new Player("kouroufin", "morgoth");
+			Player player = new Player("kouroufin", "morgoth", "***");
 			System.err.println("Worker 2");
 			//pt.addPlayer(player);
 			Player ret = pt.removePlayer("antonis");

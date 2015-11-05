@@ -1,10 +1,13 @@
 package gr.kzps.id2212.hangman.server;
 
+import gr.kzps.id2212.hangman.general.OpCodes;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Arrays;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,10 +15,12 @@ public class Acceptor implements Runnable {
 	private static final Logger LOG = LogManager.getLogger(Acceptor.class);
 	private final Socket cSocket;
 	private final Handler handler;
+	private boolean running;
 
 	public Acceptor(Socket cSocket, PlayersTracker playersTracker) {
 		this.cSocket = cSocket;
-		
+		this.running = true;
+
 		handler = new Handler(playersTracker);
 	}
 
@@ -28,15 +33,25 @@ public class Acceptor implements Runnable {
 			BufferedOutputStream bout = new BufferedOutputStream(
 					cSocket.getOutputStream());
 
-			byte[] input = readStream(bin);
+			while (isRunning() && !cSocket.isClosed()) {
+				byte[] input = readStream(bin);
 
-			LOG.debug("Received message from {}", cSocket.getInetAddress().getHostAddress());
+				LOG.debug("Received message from {}", cSocket.getInetAddress()
+						.getHostAddress());
 
-			byte[] response = handler.handle(input);
+				byte[] response = handler.handle(input);
+
+				bout.write(response);
+				bout.flush();
+				
+				if (response[0] == OpCodes.LOST
+					|| response[0] == OpCodes.WIN) {
+					stop();
+				}
+			}
 			
-			bout.write(response);
-
-			bout.flush();
+			LOG.debug("Closing connection");
+			
 			bin.close();
 			bout.close();
 			cSocket.close();
@@ -67,4 +82,11 @@ public class Acceptor implements Runnable {
 		return Arrays.copyOf(buffer, bytesRead);
 	}
 
+	private boolean isRunning() {
+		return running;
+	}
+
+	private void stop() {
+		running = false;
+	}
 }

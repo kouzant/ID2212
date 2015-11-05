@@ -13,6 +13,7 @@ public class Handler {
 	private static final Logger LOG = LogManager.getLogger(Handler.class);
 	
 	private PlayersTracker playersTracker;
+	private Player currentPlayer;
 	
 	public Handler(PlayersTracker playersTracker) {
 		this.playersTracker = playersTracker;
@@ -28,8 +29,6 @@ public class Handler {
 		if (opCode == OpCodes.CREATE) {
 			// Create new game
 			// Rest = username
-			// TODO Get players list, add the username
-			// pick random word from dictionary and respond with pattern (001)
 			LOG.debug("New game");
 			
 			String username = new String(rest); 
@@ -39,10 +38,12 @@ public class Handler {
 			Dictionary dictionary = Dictionary.getInstance();
 			String word = dictionary.getWord();
 			LOG.debug("Word is {}", word);
-			playersTracker.addPlayer(new Player(username, word));
 			
 			// Send back OpCodes.START pattern
 			String pattern = Utilities.createPattern(word);
+						
+			currentPlayer = new Player(username, word, pattern);
+			playersTracker.addPlayer(currentPlayer);
 
 			byte[] patternBytes = pattern.getBytes();
 			byte[] response = new byte[patternBytes.length + 1];
@@ -59,7 +60,85 @@ public class Handler {
 			// If response is > 1 char then repond 011 or 111
 			LOG.debug("Recieved a guess");
 			
-			return new byte[]{OpCodes.UNKNOWN};
+			if (rest.length > 1) {
+				// Player guessed the whole word,
+				// either win or lose
+				LOG.debug("Player made a guess for the whole word");
+				String guessStr = new String(rest);
+				if (currentPlayer.getWord().equals(guessStr)) {
+					// Win
+					LOG.debug("Player won by giving the whole word!");
+					currentPlayer.incrementScore();
+					byte[] response = new byte[] {OpCodes.WIN, (byte) currentPlayer.getScore().byteValue()};
+					playersTracker.removePlayer(currentPlayer.getUsername());
+					
+					return response;
+				} else {
+					// Lose
+					if (currentPlayer.getLoss() <= 0) {
+						// Sorry you have lost the game
+						LOG.debug("Player lost the game by giving the whole word");
+						byte[] response = new byte[] {OpCodes.LOST, currentPlayer.getScore().byteValue()};
+						playersTracker.removePlayer(currentPlayer.getUsername());
+						
+						return response;
+					} else {
+						// Don't worry, try again
+						LOG.debug("Player made a wrong word guess, try again");
+						currentPlayer.decrementLoss();
+						byte[] response = new byte[] {OpCodes.W_GUESS, currentPlayer.getLoss().byteValue()};
+						
+						return response;
+					}
+				}
+			} else {
+				// Check if letter part of the word and update pattern
+				LOG.debug("Player made a guess for a letter");
+				String letter = new String(rest);
+				if (currentPlayer.getWord().contains(letter)) {
+					// Good guess
+					LOG.debug("Player made a good guess about a letter");
+					String newPattern = updatePattern(letter, currentPlayer.getWord(), currentPlayer.getLastPattern());
+					
+					if (newPattern.contains("*")) {
+						// Has not won yet
+						LOG.debug("Player has not won yet though");
+						currentPlayer.setLastPattern(newPattern);
+						
+						byte[] response = new byte[newPattern.length() + 1];
+						response[0] = OpCodes.G_GUESS;
+						
+						System.arraycopy(newPattern.getBytes(), 0, response, 1, newPattern.getBytes().length);
+						
+						return response;
+					} else {
+						// Won!
+						LOG.debug("Player won by guessing the correct letter");
+						currentPlayer.incrementScore();
+						byte[] response = new byte[] {OpCodes.WIN, currentPlayer.getScore().byteValue()};
+						
+						return response;
+					}
+				} else {
+					// Wrong guess
+					LOG.debug("Player did not make a good guess about a letter");
+					currentPlayer.decrementLoss();
+					if (currentPlayer.getLoss() <= 0) {
+						// Sorry you lost
+						LOG.debug("Player lost!");
+						byte[] response = new byte[] {OpCodes.LOST, currentPlayer.getScore().byteValue()};
+						
+						return response;
+					} else {
+						// Try again
+						LOG.debug("Player has not lost yet");
+						byte[] response = new byte[] {OpCodes.W_GUESS, currentPlayer.getLoss().byteValue()};
+						
+						return response;
+					}
+				}
+			}
+			
 			
 		} else {
 			// Unknown command
@@ -67,5 +146,27 @@ public class Handler {
 			
 			return new byte[] {OpCodes.UNKNOWN};
 		}
+	}
+	
+	// Update word pattern
+	private String updatePattern(String letter, String word, String lastPattern) {
+		char[] newPattern = new char[word.length()];
+		char[] lastPatternCh = new char[lastPattern.length()];
+		lastPattern.getChars(0, lastPattern.length(), lastPatternCh, 0);
+		
+		for (int i = 0; i < word.length(); i++) {
+			char idxLetter = word.charAt(i);
+			
+			if ((idxLetter == letter.charAt(0)) && (lastPatternCh[i] == '*')) {
+				newPattern[i] = letter.charAt(0);
+			} else if ((idxLetter != letter.charAt(0)) && (lastPatternCh[i] == '*')) {
+				newPattern[i] = '*';
+			} else if (lastPatternCh[i] != '*') {
+				newPattern[i] = lastPatternCh[i];
+			}
+			
+		}
+		
+		return new String(newPattern);
 	}
 }

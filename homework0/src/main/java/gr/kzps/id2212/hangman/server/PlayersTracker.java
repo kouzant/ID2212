@@ -68,6 +68,7 @@ public class PlayersTracker {
 		for (Player player : players) {
 			sb.append("username: ").append(player.getUsername())
 					.append("word: ").append(player.getWord())
+					.append("loss: ").append(player.getLoss())
 					.append("score: ").append(player.getScore()).append("\n");
 		}
 
