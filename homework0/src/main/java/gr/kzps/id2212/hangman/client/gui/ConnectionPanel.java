@@ -136,13 +136,15 @@ public class ConnectionPanel extends JPanel {
 								try {
 									byte[] response = recvWorker.get();
 									
-									System.out.println("Response: " + new String(response));
+									// First byte is the opCode
+									byte[] hint = Arrays.copyOfRange(response, 1, response.length);
+									System.out.println("Response: " + new String(hint));
 									jp_ipaddress.setVisible(false);
 									jp_hostPort.setVisible(false);
 									jp_username.setVisible(false);
 									jp_buttons.setVisible(false);
 
-									add(new PlayPanel(connection, jtxt_notifications, response));
+									add(new PlayPanel(connection, jtxt_notifications, hint));
 									
 								} catch (InterruptedException e) {
 									e.printStackTrace();
