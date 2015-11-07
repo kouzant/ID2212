@@ -143,7 +143,7 @@ public class ConnectionPanel extends JPanel {
 									jp_hostPort.setVisible(false);
 									jp_username.setVisible(false);
 									jp_buttons.setVisible(false);
-
+									
 									add(new PlayPanel(connection, jtxt_notifications, hint));
 									
 								} catch (InterruptedException e) {
@@ -151,6 +151,7 @@ public class ConnectionPanel extends JPanel {
 								} catch (ExecutionException e) {
 									e.printStackTrace();
 								}
+								
 							}
 						}
 						
