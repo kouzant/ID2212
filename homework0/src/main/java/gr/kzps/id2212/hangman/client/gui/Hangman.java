@@ -10,8 +10,12 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class Hangman {
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+public class Hangman {
+	private static final Logger LOG = LogManager.getLogger(Hangman.class);
+	
 	private JFrame frame;
 	private JPanel container;
 	private BottomPanel bottomPanel;
@@ -47,6 +51,7 @@ public class Hangman {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		LOG.debug("Initializing frame");
 		frame = new JFrame("Hangman");
 		frame.setBounds(300, 100, 1000, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

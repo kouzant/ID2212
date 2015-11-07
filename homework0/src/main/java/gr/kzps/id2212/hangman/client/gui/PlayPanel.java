@@ -23,16 +23,27 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class PlayPanel extends JPanel {
+	
+	private static final Logger LOG = LogManager.getLogger(PlayPanel.class);
+	
+	private static final long serialVersionUID = -8656315627648253460L;
+	
 	private Connection connection;
 	private JTextField jtxt_notifications;
 	private JLabel jl_win;
 	private JLabel jl_lose;
 	private JLabel jl_score;
 	private JLabel jl_lifes;
+	private JLabel jl_w_guess;
 	private JTextField jtxf_score;
 	private JTextField jtxf_lifes;
 	private JTextField jtxf_hint;
+	private JButton jbtn_replay;
+	private JButton jbtn_guess;
 	
 	private byte[] hint;
 	private Integer score;
@@ -90,8 +101,14 @@ public class PlayPanel extends JPanel {
 			@Override
 			public void focusGained(FocusEvent e) {
 				jtxf_guess.setText("");
+				jl_w_guess.setVisible(false);
 			}
 		});
+		
+		jl_w_guess = new JLabel();
+		jl_w_guess.setVisible(false);
+		jl_w_guess.setText("Wrong guess. Try again");
+		jl_w_guess.setForeground(Color.GREEN);
 		
 		JLabel jl_guess_empty = new JLabel();
 		jl_guess_empty.setVisible(false);
@@ -101,6 +118,7 @@ public class PlayPanel extends JPanel {
 		jp_guess.add(jl_guess);
 		jp_guess.add(jtxf_guess);
 		jp_guess.add(jl_guess_empty);
+		jp_guess.add(jl_w_guess);
 		
 		jl_score = new JLabel("Score: ");
 		jtxf_score = new JTextField();
@@ -131,7 +149,7 @@ public class PlayPanel extends JPanel {
 		jp_status.add(jl_win);
 		jp_status.add(jl_lose);
 		
-		JButton jbtn_guess = new JButton();
+		jbtn_guess = new JButton();
 		jbtn_guess.setText("Guess");
 		jbtn_guess.setEnabled(true);
 		
@@ -155,7 +173,7 @@ public class PlayPanel extends JPanel {
 					sendWrk = new SendWorker(connection, request, jtxt_notifications);
 					sendWrk.execute();
 					
-					// Received response
+					// Receive response
 					
 					recvWrk = new RecvWorker(connection, jtxt_notifications);
 					
@@ -184,6 +202,10 @@ public class PlayPanel extends JPanel {
 			}
 		});
 		
+		jbtn_replay = new JButton();
+		jbtn_replay.setText("Play again");
+		jbtn_replay.setVisible(false);
+		
 		JButton jbtn_exit = new JButton();
 		jbtn_exit.setText("Exit");
 		jbtn_exit.setEnabled(true);
@@ -192,13 +214,27 @@ public class PlayPanel extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				connection.close();
-				jtxt_notifications.setText("Exiting...");
-				System.exit(-1);
+				byte[] message = new byte[] {OpCodes.CLOSE};
+				sendWrk = new SendWorker(connection, message, jtxt_notifications);
+				sendWrk.addPropertyChangeListener(new PropertyChangeListener() {
+					
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+						if (evt.getPropertyName().equals("state")){
+							if ((SwingWorker.StateValue) evt.getNewValue() == SwingWorker.StateValue.DONE) {
+								connection.close();
+								jtxt_notifications.setText("Exiting...");
+								System.exit(-1);
+							}
+						}
+					}
+				});
+				sendWrk.execute();
 			}
 		});
 		
 		jp_buttons.add(jbtn_guess);
+		jp_buttons.add(jbtn_replay);
 		jp_buttons.add(jbtn_exit);
 	}
 	
@@ -206,8 +242,8 @@ public class PlayPanel extends JPanel {
 		byte opCode = response[0];
 		byte[] rest = Arrays.copyOfRange(response, 1, response.length);
 		
-		System.out.println("opCode: " + opCode);
-		System.out.println("Rest: " + new String(rest));
+		LOG.debug("OP code: {}", opCode);
+		LOG.debug("Rest: {}", new String(rest));
 		
 		if (opCode == OpCodes.WIN) {
 			Byte scoreB = rest[0];
@@ -215,23 +251,28 @@ public class PlayPanel extends JPanel {
 			jtxf_score.setText(Integer.toString(score));
 			
 			jl_win.setVisible(true);
+			jbtn_guess.setVisible(false);
+			jbtn_replay.setVisible(true);
 		} else if (opCode == OpCodes.LOST) {
 			Byte scoreB = rest[0];
 			Integer score = scoreB.intValue();
 			jtxf_score.setText(Integer.toString(score));
 
 			jl_lose.setVisible(true);
+			jbtn_guess.setVisible(false);
+			jbtn_replay.setVisible(true);
 		} else if (opCode == OpCodes.W_GUESS) {
 			Byte lossB = rest[0];
 			Integer loss = lossB.intValue();
-			jtxf_lifes.setText(Integer.toString(loss));			
+			jtxf_lifes.setText(Integer.toString(loss));	
+			jl_w_guess.setVisible(true);
 		} else if (opCode == OpCodes.G_GUESS) {
 			String newPattern = new String(rest);
 			jtxf_hint.setText(newPattern);
 		} else if (opCode == OpCodes.UNKNOWN) {
-			System.out.println("Received unknown command from the server");
+			LOG.info("Received unknown command from the server");
 		} else {
-			System.out.println("Run for your lifes!");
+			LOG.info("Run for your lifes!");
 		}
 	}
 }

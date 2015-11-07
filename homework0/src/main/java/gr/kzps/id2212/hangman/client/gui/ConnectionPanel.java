@@ -24,8 +24,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
-public class ConnectionPanel extends JPanel {
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+public class ConnectionPanel extends JPanel {
+	private static final Logger LOG = LogManager.getLogger(ConnectionPanel.class);
+	
 	private static final long serialVersionUID = -7068265294171409209L;
 
 	private JTextField jtxf_ipAddress;
@@ -46,6 +50,7 @@ public class ConnectionPanel extends JPanel {
 	}
 
 	private void create() {
+		LOG.debug("Creating connaction panel");
 		JPanel jp_ipaddress = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		JPanel jp_hostPort = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		JPanel jp_username = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -70,7 +75,7 @@ public class ConnectionPanel extends JPanel {
 		jtxf_port = new JTextField();
 		jtxf_port.setEditable(true);
 		jtxf_port.setColumns(4);
-		;
+		
 		jtxf_port.setText("8080");
 
 		jp_hostPort.add(jlb_port);
@@ -138,7 +143,7 @@ public class ConnectionPanel extends JPanel {
 									
 									// First byte is the opCode
 									byte[] hint = Arrays.copyOfRange(response, 1, response.length);
-									System.out.println("Response: " + new String(hint));
+									LOG.debug("Response: {}", new String(hint));
 									jp_ipaddress.setVisible(false);
 									jp_hostPort.setVisible(false);
 									jp_username.setVisible(false);

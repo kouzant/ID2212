@@ -7,7 +7,11 @@ import java.awt.Insets;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class HeaderPanel extends JPanel {
+	private static final Logger LOG = LogManager.getLogger(HeaderPanel.class);
 	
 	private static final long serialVersionUID = 967545756701867250L;
 	
@@ -19,6 +23,7 @@ public class HeaderPanel extends JPanel {
 	}
 	
 	private void create() {
+		LOG.debug("Creating header panel");
 		header = new JTextField("Welcome to Hangman", 30);
 		header.setEditable(false);
 		header.setHorizontalAlignment(JTextField.CENTER);

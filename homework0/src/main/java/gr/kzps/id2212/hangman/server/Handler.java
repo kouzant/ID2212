@@ -21,6 +21,7 @@ public class Handler {
 	}
 	
 	public byte[] handle(byte[] request) {
+		LOG.debug("Request: {}", new String(request));
 		byte opCode = request[0];
 		byte[] rest = Arrays.copyOfRange(request, 1, request.length);
 		
@@ -140,7 +141,11 @@ public class Handler {
 				}
 			}
 			
+		} else if (opCode == OpCodes.CLOSE) {
+			LOG.debug("Closing connection");
+			byte[] response = new byte[] {OpCodes.CLOSE};
 			
+			return response;
 		} else {
 			// Unknown command
 			

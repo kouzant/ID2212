@@ -44,8 +44,7 @@ public class Acceptor implements Runnable {
 				bout.write(response);
 				bout.flush();
 				
-				if (response[0] == OpCodes.LOST
-					|| response[0] == OpCodes.WIN) {
+				if (response[0] == OpCodes.CLOSE) {
 					stop();
 				}
 			}

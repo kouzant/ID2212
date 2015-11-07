@@ -8,5 +8,7 @@ public class OpCodes {
 	public static final byte LOST = (byte) 0x04;
 	public static final byte W_GUESS = (byte) 0x05;
 	public static final byte G_GUESS = (byte) 0x06;
+	public static final byte CLOSE = (byte) 0x07;
+	public static final byte PL_AGAIN = (byte) 0x08;
 	public static final byte UNKNOWN = (byte) 0xff;
 }
