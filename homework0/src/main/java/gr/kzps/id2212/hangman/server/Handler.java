@@ -99,7 +99,7 @@ public class Handler {
 				if (currentPlayer.getWord().contains(letter)) {
 					// Good guess
 					LOG.debug("Player made a good guess about a letter");
-					String newPattern = updatePattern(letter, currentPlayer.getWord(), currentPlayer.getLastPattern());
+					String newPattern = Utilities.updatePattern(letter, currentPlayer.getWord(), currentPlayer.getLastPattern());
 					
 					if (newPattern.contains("*")) {
 						// Has not won yet
@@ -153,27 +153,5 @@ public class Handler {
 			
 			return new byte[] {OpCodes.UNKNOWN};
 		}
-	}
-	
-	// Update word pattern
-	private String updatePattern(String letter, String word, String lastPattern) {
-		char[] newPattern = new char[word.length()];
-		char[] lastPatternCh = new char[lastPattern.length()];
-		lastPattern.getChars(0, lastPattern.length(), lastPatternCh, 0);
-		
-		for (int i = 0; i < word.length(); i++) {
-			char idxLetter = word.charAt(i);
-			
-			if ((idxLetter == letter.charAt(0)) && (lastPatternCh[i] == '*')) {
-				newPattern[i] = letter.charAt(0);
-			} else if ((idxLetter != letter.charAt(0)) && (lastPatternCh[i] == '*')) {
-				newPattern[i] = '*';
-			} else if (lastPatternCh[i] != '*') {
-				newPattern[i] = lastPatternCh[i];
-			}
-			
-		}
-		
-		return new String(newPattern);
 	}
 }
