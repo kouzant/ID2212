@@ -3,7 +3,6 @@ package gr.kzps.id2212.hangman.client.gui;
 import gr.kzps.id2212.hangman.client.Connection;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 
@@ -13,6 +12,9 @@ import javax.swing.JPanel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/*
+ * Create the frame of the GUI and initialize it
+ */
 public class Hangman {
 	private static final Logger LOG = LogManager.getLogger(Hangman.class);
 	
@@ -37,6 +39,7 @@ public class Hangman {
 	}
 
 	public Hangman() {
+		// Create connection object
 		connection = new Connection();
 		create();
 	}
@@ -44,9 +47,9 @@ public class Hangman {
 	private void create() {
 		LOG.debug("Initializing frame");
 		frame = new JFrame("Hangman");
-		//frame.setBounds(300, 100, 1000, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		// Enclosing panel for the rest of the panels
 		container = new JPanel(new BorderLayout());
 		frame.add(container);
 		

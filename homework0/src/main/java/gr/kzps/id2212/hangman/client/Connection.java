@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+/*
+ * Keep connection reference
+ */
 public class Connection {
 
 	private Socket socket;
@@ -30,6 +33,7 @@ public class Connection {
 
 	}
 
+	// Close socket and streams
 	public void close() {
 		try {
 			if (input != null) {

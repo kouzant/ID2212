@@ -5,9 +5,7 @@ import gr.kzps.id2212.hangman.client.RecvWorker;
 import gr.kzps.id2212.hangman.client.SendWorker;
 import gr.kzps.id2212.hangman.general.OpCodes;
 
-import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -27,6 +25,9 @@ import javax.swing.SwingWorker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/*
+ * Fields for connecting to the server
+ */
 public class ConnectionPanel extends JPanel {
 	private static final Logger LOG = LogManager.getLogger(ConnectionPanel.class);
 	
@@ -109,18 +110,17 @@ public class ConnectionPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// Connect and go to other window
+				
 				String ipAddress = jtxf_ipAddress.getText();
 				Integer port = Integer.parseInt(jtxf_port.getText());
 
 				jtxt_notifications.setText("Connecting...");
 
+				// Connect to the server
 				connection.connect(ipAddress, port);
 
-				// Send message to server to begin
-
+				// Send message to server to create a new game
 				byte[] message = new byte[jtxf_username.getText().length() + 1];
-				// Op code to create a new game
 				message[0] = OpCodes.CREATE;
 
 				System.arraycopy(jtxf_username.getText().getBytes(), 0,
@@ -131,6 +131,7 @@ public class ConnectionPanel extends JPanel {
 				
 				sendwrk.execute();
 				
+				// Receive reply from the server
 				RecvWorker recvWorker = new RecvWorker(connection, jtxt_notifications);
 				recvWorker.addPropertyChangeListener(new PropertyChangeListener() {
 					
@@ -141,14 +142,17 @@ public class ConnectionPanel extends JPanel {
 								try {
 									byte[] response = recvWorker.get();
 									
-									// First byte is the opCode
+									// First byte is the opCode, the rest is the
+									// pattern of the hint
 									byte[] hint = Arrays.copyOfRange(response, 1, response.length);
 									LOG.debug("Response: {}", new String(hint));
+									
 									jp_ipaddress.setVisible(false);
 									jp_hostPort.setVisible(false);
 									jp_username.setVisible(false);
 									jp_buttons.setVisible(false);
 									
+									// Create main playing window
 									add(new PlayPanel(connection, jtxt_notifications, hint));
 									
 								} catch (InterruptedException e) {

@@ -1,6 +1,5 @@
 package gr.kzps.id2212.hangman.client.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
 
@@ -10,6 +9,9 @@ import javax.swing.JTextField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/*
+ * Header panel of the GUI
+ */
 public class HeaderPanel extends JPanel {
 	private static final Logger LOG = LogManager.getLogger(HeaderPanel.class);
 	
@@ -24,7 +26,7 @@ public class HeaderPanel extends JPanel {
 	
 	private void create() {
 		LOG.debug("Creating header panel");
-		header = new JTextField("Welcome to Hangman", 30);
+		header = new JTextField("Hangman", 30);
 		header.setEditable(false);
 		header.setHorizontalAlignment(JTextField.CENTER);
 		header.setMargin(new Insets(20, 20, 20, 20));

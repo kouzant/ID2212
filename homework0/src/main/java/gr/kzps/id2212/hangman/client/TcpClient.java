@@ -9,6 +9,9 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Arrays;
 
+/*
+ * Dummy client for testing purposes!
+ */
 public class TcpClient {
 
 	private static boolean running = true;

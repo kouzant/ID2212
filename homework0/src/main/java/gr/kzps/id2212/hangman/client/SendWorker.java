@@ -6,6 +6,10 @@ import java.util.List;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
+/*
+ * SwingWorker for sending packets to the server and publish messages to the
+ * notification bar
+ */
 public class SendWorker extends SwingWorker<Void, String>{
 
 	private final Connection connection;
@@ -32,6 +36,7 @@ public class SendWorker extends SwingWorker<Void, String>{
 		return null;
 	}
 
+	// Write publish messages to the notification bar
 	@Override
 	protected void process(List<String> chunks) {
 		for (String notif: chunks) {

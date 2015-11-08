@@ -8,6 +8,10 @@ import java.util.List;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
+/*
+ * Swing Worker for receiving packets from the server
+ * and publish messages to the notification bar
+ */
 public class RecvWorker extends SwingWorker<byte[], String>{
 	private final Connection connection;
 	private JTextField jtxf_notifications;
@@ -51,6 +55,7 @@ public class RecvWorker extends SwingWorker<byte[], String>{
 		return null;
 	}
 	
+	// Write publish messages to the notification bar
 	@Override
 	protected void process(List<String> chunks) {
 		for (String notif : chunks) {

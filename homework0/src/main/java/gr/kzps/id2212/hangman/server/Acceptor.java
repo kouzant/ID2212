@@ -11,6 +11,9 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/*
+ * Accept every client connection
+ */
 public class Acceptor implements Runnable {
 	private static final Logger LOG = LogManager.getLogger(Acceptor.class);
 	private final Socket cSocket;
@@ -28,29 +31,35 @@ public class Acceptor implements Runnable {
 	public void run() {
 		try {
 			LOG.debug("New handler");
+			// Get the streams
 			BufferedInputStream bin = new BufferedInputStream(
 					cSocket.getInputStream());
 			BufferedOutputStream bout = new BufferedOutputStream(
 					cSocket.getOutputStream());
 
 			while (isRunning() && !cSocket.isClosed()) {
+				// Fetch the request from the client
 				byte[] input = readStream(bin);
 
 				LOG.debug("Received message from {}", cSocket.getInetAddress()
 						.getHostAddress());
 
+				// Handle the request
 				byte[] response = handler.handle(input);
 
+				// Send back the appropriate answer
 				bout.write(response);
 				bout.flush();
-				
+
+				// If client exit the program we close the connection and
+				// terminate that thread
 				if (response[0] == OpCodes.CLOSE) {
 					stop();
 				}
 			}
-			
+
 			LOG.debug("Closing connection");
-			
+
 			bin.close();
 			bout.close();
 			cSocket.close();
@@ -78,6 +87,7 @@ public class Acceptor implements Runnable {
 			}
 		}
 
+		// Remove empty bytes
 		return Arrays.copyOf(buffer, bytesRead);
 	}
 

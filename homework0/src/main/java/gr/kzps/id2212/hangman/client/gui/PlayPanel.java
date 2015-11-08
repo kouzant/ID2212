@@ -28,6 +28,9 @@ import javax.swing.SwingWorker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/*
+ * Main panel for playing
+ */
 public class PlayPanel extends JPanel {
 
 	private static final Logger LOG = LogManager.getLogger(PlayPanel.class);
@@ -63,6 +66,7 @@ public class PlayPanel extends JPanel {
 		this.hint = initialHint;
 		this.score = 0;
 		this.lifes = 10;
+		// Text fields for the alphabet
 		alphabet = new JTextField[26];
 
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -87,6 +91,7 @@ public class PlayPanel extends JPanel {
 
 		JLabel jl_hint = new JLabel("Hint:");
 
+		// Display the hint for the word
 		jtxf_hint = new JTextField();
 		jtxf_hint.setText(new String(hint));
 		jtxf_hint.setEditable(false);
@@ -95,15 +100,17 @@ public class PlayPanel extends JPanel {
 		jp_hint.add(jl_hint);
 		jp_hint.add(jtxf_hint);
 
-		JLabel jl_alpha = new JLabel("History");
+		// Populate the text fields with the letters of the alphabet
 		createAlphabet();
 
+		// Add them to the panel
 		for (int i = 0; i < alphabet.length; i++) {
 			jp_alphabet.add(alphabet[i]);
 		}
 
 		JLabel jl_guess = new JLabel("Guess: ");
 
+		// Write your guess, player
 		jtxf_guess = new JTextField();
 		jtxf_guess.setEditable(true);
 		jtxf_guess.setText("Guess");
@@ -142,6 +149,7 @@ public class PlayPanel extends JPanel {
 		jp_status.add(jl_lifes);
 		jp_status.add(jtxf_lifes);
 
+		// Hidden messages
 		jl_w_guess = new JLabel();
 		jl_w_guess.setVisible(false);
 		jl_w_guess.setText("Wrong guess. Try again");
@@ -177,11 +185,12 @@ public class PlayPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				// If guess is empty do nothing
 				if (jtxf_guess.getText().equals("")) {
+					// Warn the user of empty guess
 					jl_guess_empty.setVisible(true);
 				} else {
 					jl_guess_empty.setVisible(false);
 
-					// Send guess to server
+					// Prepare the message to send to the server
 					String guess = jtxf_guess.getText();
 					byte[] request = new byte[guess.getBytes().length + 1];
 					request[0] = OpCodes.GUESS;
@@ -189,12 +198,12 @@ public class PlayPanel extends JPanel {
 					System.arraycopy(guess.getBytes(), 0, request, 1,
 							guess.getBytes().length);
 
+					// Send message to the server
 					sendWrk = new SendWorker(connection, request,
 							jtxt_notifications);
 					sendWrk.execute();
 
-					// Receive response
-
+					// Wait for response
 					recvWrk = new RecvWorker(connection, jtxt_notifications);
 
 					recvWrk.addPropertyChangeListener(new PropertyChangeListener() {
@@ -209,11 +218,18 @@ public class PlayPanel extends JPanel {
 										// Only if player proposed a single letter
 										if (guess.length() == 1) {
 											if (response[0] == OpCodes.G_GUESS) {
+												// If player made a good guess,
+												// make the appropriate text field
+												// green
+												
+												// Take numeral position of the letter
 												Integer idx = Alphabet
 														.getPosition(guess);
+												// Update the appropriate text field
 												alphabet[idx]
 														.setBackground(Color.GREEN);
 											} else if (response[0] == OpCodes.W_GUESS) {
+												// Otherwise, make it red
 												Integer idx = Alphabet
 														.getPosition(guess);
 												alphabet[idx]
@@ -239,6 +255,7 @@ public class PlayPanel extends JPanel {
 			}
 		});
 
+		// Hidden play again button
 		jbtn_replay = new JButton();
 		jbtn_replay.setText("Play again");
 		jbtn_replay.setVisible(false);
@@ -247,13 +264,17 @@ public class PlayPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// Reset colours of alphabet of previous round
 				resetAlphabet();
 
+				// Prepare message to send to the server
 				byte[] message = new byte[] { OpCodes.PL_AGAIN };
+				// Send it
 				sendWrk = new SendWorker(connection, message,
 						jtxt_notifications);
 				sendWrk.execute();
 
+				// Wait for response
 				recvWrk = new RecvWorker(connection, jtxt_notifications);
 
 				recvWrk.addPropertyChangeListener(new PropertyChangeListener() {
@@ -265,6 +286,7 @@ public class PlayPanel extends JPanel {
 								try {
 									byte[] response = recvWrk.get();
 
+									// Handle response
 									handleResponse(response);
 								} catch (InterruptedException ex) {
 									ex.printStackTrace();
@@ -281,6 +303,7 @@ public class PlayPanel extends JPanel {
 			}
 		});
 
+		// Quit the game
 		JButton jbtn_exit = new JButton();
 		jbtn_exit.setText("Exit");
 		jbtn_exit.setEnabled(true);
@@ -289,6 +312,7 @@ public class PlayPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// Send quit event to the server
 				byte[] message = new byte[] { OpCodes.CLOSE };
 				sendWrk = new SendWorker(connection, message,
 						jtxt_notifications);
@@ -298,8 +322,10 @@ public class PlayPanel extends JPanel {
 					public void propertyChange(PropertyChangeEvent evt) {
 						if (evt.getPropertyName().equals("state")) {
 							if ((SwingWorker.StateValue) evt.getNewValue() == SwingWorker.StateValue.DONE) {
+								// Close connection
 								connection.close();
 								jtxt_notifications.setText("Exiting...");
+								// Ciao
 								System.exit(-1);
 							}
 						}
@@ -314,6 +340,7 @@ public class PlayPanel extends JPanel {
 		jp_buttons.add(jbtn_exit);
 	}
 
+	// Handle responses from the server
 	private void handleResponse(byte[] response) {
 		byte opCode = response[0];
 		byte[] rest = Arrays.copyOfRange(response, 1, response.length);
@@ -322,6 +349,8 @@ public class PlayPanel extends JPanel {
 		LOG.debug("Rest: {}", new String(rest));
 
 		if (opCode == OpCodes.WIN) {
+			// Player win
+			// update the score
 			Byte scoreB = rest[0];
 			Integer score = scoreB.intValue();
 			jtxf_score.setText(Integer.toString(score));
@@ -330,6 +359,8 @@ public class PlayPanel extends JPanel {
 			jbtn_guess.setVisible(false);
 			jbtn_replay.setVisible(true);
 		} else if (opCode == OpCodes.LOST) {
+			// Player lost
+			// Update the score
 			Byte scoreB = rest[0];
 			Integer score = scoreB.intValue();
 			jtxf_score.setText(Integer.toString(score));
@@ -339,14 +370,20 @@ public class PlayPanel extends JPanel {
 			jbtn_guess.setVisible(false);
 			jbtn_replay.setVisible(true);
 		} else if (opCode == OpCodes.W_GUESS) {
+			// Player made a wrong guess
+			// Update the lifes
 			Byte lossB = rest[0];
 			Integer loss = lossB.intValue();
 			jtxf_lifes.setText(Integer.toString(loss));
 			jl_w_guess.setVisible(true);
 		} else if (opCode == OpCodes.G_GUESS) {
+			// Player made a good guess
+			// Update the hint
 			String newPattern = new String(rest);
 			jtxf_hint.setText(newPattern);
 		} else if (opCode == OpCodes.PL_AGAIN) {
+			// Server response to play again
+			// Update the new hint
 			String pattern = new String(rest);
 			jtxf_hint.setText(pattern);
 			jtxf_hint.setColumns(pattern.length());
@@ -366,12 +403,14 @@ public class PlayPanel extends JPanel {
 		}
 	}
 
+	// Reset alphabet text field to white bg
 	private void resetAlphabet() {
 		for (int i = 0; i < alphabet.length; i++) {
 			alphabet[i].setBackground(Color.WHITE);
 		}
 	}
 
+	// For every letter of the alphabet create a text field
 	private void createAlphabet() {
 		for (int i = 0; i < alphabet.length; i++) {
 			alphabet[i] = new JTextField();

@@ -1,37 +1,51 @@
 package gr.kzps.id2212.hangman.general;
 
+/*
+ * Some utility functions
+ */
 public class Utilities {
-	
-	// Substitute letters with *, initial response
+
+	// Substitute letters with '*', initial response
 	public static String createPattern(String word) {
 		StringBuilder pattern = new StringBuilder();
-		
+
 		for (int i = 0; i < word.length(); i++) {
 			pattern.append("*");
 		}
-		
+
 		return pattern.toString();
 	}
-	
-	// Update word pattern
-		public static String updatePattern(String letter, String word, String lastPattern) {
-			char[] newPattern = new char[word.length()];
-			char[] lastPatternCh = new char[lastPattern.length()];
-			lastPattern.getChars(0, lastPattern.length(), lastPatternCh, 0);
-			
-			for (int i = 0; i < word.length(); i++) {
-				char idxLetter = word.charAt(i);
-				
-				if ((idxLetter == letter.charAt(0)) && (lastPatternCh[i] == '*')) {
-					newPattern[i] = letter.charAt(0);
-				} else if ((idxLetter != letter.charAt(0)) && (lastPatternCh[i] == '*')) {
-					newPattern[i] = '*';
-				} else if (lastPatternCh[i] != '*') {
-					newPattern[i] = lastPatternCh[i];
-				}
-				
+
+	// For a given letter, update the occurence in the pattern
+	public static String updatePattern(String letter, String word,
+			String lastPattern) {
+		char[] newPattern = new char[word.length()];
+		char[] lastPatternCh = new char[lastPattern.length()];
+		lastPattern.getChars(0, lastPattern.length(), lastPatternCh, 0);
+
+		for (int i = 0; i < word.length(); i++) {
+			char idxLetter = word.charAt(i);
+
+			// If the current letter in the word is the same as the letter
+			// provided and previously was '*' in the pattern, update the letter
+			if ((idxLetter == letter.charAt(0)) && (lastPatternCh[i] == '*')) {
+				newPattern[i] = letter.charAt(0);
+				// If the current letter in the word is not the same as the
+				// letter
+				// provided and has not been guessed yet, leave '*' in the
+				// pattern
+			} else if ((idxLetter != letter.charAt(0))
+					&& (lastPatternCh[i] == '*')) {
+				newPattern[i] = '*';
+				// If the current letter in the word has been previously
+				// guessed,
+				// leave the guess as it is
+			} else if (lastPatternCh[i] != '*') {
+				newPattern[i] = lastPatternCh[i];
 			}
-			
-			return new String(newPattern);
+
 		}
+
+		return new String(newPattern);
+	}
 }

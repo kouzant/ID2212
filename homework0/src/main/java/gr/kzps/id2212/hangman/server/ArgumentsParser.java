@@ -7,6 +7,9 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+/*
+ * Parse command line arguments
+ */
 public class ArgumentsParser {
 	private final String[] args;
 	private Options options;
@@ -17,14 +20,15 @@ public class ArgumentsParser {
 	}
 
 	public CommandLine parseArgs() throws ParseException {
+		// Listening port
 		Option port = Option.builder("p").longOpt("port").hasArg()
 				.desc("Listen port").build();
-		
+
 		options.addOption(port);
-		
+
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = parser.parse(options, args);
-		
+
 		return cmd;
 	}
 }
