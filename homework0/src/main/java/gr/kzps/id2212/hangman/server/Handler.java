@@ -72,7 +72,6 @@ public class Handler {
 					LOG.debug("Player won by giving the whole word!");
 					currentPlayer.incrementScore();
 					byte[] response = new byte[] {OpCodes.WIN, (byte) currentPlayer.getScore().byteValue()};
-					playersTracker.removePlayer(currentPlayer.getUsername());
 					
 					return response;
 				} else {
@@ -81,7 +80,6 @@ public class Handler {
 						// Sorry you have lost the game
 						LOG.debug("Player lost the game by giving the whole word");
 						byte[] response = new byte[] {OpCodes.LOST, currentPlayer.getScore().byteValue()};
-						playersTracker.removePlayer(currentPlayer.getUsername());
 						
 						return response;
 					} else {
@@ -143,7 +141,25 @@ public class Handler {
 			
 		} else if (opCode == OpCodes.CLOSE) {
 			LOG.debug("Closing connection");
+			playersTracker.removePlayer(currentPlayer.getUsername());
+
 			byte[] response = new byte[] {OpCodes.CLOSE};
+			
+			return response;
+		} else if (opCode == OpCodes.PL_AGAIN) {
+			LOG.debug("Player will play again");
+			Dictionary dictionary = Dictionary.getInstance();
+			String word = dictionary.getWord();
+			LOG.debug("New word is: {}", word);
+			
+			currentPlayer.setWord(word);
+			String pattern = Utilities.createPattern(word);
+			currentPlayer.setLastPattern(pattern);
+			currentPlayer.resetLifes();
+			
+			byte[] response = new byte[pattern.length() + 1];
+			response[0] = OpCodes.PL_AGAIN;
+			System.arraycopy(pattern.getBytes(), 0, response, 1, pattern.getBytes().length);
 			
 			return response;
 		} else {

@@ -50,7 +50,7 @@ public class ConnectionPanel extends JPanel {
 	}
 
 	private void create() {
-		LOG.debug("Creating connaction panel");
+		LOG.debug("Creating connection panel");
 		JPanel jp_ipaddress = new JPanel(new FlowLayout(FlowLayout.LEADING));
 		JPanel jp_hostPort = new JPanel(new FlowLayout(FlowLayout.LEADING));
 		JPanel jp_username = new JPanel(new FlowLayout(FlowLayout.LEADING));

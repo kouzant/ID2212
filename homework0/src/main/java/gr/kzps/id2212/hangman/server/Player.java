@@ -59,4 +59,8 @@ public class Player {
 	public void setLastPattern(String pattern) {
 		this.lastPattern = pattern;
 	}
+	
+	public void resetLifes() {
+		this.loss = 10;
+	}
 }

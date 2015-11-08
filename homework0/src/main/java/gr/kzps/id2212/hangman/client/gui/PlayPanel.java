@@ -133,7 +133,7 @@ public class PlayPanel extends JPanel {
 		jl_w_guess = new JLabel();
 		jl_w_guess.setVisible(false);
 		jl_w_guess.setText("Wrong guess. Try again");
-		jl_w_guess.setForeground(Color.GREEN);
+		jl_w_guess.setForeground(Color.ORANGE);
 		
 		JLabel jl_guess_empty = new JLabel();
 		jl_guess_empty.setVisible(false);
@@ -212,6 +212,42 @@ public class PlayPanel extends JPanel {
 		jbtn_replay.setText("Play again");
 		jbtn_replay.setVisible(false);
 		
+		jbtn_replay.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				byte[] message = new byte[] {OpCodes.PL_AGAIN};
+				LOG.debug("Message: {}", new String(message));
+				sendWrk = new SendWorker(connection, message, jtxt_notifications);
+				sendWrk.execute();
+				
+				recvWrk = new RecvWorker(connection, jtxt_notifications);
+				
+				recvWrk.addPropertyChangeListener(new PropertyChangeListener() {
+					
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+						if (evt.getPropertyName().equals("state")) {
+							if((SwingWorker.StateValue) evt.getNewValue() == SwingWorker.StateValue.DONE) {
+								try {
+									byte[] response = recvWrk.get();
+									
+									handleResponse(response);
+								} catch (InterruptedException ex) {
+									ex.printStackTrace();
+								} catch (ExecutionException ex) {
+									ex.printStackTrace();
+								}
+							}
+						}
+						
+					}
+				});
+				
+				recvWrk.execute();
+			}
+		});
+		
 		JButton jbtn_exit = new JButton();
 		jbtn_exit.setText("Exit");
 		jbtn_exit.setEnabled(true);
@@ -263,6 +299,7 @@ public class PlayPanel extends JPanel {
 			Byte scoreB = rest[0];
 			Integer score = scoreB.intValue();
 			jtxf_score.setText(Integer.toString(score));
+			jtxf_lifes.setText("0");
 
 			jl_lose.setVisible(true);
 			jbtn_guess.setVisible(false);
@@ -275,6 +312,17 @@ public class PlayPanel extends JPanel {
 		} else if (opCode == OpCodes.G_GUESS) {
 			String newPattern = new String(rest);
 			jtxf_hint.setText(newPattern);
+		} else if (opCode == OpCodes.PL_AGAIN) {
+			String pattern = new String(rest);
+			jtxf_hint.setText(pattern);
+			
+			jtxf_lifes.setText("10");
+			
+			jbtn_replay.setVisible(false);
+			jbtn_guess.setVisible(true);
+			
+			jl_lose.setVisible(false);
+			jl_win.setVisible(false);
 		} else if (opCode == OpCodes.UNKNOWN) {
 			LOG.info("Received unknown command from the server");
 		} else {
