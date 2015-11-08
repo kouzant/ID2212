@@ -17,6 +17,7 @@ import gr.kzps.id2212.hangman.client.SendWorker;
 import gr.kzps.id2212.hangman.general.Alphabet;
 import gr.kzps.id2212.hangman.general.OpCodes;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -377,6 +378,7 @@ public class PlayPanel extends JPanel {
 			alphabet[i].setText(Alphabet.getLetter(i));
 			alphabet[i].setVisible(true);
 			alphabet[i].setEditable(false);
+			alphabet[i].setBorder(BorderFactory.createEmptyBorder());
 		}
 	}
 }
