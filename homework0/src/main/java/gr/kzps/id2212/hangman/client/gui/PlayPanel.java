@@ -68,11 +68,13 @@ public class PlayPanel extends JPanel {
 		JPanel jp_hint = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		JPanel jp_guess = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		JPanel jp_status = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		JPanel jp_msgs = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		JPanel jp_buttons = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		
 		add(jp_hint);
 		add(jp_guess);
 		add(jp_status);
+		add(jp_msgs);
 		add(jp_buttons);
 		
 		JLabel jl_hint = new JLabel("Hint:");
@@ -105,20 +107,10 @@ public class PlayPanel extends JPanel {
 			}
 		});
 		
-		jl_w_guess = new JLabel();
-		jl_w_guess.setVisible(false);
-		jl_w_guess.setText("Wrong guess. Try again");
-		jl_w_guess.setForeground(Color.GREEN);
 		
-		JLabel jl_guess_empty = new JLabel();
-		jl_guess_empty.setVisible(false);
-		jl_guess_empty.setText("Guess cannot be empty");
-		jl_guess_empty.setForeground(Color.RED);
 		
 		jp_guess.add(jl_guess);
 		jp_guess.add(jtxf_guess);
-		jp_guess.add(jl_guess_empty);
-		jp_guess.add(jl_w_guess);
 		
 		jl_score = new JLabel("Score: ");
 		jtxf_score = new JTextField();
@@ -132,6 +124,22 @@ public class PlayPanel extends JPanel {
 		jtxf_lifes.setText(Integer.toString(lifes));
 		jtxf_lifes.setColumns(3);
 		
+		
+		jp_status.add(jl_score);
+		jp_status.add(jtxf_score);
+		jp_status.add(jl_lifes);
+		jp_status.add(jtxf_lifes);
+		
+		jl_w_guess = new JLabel();
+		jl_w_guess.setVisible(false);
+		jl_w_guess.setText("Wrong guess. Try again");
+		jl_w_guess.setForeground(Color.GREEN);
+		
+		JLabel jl_guess_empty = new JLabel();
+		jl_guess_empty.setVisible(false);
+		jl_guess_empty.setText("Guess cannot be empty");
+		jl_guess_empty.setForeground(Color.RED);
+		
 		jl_win = new JLabel();
 		jl_win.setVisible(false);
 		jl_win.setText("Congratulations, you win!");
@@ -142,12 +150,10 @@ public class PlayPanel extends JPanel {
 		jl_lose.setText("Sorry, you lose!");
 		jl_lose.setForeground(Color.RED);
 		
-		jp_status.add(jl_score);
-		jp_status.add(jtxf_score);
-		jp_status.add(jl_lifes);
-		jp_status.add(jtxf_lifes);
-		jp_status.add(jl_win);
-		jp_status.add(jl_lose);
+		jp_msgs.add(jl_w_guess);
+		jp_msgs.add(jl_guess_empty);
+		jp_msgs.add(jl_win);
+		jp_msgs.add(jl_lose);
 		
 		jbtn_guess = new JButton();
 		jbtn_guess.setText("Guess");

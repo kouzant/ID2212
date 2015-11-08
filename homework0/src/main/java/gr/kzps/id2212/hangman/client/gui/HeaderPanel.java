@@ -27,8 +27,8 @@ public class HeaderPanel extends JPanel {
 		header = new JTextField("Welcome to Hangman", 30);
 		header.setEditable(false);
 		header.setHorizontalAlignment(JTextField.CENTER);
-		header.setMargin(new Insets(50, 100, 50, 100));
-		header.setMaximumSize(new Dimension(100, 10));
+		header.setMargin(new Insets(20, 20, 20, 20));
+		header.setMaximumSize(new Dimension(50, 10));
 		
 		add(header);
 	}

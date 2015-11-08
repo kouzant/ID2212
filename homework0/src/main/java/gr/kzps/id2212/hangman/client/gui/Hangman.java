@@ -23,9 +23,6 @@ public class Hangman {
 	private ConnectionPanel mainTopPanel;
 	private Connection connection;
 	
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -39,21 +36,15 @@ public class Hangman {
 		});
 	}
 
-	/**
-	 * Create the application.
-	 */
 	public Hangman() {
 		connection = new Connection();
-		initialize();
+		create();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
+	private void create() {
 		LOG.debug("Initializing frame");
 		frame = new JFrame("Hangman");
-		frame.setBounds(300, 100, 1000, 800);
+		//frame.setBounds(300, 100, 1000, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		container = new JPanel(new BorderLayout());
@@ -69,6 +60,9 @@ public class Hangman {
 		container.add(mainTopPanel, BorderLayout.CENTER);
 		
 		bottomPanel.getInfoField().setText("Hello");
+		
+		frame.setMinimumSize(new Dimension(380, 250));
+		frame.pack();
 	}
 
 }
