@@ -13,11 +13,28 @@ import org.apache.logging.log4j.Logger;
 public class TcpServer {
 	private static final Logger LOG = LogManager.getLogger(TcpServer.class);
 	private static final Integer PORT = 8080;
+	private static ServerSocket sSocket;
+	private static boolean running = true;
 	
-	@SuppressWarnings("resource")
-	// Server socket will be closed when we exit...
 	public static void main(String[] args) {
-		ServerSocket sSocket = null;
+		// Trap SIGINT
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				stop();
+				if (sSocket != null) {
+					try {
+						sSocket.close();
+					} catch (IOException ex) {
+						ex.printStackTrace();
+					}
+				}
+				LOG.info("Ctrl-c pressed. Exit...");
+			}
+		}));
+		
+		sSocket = null;
 		Socket cSocket = null;
 		ExecutorService threadPool = Executors.newCachedThreadPool();
 		// Players tracker
@@ -39,7 +56,7 @@ public class TcpServer {
 			ex.printStackTrace();
 		}
 		
-		while (true) {
+		while (isRunning()) {
 			try {
 				cSocket = sSocket.accept();
 				LOG.debug("Established connection");
@@ -50,6 +67,14 @@ public class TcpServer {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	private static boolean isRunning() {
+		return running;
+	}
+	
+	private static void stop() {
+		running = false;
 	}
 
 }
