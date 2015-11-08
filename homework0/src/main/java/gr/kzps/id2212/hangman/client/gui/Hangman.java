@@ -61,7 +61,7 @@ public class Hangman {
 		
 		bottomPanel.getInfoField().setText("Hello");
 		
-		frame.setMinimumSize(new Dimension(380, 250));
+		frame.setMinimumSize(new Dimension(500, 300));
 		frame.pack();
 	}
 
