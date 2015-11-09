@@ -68,7 +68,7 @@ public class Handler {
 				// either win or lose
 				LOG.debug("Player made a guess for the whole word");
 				String guessStr = new String(rest);
-				if (currentPlayer.getWord().equals(guessStr)) {
+				if (currentPlayer.getWord().toLowerCase().equals(guessStr.toLowerCase())) {
 					// Win
 					LOG.debug("Player won by giving the whole word!");
 					currentPlayer.incrementScore();
@@ -99,7 +99,7 @@ public class Handler {
 				// Player proposed a single letter
 				LOG.debug("Player made a guess for a letter");
 				String letter = new String(rest);
-				if (currentPlayer.getWord().contains(letter)) {
+				if (currentPlayer.getWord().toLowerCase().contains(letter.toLowerCase())) {
 					// Good guess
 					LOG.debug("Player made a good guess about a letter");
 					// Update the pattern with the letter guessed
