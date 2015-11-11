@@ -3,6 +3,7 @@ package gr.kzps.id2212.hangman.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -51,6 +52,8 @@ public class TcpServer {
 
 		sSocket = null;
 		Socket cSocket = null;
+		
+		Random rand = new Random();
 
 		// Players tracker
 		// Currently it is not used. It was meant for resume game function
@@ -78,7 +81,7 @@ public class TcpServer {
 				cSocket = sSocket.accept();
 				LOG.debug("Established connection");
 				// Handle connection in separate thread
-				threadPool.execute(new Acceptor(cSocket, playersTracker));
+				threadPool.execute(new Acceptor(cSocket, playersTracker, rand));
 
 			} catch (IOException e) {
 				e.printStackTrace();
