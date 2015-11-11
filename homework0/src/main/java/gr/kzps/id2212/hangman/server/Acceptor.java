@@ -7,7 +7,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Arrays;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
@@ -21,12 +21,10 @@ public class Acceptor implements Runnable {
 	private final Socket cSocket;
 	private final Handler handler;
 	private boolean running;
-	private final Random rand;
 
-	public Acceptor(Socket cSocket, PlayersTracker playersTracker, Random rand) {
+	public Acceptor(Socket cSocket, PlayersTracker playersTracker) {
 		this.cSocket = cSocket;
 		this.running = true;
-		this.rand = rand;
 
 		handler = new Handler(playersTracker);
 	}
@@ -50,7 +48,7 @@ public class Acceptor implements Runnable {
 
 				// Emulate network latency
 				try {
-					Integer latency = rand.nextInt(3000);
+					Integer latency = ThreadLocalRandom.current().nextInt(3000);
 					LOG.debug("Sleeping for {} ms", latency);
 					TimeUnit.MILLISECONDS.sleep(latency);;
 				} catch (InterruptedException ex) {
