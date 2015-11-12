@@ -30,6 +30,7 @@ public class RecvWorker extends SwingWorker<byte[], String>{
         Integer bytesRead = 0;
 		
 		publish("Receiving data...");
+		setProgress(60);
 		
 		try {
 			while((length = input.read(buffer, bytesRead, 128)) != -1 ) {
@@ -46,6 +47,7 @@ public class RecvWorker extends SwingWorker<byte[], String>{
 			
 			byte[] response = Arrays.copyOf(buffer, bytesRead);
 			publish("Received");
+			setProgress(100);
 			
 			return response;
 			

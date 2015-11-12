@@ -19,6 +19,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
@@ -40,10 +41,12 @@ public class ConnectionPanel extends JPanel {
 	private JButton jbtn_reset;
 	private Connection connection;
 	private JTextField jtxt_notifications;
+	private JProgressBar progressBar;
 
-	public ConnectionPanel(Connection connection, JTextField jtxt_notifications) {
+	public ConnectionPanel(Connection connection, JTextField jtxt_notifications, JProgressBar progressBar) {
 		this.connection = connection;
 		this.jtxt_notifications = jtxt_notifications;
+		this.progressBar = progressBar;
 
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		
@@ -129,6 +132,18 @@ public class ConnectionPanel extends JPanel {
 				SendWorker sendwrk = new SendWorker(connection, message,
 						jtxt_notifications);
 				
+				sendwrk.addPropertyChangeListener(new PropertyChangeListener() {
+					
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+						if (evt.getPropertyName().equals("progress")) {
+							progressBar.setIndeterminate(false);
+							progressBar.setValue((Integer) evt.getNewValue());
+						}
+						
+					}
+				});
+				
 				sendwrk.execute();
 				
 				// Receive reply from the server
@@ -153,7 +168,8 @@ public class ConnectionPanel extends JPanel {
 									jp_buttons.setVisible(false);
 									
 									// Create main playing window
-									add(new PlayPanel(connection, jtxt_notifications, hint));
+									progressBar.setValue(0);
+									add(new PlayPanel(connection, jtxt_notifications, progressBar, hint));
 									
 								} catch (InterruptedException e) {
 									e.printStackTrace();
@@ -162,6 +178,9 @@ public class ConnectionPanel extends JPanel {
 								}
 								
 							}
+						} else if (evt.getPropertyName().equals("progress")) {
+							progressBar.setIndeterminate(false);
+							progressBar.setValue((Integer) evt.getNewValue());
 						}
 						
 					}

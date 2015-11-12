@@ -22,8 +22,10 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
+import javax.swing.plaf.ProgressBarUI;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,6 +53,7 @@ public class PlayPanel extends JPanel {
 	private JButton jbtn_replay;
 	private JButton jbtn_guess;
 	private JTextField[] alphabet;
+	private JProgressBar progressBar;
 
 	private byte[] hint;
 	private Integer score;
@@ -59,13 +62,14 @@ public class PlayPanel extends JPanel {
 	private RecvWorker recvWrk;
 
 	public PlayPanel(Connection connection, JTextField jtxt_notifications,
-			byte[] initialHint) {
+			JProgressBar progressBar, byte[] initialHint) {
 		super();
 		this.connection = connection;
 		this.jtxt_notifications = jtxt_notifications;
 		this.hint = initialHint;
 		this.score = 0;
 		this.lifes = 10;
+		this.progressBar = progressBar;
 		// Text fields for the alphabet
 		alphabet = new JTextField[26];
 
@@ -201,6 +205,18 @@ public class PlayPanel extends JPanel {
 					// Send message to the server
 					sendWrk = new SendWorker(connection, request,
 							jtxt_notifications);
+					
+					sendWrk.addPropertyChangeListener(new PropertyChangeListener() {
+						
+						@Override
+						public void propertyChange(PropertyChangeEvent evt) {
+							if (evt.getPropertyName().equals("progress")) {
+								progressBar.setIndeterminate(false);
+								progressBar.setValue((Integer) evt.getNewValue());
+							}
+							
+						}
+					});
 					sendWrk.execute();
 
 					// Wait for response
@@ -213,6 +229,7 @@ public class PlayPanel extends JPanel {
 							if (evt.getPropertyName().equals("state")) {
 								if ((SwingWorker.StateValue) evt.getNewValue() == SwingWorker.StateValue.DONE) {
 									try {
+										//progressBar.setValue(0);
 										byte[] response = recvWrk.get();
 										// Change colour to history panel
 										// Only if player proposed a single letter
@@ -246,6 +263,9 @@ public class PlayPanel extends JPanel {
 										e.printStackTrace();
 									}
 								}
+							} else if (evt.getPropertyName().equals("progress")) {
+								progressBar.setIndeterminate(false);
+								progressBar.setValue((Integer) evt.getNewValue());
 							}
 						}
 					});
@@ -272,6 +292,17 @@ public class PlayPanel extends JPanel {
 				// Send it
 				sendWrk = new SendWorker(connection, message,
 						jtxt_notifications);
+				sendWrk.addPropertyChangeListener(new PropertyChangeListener() {
+					
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+						if (evt.getPropertyName().equals("progress")) {
+							progressBar.setIndeterminate(false);
+							progressBar.setValue((Integer) evt.getNewValue());
+						}
+						
+					}
+				});
 				sendWrk.execute();
 
 				// Wait for response
@@ -294,8 +325,10 @@ public class PlayPanel extends JPanel {
 									ex.printStackTrace();
 								}
 							}
+						} else if (evt.getPropertyName().equals("progress")) {
+							progressBar.setIndeterminate(false);
+							progressBar.setValue((Integer) evt.getNewValue());
 						}
-
 					}
 				});
 

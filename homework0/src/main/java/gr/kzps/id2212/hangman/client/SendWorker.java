@@ -32,6 +32,7 @@ public class SendWorker extends SwingWorker<Void, String>{
 		output.flush();
 		
 		publish("Sent");
+		setProgress(30);
 		
 		return null;
 	}

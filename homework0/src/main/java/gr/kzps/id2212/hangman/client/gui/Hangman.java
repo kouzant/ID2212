@@ -59,7 +59,7 @@ public class Hangman {
 		bottomPanel = new BottomPanel();
 		container.add(bottomPanel, BorderLayout.SOUTH);
 		
-		mainTopPanel = new ConnectionPanel(connection, bottomPanel.getInfoField());
+		mainTopPanel = new ConnectionPanel(connection, bottomPanel.getInfoField(), bottomPanel.getProgressBar());
 		container.add(mainTopPanel, BorderLayout.CENTER);
 		
 		bottomPanel.getInfoField().setText("Hello");
