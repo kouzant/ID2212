@@ -3,8 +3,11 @@ package gr.kzps.id2212.hangman.client;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
+import javax.swing.JTextField;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +22,7 @@ public class Connection {
 	private Socket socket;
 	private BufferedInputStream input;
 	private BufferedOutputStream output;
+	private JTextField jtxt_notifications;
 
 	public Connection() {
 		super();
@@ -31,6 +35,10 @@ public class Connection {
 			output = new BufferedOutputStream(socket.getOutputStream());
 
 		} catch (UnknownHostException ex) {
+			jtxt_notifications.setText("Wrong host!");
+			ex.printStackTrace();
+		}catch (ConnectException ex) {
+			jtxt_notifications.setText("Wrong port !?");
 			ex.printStackTrace();
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -68,5 +76,9 @@ public class Connection {
 	
 	public BufferedOutputStream getOutput() {
 		return output;
+	}
+	
+	public void setNotifications(JTextField jtxt_notifications) {
+		this.jtxt_notifications = jtxt_notifications;
 	}
 }

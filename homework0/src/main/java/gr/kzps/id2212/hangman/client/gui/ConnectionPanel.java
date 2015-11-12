@@ -30,8 +30,9 @@ import org.apache.logging.log4j.Logger;
  * Fields for connecting to the server
  */
 public class ConnectionPanel extends JPanel {
-	private static final Logger LOG = LogManager.getLogger(ConnectionPanel.class);
-	
+	private static final Logger LOG = LogManager
+			.getLogger(ConnectionPanel.class);
+
 	private static final long serialVersionUID = -7068265294171409209L;
 
 	private JTextField jtxf_ipAddress;
@@ -43,13 +44,16 @@ public class ConnectionPanel extends JPanel {
 	private JTextField jtxt_notifications;
 	private JProgressBar progressBar;
 
-	public ConnectionPanel(Connection connection, JTextField jtxt_notifications, JProgressBar progressBar) {
+	public ConnectionPanel(Connection connection,
+			JTextField jtxt_notifications, JProgressBar progressBar) {
 		this.connection = connection;
 		this.jtxt_notifications = jtxt_notifications;
 		this.progressBar = progressBar;
 
+		this.connection.setNotifications(jtxt_notifications);
+
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		
+
 		create();
 	}
 
@@ -79,7 +83,7 @@ public class ConnectionPanel extends JPanel {
 		jtxf_port = new JTextField();
 		jtxf_port.setEditable(true);
 		jtxf_port.setColumns(4);
-		
+
 		jtxf_port.setText("8080");
 
 		jp_hostPort.add(jlb_port);
@@ -113,7 +117,7 @@ public class ConnectionPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 				String ipAddress = jtxf_ipAddress.getText();
 				Integer port = Integer.parseInt(jtxf_port.getText());
 
@@ -122,70 +126,88 @@ public class ConnectionPanel extends JPanel {
 				// Connect to the server
 				connection.connect(ipAddress, port);
 
-				// Send message to server to create a new game
-				byte[] message = new byte[jtxf_username.getText().length() + 1];
-				message[0] = OpCodes.CREATE;
+				if (connection.getSocket() != null) {
+					// Send message to server to create a new game
+					byte[] message = new byte[jtxf_username.getText().length() + 1];
+					message[0] = OpCodes.CREATE;
 
-				System.arraycopy(jtxf_username.getText().getBytes(), 0,
-						message, 1, jtxf_username.getText().getBytes().length);
-				
-				SendWorker sendwrk = new SendWorker(connection, message,
-						jtxt_notifications);
-				
-				sendwrk.addPropertyChangeListener(new PropertyChangeListener() {
-					
-					@Override
-					public void propertyChange(PropertyChangeEvent evt) {
-						if (evt.getPropertyName().equals("progress")) {
-							progressBar.setIndeterminate(false);
-							progressBar.setValue((Integer) evt.getNewValue());
-						}
-						
-					}
-				});
-				
-				sendwrk.execute();
-				
-				// Receive reply from the server
-				RecvWorker recvWorker = new RecvWorker(connection, jtxt_notifications);
-				recvWorker.addPropertyChangeListener(new PropertyChangeListener() {
-					
-					@Override
-					public void propertyChange(PropertyChangeEvent evt) {
-						if (evt.getPropertyName().equals("state")) {
-							if ((SwingWorker.StateValue) evt.getNewValue() == SwingWorker.StateValue.DONE) {
-								try {
-									byte[] response = recvWorker.get();
-									
-									// First byte is the opCode, the rest is the
-									// pattern of the hint
-									byte[] hint = Arrays.copyOfRange(response, 1, response.length);
-									LOG.debug("Response: {}", new String(hint));
-									
-									jp_ipaddress.setVisible(false);
-									jp_hostPort.setVisible(false);
-									jp_username.setVisible(false);
-									jp_buttons.setVisible(false);
-									
-									// Create main playing window
-									add(new PlayPanel(connection, jtxt_notifications, progressBar, hint));
-									
-								} catch (InterruptedException e) {
-									e.printStackTrace();
-								} catch (ExecutionException e) {
-									e.printStackTrace();
-								}
-								
+					System.arraycopy(jtxf_username.getText().getBytes(), 0,
+							message, 1,
+							jtxf_username.getText().getBytes().length);
+
+					SendWorker sendwrk = new SendWorker(connection, message,
+							jtxt_notifications);
+
+					sendwrk.addPropertyChangeListener(new PropertyChangeListener() {
+
+						@Override
+						public void propertyChange(PropertyChangeEvent evt) {
+							if (evt.getPropertyName().equals("progress")) {
+								progressBar.setIndeterminate(false);
+								progressBar.setValue((Integer) evt
+										.getNewValue());
 							}
-						} else if (evt.getPropertyName().equals("progress")) {
-							progressBar.setIndeterminate(false);
-							progressBar.setValue((Integer) evt.getNewValue());
+
 						}
-						
-					}
-				});
-				
-				recvWorker.execute();
+					});
+
+					sendwrk.execute();
+
+					// Receive reply from the server
+					RecvWorker recvWorker = new RecvWorker(connection,
+							jtxt_notifications);
+					recvWorker
+							.addPropertyChangeListener(new PropertyChangeListener() {
+
+								@Override
+								public void propertyChange(
+										PropertyChangeEvent evt) {
+									if (evt.getPropertyName().equals("state")) {
+										if ((SwingWorker.StateValue) evt
+												.getNewValue() == SwingWorker.StateValue.DONE) {
+											try {
+												byte[] response = recvWorker
+														.get();
+
+												// First byte is the opCode, the
+												// rest is the
+												// pattern of the hint
+												byte[] hint = Arrays
+														.copyOfRange(response,
+																1,
+																response.length);
+												LOG.debug("Response: {}",
+														new String(hint));
+
+												jp_ipaddress.setVisible(false);
+												jp_hostPort.setVisible(false);
+												jp_username.setVisible(false);
+												jp_buttons.setVisible(false);
+
+												// Create main playing window
+												add(new PlayPanel(connection,
+														jtxt_notifications,
+														progressBar, hint));
+
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											} catch (ExecutionException e) {
+												e.printStackTrace();
+											}
+
+										}
+									} else if (evt.getPropertyName().equals(
+											"progress")) {
+										progressBar.setIndeterminate(false);
+										progressBar.setValue((Integer) evt
+												.getNewValue());
+									}
+
+								}
+							});
+
+					recvWorker.execute();
+				}
 			}
 		});
 

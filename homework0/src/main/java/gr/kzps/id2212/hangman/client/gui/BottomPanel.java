@@ -35,7 +35,7 @@ public class BottomPanel extends JPanel {
 		infoField = new JTextField();
 		infoField.setEditable(false);
 		infoField.setBackground(Color.GRAY);
-		infoField.setMaximumSize(new Dimension(10000, 20));
+		
 		
 		progressBar = new JProgressBar(0, 100);
 		progressBar.setForeground(Color.ORANGE);
