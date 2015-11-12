@@ -42,7 +42,7 @@ public class Handler {
 			// Pick a random word from the dictionary
 			Dictionary dictionary = Dictionary.getInstance();
 			String word = dictionary.getWord();
-			LOG.warn("Word is {}", word);
+			LOG.info("Word is {}", word);
 
 			String pattern = Utilities.createPattern(word);
 

@@ -42,7 +42,6 @@ public class TcpServer {
 				try {
 					threadPool.awaitTermination(30, TimeUnit.SECONDS);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				LOG.info("Ctrl-c pressed. Exit...");
@@ -66,10 +65,9 @@ public class TcpServer {
 			} else {
 				sSocket = new ServerSocket(PORT);
 			}
-
 			LOG.info("Server started at port {}", sSocket.getLocalPort());
 		} catch (Exception ex) {
-			LOG.error("Something wrong happened!");
+			LOG.fatal("Something wrong happened!");
 			ex.printStackTrace();
 		}
 
