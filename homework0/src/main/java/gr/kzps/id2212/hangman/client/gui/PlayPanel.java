@@ -97,9 +97,10 @@ public class PlayPanel extends JPanel {
 
 		// Display the hint for the word
 		jtxf_hint = new JTextField();
-		jtxf_hint.setText(new String(hint));
+		String hintStr = addPatternSpaces(hint);
+		jtxf_hint.setText(hintStr);
 		jtxf_hint.setEditable(false);
-		jtxf_hint.setColumns(hint.length);
+		jtxf_hint.setColumns(hintStr.length());
 
 		jp_hint.add(jl_hint);
 		jp_hint.add(jtxf_hint);
@@ -412,12 +413,12 @@ public class PlayPanel extends JPanel {
 		} else if (opCode == OpCodes.G_GUESS) {
 			// Player made a good guess
 			// Update the hint
-			String newPattern = new String(rest);
+			String newPattern = addPatternSpaces(rest);
 			jtxf_hint.setText(newPattern);
 		} else if (opCode == OpCodes.PL_AGAIN) {
 			// Server response to play again
 			// Update the new hint
-			String pattern = new String(rest);
+			String pattern = addPatternSpaces(rest);
 			jtxf_hint.setText(pattern);
 			jtxf_hint.setColumns(pattern.length());
 			jtxf_guess.setColumns(pattern.length());
@@ -452,5 +453,14 @@ public class PlayPanel extends JPanel {
 			alphabet[i].setEditable(false);
 			alphabet[i].setBorder(BorderFactory.createEmptyBorder());
 		}
+	}
+	
+	// Add spaces to the received pattern
+	private String addPatternSpaces(byte[] hint) {
+		String hintStr = new String(hint);
+		
+		// Replace all characters, except for the last one
+		// with the character itself followed by a whitespace
+		return hintStr.replaceAll(".(?=.)", "$0 ");
 	}
 }

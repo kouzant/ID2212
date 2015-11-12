@@ -41,8 +41,7 @@ public class Handler {
 
 			// Pick a random word from the dictionary
 			Dictionary dictionary = Dictionary.getInstance();
-			//String word = dictionary.getWord();
-			String word = "Beowolf";
+			String word = dictionary.getWord();
 			LOG.debug("Word is {}", word);
 
 			String pattern = Utilities.createPattern(word);
