@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
@@ -24,7 +25,7 @@ public class BottomPanel extends JPanel {
 	private JProgressBar progressBar;
 	
 	public BottomPanel() {
-		setLayout(new BorderLayout());
+		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		
 		create();
 	}
@@ -34,14 +35,14 @@ public class BottomPanel extends JPanel {
 		infoField = new JTextField();
 		infoField.setEditable(false);
 		infoField.setBackground(Color.GRAY);
-		infoField.setMinimumSize(new Dimension(500, 10));
+		infoField.setMaximumSize(new Dimension(10000, 20));
 		
 		progressBar = new JProgressBar(0, 100);
 		progressBar.setForeground(Color.ORANGE);
 		progressBar.setVisible(true);
 		
-		this.add(infoField, BorderLayout.WEST);
-		this.add(progressBar, BorderLayout.EAST);
+		this.add(infoField);
+		this.add(progressBar);
 	}
 	
 	public JTextField getInfoField() {

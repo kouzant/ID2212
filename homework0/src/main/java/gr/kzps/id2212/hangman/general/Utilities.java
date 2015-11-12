@@ -25,11 +25,12 @@ public class Utilities {
 
 		for (int i = 0; i < word.length(); i++) {
 			char idxLetter = word.charAt(i);
+			char idxLetterLC = word.toLowerCase().charAt(i);
 
 			// If the current letter in the word is the same as the letter
 			// provided and previously was '*' in the pattern, update the letter
-			if ((idxLetter == letter.charAt(0)) && (lastPatternCh[i] == '*')) {
-				newPattern[i] = letter.charAt(0);
+			if ((idxLetterLC == letter.toLowerCase().charAt(0)) && (lastPatternCh[i] == '*')) {
+				newPattern[i] = idxLetter;
 				// If the current letter in the word is not the same as the
 				// letter
 				// provided and has not been guessed yet, leave '*' in the

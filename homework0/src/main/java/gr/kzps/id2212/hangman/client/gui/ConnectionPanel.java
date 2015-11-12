@@ -168,7 +168,6 @@ public class ConnectionPanel extends JPanel {
 									jp_buttons.setVisible(false);
 									
 									// Create main playing window
-									progressBar.setValue(0);
 									add(new PlayPanel(connection, jtxt_notifications, progressBar, hint));
 									
 								} catch (InterruptedException e) {

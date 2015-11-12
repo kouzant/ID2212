@@ -24,6 +24,7 @@ public class RecvWorker extends SwingWorker<byte[], String>{
 
 	@Override
 	protected byte[] doInBackground() throws Exception {
+		setProgress(0);
 		input = connection.getInput();
 		byte[] buffer = new byte[256];
         Integer length;

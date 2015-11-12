@@ -25,6 +25,7 @@ public class SendWorker extends SwingWorker<Void, String>{
 	
 	@Override
 	protected Void doInBackground() throws Exception {
+		setProgress(0);
 		output = connection.getOutput();
 		publish("Sending data...");
 		
