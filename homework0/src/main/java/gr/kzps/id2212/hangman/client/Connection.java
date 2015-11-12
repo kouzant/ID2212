@@ -6,11 +6,16 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /*
  * Keep connection reference
  */
 public class Connection {
 
+	private static final Logger LOG = LogManager.getLogger(Connection.class);
+	
 	private Socket socket;
 	private BufferedInputStream input;
 	private BufferedOutputStream output;
@@ -37,12 +42,15 @@ public class Connection {
 	public void close() {
 		try {
 			if (input != null) {
+				LOG.debug("Closing input stream");
 				input.close();
 			}
 			if (output != null) {
+				LOG.debug("Closing output stream");
 				output.close();
 			}
 			if (socket != null) {
+				LOG.debug("Closing socket");
 				socket.close();
 			}
 		} catch (IOException ex) {

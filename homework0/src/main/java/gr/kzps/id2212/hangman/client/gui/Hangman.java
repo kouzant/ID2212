@@ -5,6 +5,8 @@ import gr.kzps.id2212.hangman.client.Connection;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -66,6 +68,7 @@ public class Hangman {
 		
 		frame.setMinimumSize(new Dimension(500, 300));
 		frame.pack();
+		frame.addWindowListener(new HangmanWindowListener(connection, bottomPanel.getInfoField()));
 	}
 
 }

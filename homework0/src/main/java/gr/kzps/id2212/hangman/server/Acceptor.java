@@ -50,21 +50,27 @@ public class Acceptor implements Runnable {
 				try {
 					Integer latency = ThreadLocalRandom.current().nextInt(3000);
 					LOG.debug("Sleeping for {} ms", latency);
-					TimeUnit.MILLISECONDS.sleep(latency);;
+					TimeUnit.MILLISECONDS.sleep(latency);
+					;
 				} catch (InterruptedException ex) {
 					ex.printStackTrace();
 				}
-				
+
 				// Handle the request
-				byte[] response = handler.handle(input);
+				if (input.length != 0) {
+					byte[] response = handler.handle(input);
 
-				// Send back the appropriate answer
-				bout.write(response);
-				bout.flush();
+					// Send back the appropriate answer
+					bout.write(response);
+					bout.flush();
 
-				// If client exit the program we close the connection and
-				// terminate that thread
-				if (response[0] == OpCodes.CLOSE) {
+					// If client exit the program we close the connection and
+					// terminate that thread
+					if (response[0] == OpCodes.CLOSE) {
+						stop();
+					}
+				} else {
+					LOG.warn("Received empty request, closing the connection");
 					stop();
 				}
 			}

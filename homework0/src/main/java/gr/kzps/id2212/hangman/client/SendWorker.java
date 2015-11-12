@@ -2,7 +2,6 @@ package gr.kzps.id2212.hangman.client;
 
 import java.io.BufferedOutputStream;
 import java.util.List;
-
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
@@ -26,6 +25,7 @@ public class SendWorker extends SwingWorker<Void, String>{
 	@Override
 	protected Void doInBackground() throws Exception {
 		setProgress(0);
+		
 		output = connection.getOutput();
 		publish("Sending data...");
 		
