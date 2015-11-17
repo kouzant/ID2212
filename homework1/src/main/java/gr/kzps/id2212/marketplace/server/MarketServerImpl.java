@@ -27,11 +27,13 @@ public class MarketServerImpl extends UnicastRemoteObject implements
 			.getLogger(MarketServerImpl.class);
 
 	private final Integer RMI_PORT = 1099;
+	private final String marketName;
 	private Map<String, MarketUsers> marketUsers;
 	private Bank bank;
 
-	public MarketServerImpl() throws RemoteException {
+	public MarketServerImpl(String marketName) throws RemoteException {
 		super();
+		this.marketName = marketName;
 		marketUsers = new HashMap<>();
 
 		try {
@@ -68,6 +70,11 @@ public class MarketServerImpl extends UnicastRemoteObject implements
 			return ReturnCodes.REGISTERED;
 		}
 		
+	}
+	
+	@Override
+	public String getName() {
+		return marketName;
 	}
 
 }

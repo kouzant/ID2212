@@ -8,4 +8,5 @@ import java.rmi.RemoteException;
 
 public interface MarketServer extends Remote {
 	public byte register(Client client, Callbacks callbacks) throws RemoteException;
+	public String getName() throws RemoteException;
 }

@@ -18,7 +18,7 @@ public class ServerExecEnv {
 
 		// Register Marketplace to rmiregistry
 		try {
-			MarketServer market = new MarketServerImpl();
+			MarketServer market = new MarketServerImpl("e-Mall");
 			
 			try {
 				LocateRegistry.getRegistry(RMI_HOST, RMI_PORT);
