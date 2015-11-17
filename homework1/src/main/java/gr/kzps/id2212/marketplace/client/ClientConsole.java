@@ -3,7 +3,9 @@ package gr.kzps.id2212.marketplace.client;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.StringTokenizer;
 
 import gr.kzps.id2212.marketplace.client.Commands.BankNewAccount;
@@ -14,8 +16,10 @@ import gr.kzps.id2212.marketplace.client.Commands.Help;
 import gr.kzps.id2212.marketplace.client.Commands.NotEnoughParams;
 import gr.kzps.id2212.marketplace.client.Commands.RegisterMarketplace;
 import gr.kzps.id2212.marketplace.client.Commands.UnknownCommand;
+import gr.kzps.id2212.marketplace.client.Commands.UnregisterMarketplace;
 import gr.kzps.id2212.marketplace.server.MarketServer;
 import gr.kzps.id2212.marketplace.server.exceptions.NoBankAccountException;
+import gr.kzps.id2212.marketplace.server.exceptions.NoUserException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,11 +34,14 @@ public class ClientConsole {
 	private boolean running;
 	private final Bank bank;
 	private final MarketServer market;
+	private Callbacks callbacks;
+
 
 	public ClientConsole(Bank bank, MarketServer market) {
 		this.bank = bank;
 		this.market = market;
 
+		callbacks = null;
 		running = true;
 	}
 
@@ -78,12 +85,24 @@ public class ClientConsole {
 			LOG.debug("Register user to marketplace");
 			try {
 				market.register(command.getClient(), ((RegisterMarketplace) command).getCallbacks());
+				System.out.println("> User registered");
 			} catch (RemoteException ex) {
 				LOG.error("RMI error");
 				ex.printStackTrace();
 			} catch (NoBankAccountException ex) {
 				LOG.debug("User does not have a bank account");
 				System.out.println("> You do NOT have a bank account");
+			}
+		} else if (command instanceof UnregisterMarketplace) {
+			LOG.debug("Unregistering user: {}", command.getClient().getEmail());
+			
+			try {
+				market.unregister(command.getClient().getEmail());
+			} catch (RemoteException ex) {
+				LOG.error("RMI error");
+				ex.printStackTrace();
+			} catch (NoUserException ex) {
+				System.out.println("> The user you are trying to unregister, does not exist");
 			}
 		} else if (command instanceof Help) {
 			System.out.println("> Help menu");
@@ -92,6 +111,11 @@ public class ClientConsole {
 			}
 		} else if (command instanceof Exit) {
 			System.out.println("> Bye");
+			try {
+				UnicastRemoteObject.unexportObject(callbacks, true);
+			} catch (NoSuchObjectException ex) {
+				ex.printStackTrace();
+			}
 			exit();
 		}
 	}
@@ -133,7 +157,6 @@ public class ClientConsole {
 			} else {
 				String name = inputTokens.nextToken();
 				String email = inputTokens.nextToken();
-				Callbacks callbacks = null;
 				
 				try {
 					callbacks = new CallbacksImpl();
@@ -143,6 +166,14 @@ public class ClientConsole {
 				}
 				
 				return new RegisterMarketplace(new Client(name, email), callbacks);
+			}
+		} else if (command.equals(Commands.unregister)) {
+			if (inputTokens.countTokens() != 1) {
+				return new NotEnoughParams(null);
+			} else {
+				String email = inputTokens.nextToken();
+				
+				return new UnregisterMarketplace(new Client(null, email));
 			}
 		} else if (command.equals(Commands.exit)) {
 			

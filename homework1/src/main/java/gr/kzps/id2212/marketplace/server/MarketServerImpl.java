@@ -3,6 +3,7 @@ package gr.kzps.id2212.marketplace.server;
 import gr.kzps.id2212.marketplace.client.Callbacks;
 import gr.kzps.id2212.marketplace.client.Client;
 import gr.kzps.id2212.marketplace.server.exceptions.NoBankAccountException;
+import gr.kzps.id2212.marketplace.server.exceptions.NoUserException;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -51,6 +52,20 @@ public class MarketServerImpl extends UnicastRemoteObject implements
 		}
 	}
 
+	@Override
+	public void unregister(String email) throws RemoteException, NoUserException {
+		LOG.debug("Unregistering user");
+		
+		MarketUsers user = marketUsers.remove(email);
+		
+		if (user == null) {
+			LOG.debug("User trying to unregister does not exist");
+			throw new NoUserException("User does not exist");
+		} else {
+			// TODO Probably I will have to remove his/her wishes later
+		}
+	}
+	
 	@Override
 	public void register(Client client, Callbacks callbacks) throws RemoteException, NoBankAccountException {
 		// Check if client has account in the bank
