@@ -10,9 +10,12 @@ import gr.kzps.id2212.marketplace.client.Commands.BankNewAccount;
 import gr.kzps.id2212.marketplace.client.Commands.BaseCommand;
 import gr.kzps.id2212.marketplace.client.Commands.Commands;
 import gr.kzps.id2212.marketplace.client.Commands.Exit;
+import gr.kzps.id2212.marketplace.client.Commands.Help;
 import gr.kzps.id2212.marketplace.client.Commands.NotEnoughParams;
+import gr.kzps.id2212.marketplace.client.Commands.RegisterMarketplace;
 import gr.kzps.id2212.marketplace.client.Commands.UnknownCommand;
 import gr.kzps.id2212.marketplace.server.MarketServer;
+import gr.kzps.id2212.marketplace.server.exceptions.NoBankAccountException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,6 +72,23 @@ public class ClientConsole {
 				ex.printStackTrace();
 			} catch (RejectedException ex) {
 				LOG.info("Could not create new account");
+				System.out.println("> Could not create account");
+			}
+		} else if (command instanceof RegisterMarketplace) {
+			LOG.debug("Register user to marketplace");
+			try {
+				market.register(command.getClient(), ((RegisterMarketplace) command).getCallbacks());
+			} catch (RemoteException ex) {
+				LOG.error("RMI error");
+				ex.printStackTrace();
+			} catch (NoBankAccountException ex) {
+				LOG.debug("User does not have a bank account");
+				System.out.println("> You do NOT have a bank account");
+			}
+		} else if (command instanceof Help) {
+			System.out.println("> Help menu");
+			for (Commands com: Commands.values()) {
+				System.out.println(com);
 			}
 		} else if (command instanceof Exit) {
 			System.out.println("> Bye");
@@ -94,7 +114,7 @@ public class ClientConsole {
 		}
 
 		if (command.equals(Commands.newaccount)) {
-			if (inputTokens.countTokens() < 3) {
+			if (inputTokens.countTokens() != 3) {
 				// System.out.println("> Not enough parameters");
 				
 				return new NotEnoughParams(null);
@@ -106,10 +126,32 @@ public class ClientConsole {
 				return new BankNewAccount(new Client(name, email),
 						Float.parseFloat(initialBalance));
 			}
+		} else if (command.equals(Commands.register)) {
+			if (inputTokens.countTokens() != 2) {
+				
+				return new NotEnoughParams(null);
+			} else {
+				String name = inputTokens.nextToken();
+				String email = inputTokens.nextToken();
+				Callbacks callbacks = null;
+				
+				try {
+					callbacks = new CallbacksImpl();
+				} catch (RemoteException ex) {
+					LOG.error("Error while creating user callback method");
+					ex.printStackTrace();
+				}
+				
+				return new RegisterMarketplace(new Client(name, email), callbacks);
+			}
 		} else if (command.equals(Commands.exit)) {
-			return new Exit(null);
 			
+			return new Exit(null);
+		} else if (command.equals(Commands.help)) {
+			
+			return new Help(null);
 		} else {
+			
 			return new UnknownCommand(null);
 		}
 	}

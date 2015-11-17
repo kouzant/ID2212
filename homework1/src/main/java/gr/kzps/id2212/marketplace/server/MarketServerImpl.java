@@ -2,7 +2,7 @@ package gr.kzps.id2212.marketplace.server;
 
 import gr.kzps.id2212.marketplace.client.Callbacks;
 import gr.kzps.id2212.marketplace.client.Client;
-import gr.kzps.id2212.marketplace.general.ReturnCodes;
+import gr.kzps.id2212.marketplace.server.exceptions.NoBankAccountException;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -52,7 +52,7 @@ public class MarketServerImpl extends UnicastRemoteObject implements
 	}
 
 	@Override
-	public byte register(Client client, Callbacks callbacks) throws RemoteException {
+	public void register(Client client, Callbacks callbacks) throws RemoteException, NoBankAccountException {
 		// Check if client has account in the bank
 		Account bankAccount = bank.getAccount(client.getName());
 		
@@ -60,14 +60,12 @@ public class MarketServerImpl extends UnicastRemoteObject implements
 			// User does not have an account
 			// Respond back
 			LOG.warn("User trying to register does not have an account");
-			callbacks.itemBought();
+			throw new NoBankAccountException("No bank account");
 			
-			return ReturnCodes.NO_ACCOUNT;
 		} else {
 			// Put client in the list
 			marketUsers.put(client.getEmail(), new MarketUsers(client, callbacks));
-			
-			return ReturnCodes.REGISTERED;
+			LOG.info("Registered user: {}", client.getName());
 		}
 		
 	}
