@@ -8,13 +8,13 @@ import org.apache.logging.log4j.Logger;
 
 public class CallbacksImpl extends UnicastRemoteObject implements Callbacks {
 
+	private static final long serialVersionUID = 575383121843072296L;
+
 	private static final Logger LOG = LogManager.getLogger(Callbacks.class);
 
 	protected CallbacksImpl() throws RemoteException {
 		super();
 	}
-
-	private static final long serialVersionUID = 575383121843072296L;
 
 	@Override
 	public void itemBought(String itemName, String buyerName)

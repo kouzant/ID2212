@@ -20,13 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.pattern.FullLocationPatternConverter;
-
 import se.kth.id2212.ex2.bankrmi.Account;
 import se.kth.id2212.ex2.bankrmi.Bank;
 import se.kth.id2212.ex2.bankrmi.RejectedException;
@@ -36,6 +33,7 @@ public class MarketServerImpl extends UnicastRemoteObject implements
 
 	private static final long serialVersionUID = -7510739400260172856L;
 
+	// Locks for different stores
 	private final ReentrantLock usersLock = new ReentrantLock();
 	private final ReentrantLock itemsLock = new ReentrantLock();
 	private final ReentrantLock wishesLock = new ReentrantLock();
@@ -43,33 +41,22 @@ public class MarketServerImpl extends UnicastRemoteObject implements
 	private static final Logger LOG = LogManager
 			.getLogger(MarketServerImpl.class);
 
-	private final Integer RMI_PORT = 1099;
 	private final String marketName;
+	// Users of the marketplace
 	private Map<String, MarketUsers> marketUsers;
+	// Available sell orders
 	private List<ExtendedItem> sellingItems;
+	// Unfulfilled wishes
 	private List<ExtendedItem> wishes;
 	private Bank bank;
 
-	public MarketServerImpl(String marketName) throws RemoteException {
+	public MarketServerImpl(String marketName, Bank bank) throws RemoteException {
 		super();
 		this.marketName = marketName;
 		marketUsers = new HashMap<>();
 		sellingItems = new ArrayList<>();
 		wishes = new ArrayList<>();
-
-		try {
-			try {
-				LocateRegistry.getRegistry(1099).list();
-			} catch (RemoteException ex) {
-				LOG.error("Could not locate registry");
-			}
-
-			bank = (Bank) Naming.lookup("Nordea");
-		} catch (MalformedURLException ex) {
-			ex.printStackTrace();
-		} catch (NotBoundException ex) {
-			ex.printStackTrace();
-		}
+		this.bank = bank;
 	}
 
 	@Override
@@ -87,20 +74,25 @@ public class MarketServerImpl extends UnicastRemoteObject implements
 		} else {
 
 			// Remove selling orders from that user
-			List<ExtendedItem> foundItems = new ArrayList<ExtendedItem>();
-
-			for (ExtendedItem sellingItem : sellingItems) {
-				if (sellingItem.getOwner().getClient().getEmail().equals(email)) {
-					foundItems.add(sellingItem);
-				}
-			}
-
+			List<ExtendedItem> foundItems = sellingItems.stream()
+					.filter(I -> I.getOwner().getClient().getEmail().equals(email))
+					.collect(Collectors.toList());
+			
 			itemsLock.lock();
 			sellingItems.removeAll(foundItems);
 			itemsLock.unlock();
 			foundItems = null;
 
-			// TODO Probably I will have to remove his/her wishes later
+			// Remove wishes from that user
+			List<ExtendedItem> foundWishes = wishes.stream()
+					.filter(I -> I.getOwner().getClient().getEmail().equals(email))
+					.collect(Collectors.toList());
+			
+			wishesLock.lock();
+			wishes.removeAll(foundWishes);
+			wishesLock.unlock();
+			
+			foundWishes = null;
 		}
 	}
 
@@ -148,6 +140,7 @@ public class MarketServerImpl extends UnicastRemoteObject implements
 			itemsLock.unlock();
 			LOG.debug("Selling order stored");
 			LOG.debug(newItem.toString());
+			// Iterate the wishes to see if any of them in fulfilled now
 			checkWishes();
 		}
 	}
@@ -156,20 +149,17 @@ public class MarketServerImpl extends UnicastRemoteObject implements
 	public void buy(String buyersEmail, String itemName)
 			throws RemoteException, ItemDoesNotExists, NoUserException,
 			BankBalance {
+		
 		// Check if item exists
-		ExtendedItem item = null;
-
-		for (ExtendedItem idxItem : sellingItems) {
-			if (idxItem.getName().equals(itemName)) {
-				item = idxItem;
-				break;
-			}
-		}
-
-		if (item == null) {
+		Optional<ExtendedItem> itemOpt = sellingItems.stream()
+				.filter(I -> I.getName().equals(itemName))
+				.findFirst();
+		
+		if (!itemOpt.isPresent()) {
 			throw new ItemDoesNotExists(
 					"The item you are trying to buy does not exist");
 		} else {
+			ExtendedItem item = itemOpt.get();
 			// Check user exists
 			// Find user in local db
 			MarketUsers buyer = marketUsers.get(buyersEmail);
@@ -245,6 +235,8 @@ public class MarketServerImpl extends UnicastRemoteObject implements
 		List<ExtendedItem> fulfilledWishes = new ArrayList<>();
 		
 		for (ExtendedItem wish : wishes) {
+			
+			// Take the first item that matches the criteria
 			Optional<ExtendedItem> fitItemOpt = sellingItems
 					.stream()
 					.filter(I -> I.getName().equals(wish.getName())
@@ -268,7 +260,9 @@ public class MarketServerImpl extends UnicastRemoteObject implements
 		}
 		
 		// Remove fulfilled wishes
+		wishesLock.lock();
 		wishes.removeAll(fulfilledWishes);
+		wishesLock.unlock();
 		fulfilledWishes = null;
 	}
 }

@@ -3,7 +3,6 @@ package gr.kzps.id2212.marketplace.client;
 import gr.kzps.id2212.marketplace.client.Commands.BankNewAccount;
 import gr.kzps.id2212.marketplace.client.Commands.BaseCommand;
 import gr.kzps.id2212.marketplace.client.Commands.BuyCommand;
-import gr.kzps.id2212.marketplace.client.Commands.Commands;
 import gr.kzps.id2212.marketplace.client.Commands.Exit;
 import gr.kzps.id2212.marketplace.client.Commands.Help;
 import gr.kzps.id2212.marketplace.client.Commands.ListCommand;
@@ -50,17 +49,21 @@ public class Executor {
 		} else if (command instanceof NotEnoughParams) {
 			System.out.println("> Wrong parameters, try help");
 		} else if (command instanceof BankNewAccount) {
+			// Create new bank account
 			LOG.debug("Create new bank acount");
 			try {
 				Account account = bank
 						.newAccount(command.getClient().getName());
 				account.deposit(((BankNewAccount) command).getInitialBalance());
-				System.out.println("> Account created\n");
+				System.out.println("> Account created");
 			} catch (RejectedException ex) {
 				LOG.info("Could not create new account");
 				System.out.println("> " + ex.getMessage());
 			}
 		} else if (command instanceof RegisterMarketplace) {
+			// Register ourself to the marketplace
+			// We cannot register twice, before exit the client we should
+			// unregister
 			LOG.debug("Register user to marketplace");
 
 			// Unexport previously exported callbacks
@@ -80,7 +83,6 @@ public class Executor {
 			try {
 				market.register(command.getClient(),
 						((RegisterMarketplace) command).getCallbacks());
-				// currentUser = command.getClient();
 				UserCache.getInstance().setCurrentUser(command.getClient());
 
 				System.out.println("> User registered");
@@ -92,6 +94,7 @@ public class Executor {
 				System.out.println("> " + ex.getMessage());
 			}
 		} else if (command instanceof UnregisterMarketplace) {
+			// Unregister from the marketplace
 			LOG.debug("Unregistering user: {}", command.getClient().getEmail());
 
 			try {
@@ -102,6 +105,7 @@ public class Executor {
 			}
 
 		} else if (command instanceof SellCommand) {
+			// Place a sell order
 			LOG.debug("Sell an item");
 
 			try {
@@ -112,6 +116,7 @@ public class Executor {
 				System.out.println("> " + ex.getMessage());
 			}
 		} else if (command instanceof ListCommand) {
+			// List available items on the marketplace
 			LOG.debug("List command");
 			List<BaseItem> items = market.listItems();
 
@@ -124,6 +129,7 @@ public class Executor {
 				}
 			}
 		} else if (command instanceof BuyCommand) {
+			// Buy a selected item
 			LOG.debug("Buy command");
 			try {
 				market.buy(command.getClient().getEmail(),
@@ -132,6 +138,7 @@ public class Executor {
 				System.out.println("> " + ex.getMessage());
 			}
 		} else if (command instanceof WishCommand) {
+			// Make a wish for an item in a specific price
 			LOG.debug("Make a wish for: {} at price: {}", new Object[] {
 					((WishCommand) command).getItemName(),
 					((WishCommand) command).getPrice() });
@@ -147,6 +154,8 @@ public class Executor {
 			System.out.println(printHelp());
 		} else if (command instanceof Exit) {
 			System.out.println("> Bye");
+			
+			// Unexport callbacks
 			try {
 				UnicastRemoteObject.unexportObject(UserCache.getInstance()
 						.getCallbacks(), true);
@@ -175,7 +184,7 @@ public class Executor {
 		sb.append(">\tbuy ITEM_NAME").append("\n");
 		sb.append("> * List available items on marketplace").append("\n");
 		sb.append(">\tlist").append("\n");
-		sb.append("> * Place a wish for a specific order in a specific price").append("\n");
+		sb.append("> * Place a wish for a specific order in a prefered price").append("\n");
 		sb.append(">\twish ITEM_NAME PRICE").append("\n");
 		sb.append("> * Print the current help menu").append("\n");
 		sb.append(">\thelp").append("\n");

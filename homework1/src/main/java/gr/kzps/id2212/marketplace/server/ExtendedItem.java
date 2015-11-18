@@ -1,5 +1,8 @@
 package gr.kzps.id2212.marketplace.server;
 
+/**
+ * Store also the owner of the item
+ */
 public class ExtendedItem extends BaseItem {
 	
 	private static final long serialVersionUID = -5542452786544546333L;

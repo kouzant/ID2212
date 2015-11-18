@@ -2,6 +2,9 @@ package gr.kzps.id2212.marketplace.server;
 
 import java.io.Serializable;
 
+/**
+ * Basic item representation
+  */
 public class BaseItem implements Serializable {
 	
 	private static final long serialVersionUID = 3890162552994568137L;

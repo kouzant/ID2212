@@ -24,7 +24,9 @@ public class ClientExecEnv {
 		
 		try {
 			LocateRegistry.getRegistry();
+			// Bank Remote objects. RMI naming should remain Nordea...
 			bank = (Bank) Naming.lookup("Nordea");
+			// Marketplace Remote Objects. The same as above...
 			market = (MarketServer) Naming.lookup("marketplace");
 			
 			new ClientConsole(bank, market).console();

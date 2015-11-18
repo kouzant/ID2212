@@ -14,9 +14,7 @@ import gr.kzps.id2212.marketplace.client.Commands.UnknownCommand;
 import gr.kzps.id2212.marketplace.client.Commands.UnregisterMarketplace;
 import gr.kzps.id2212.marketplace.client.Commands.WishCommand;
 
-import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.StringTokenizer;
 
 import org.apache.logging.log4j.LogManager;
@@ -44,6 +42,8 @@ public class Parser {
 		try {
 			command = Commands.getCommand(commandStr);
 		} catch (IllegalArgumentException ex) {
+			// If command is not member of the Commands enum
+			// the user has enter a wrong command
 			LOG.debug("Unknown command");
 			return new UnknownCommand(null);
 		}
