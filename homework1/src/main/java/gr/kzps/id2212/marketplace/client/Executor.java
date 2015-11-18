@@ -144,22 +144,44 @@ public class Executor {
 				System.out.println("> " + ex.getMessage());
 			}
 		} else if (command instanceof Help) {
-			System.out.println("> Help menu");
-			for (Commands com : Commands.values()) {
-				System.out.println(com);
-			}
+			System.out.println(printHelp());
 		} else if (command instanceof Exit) {
 			System.out.println("> Bye");
 			try {
 				UnicastRemoteObject.unexportObject(UserCache.getInstance()
 						.getCallbacks(), true);
 			} catch (NoSuchObjectException ex) {
-				ex.printStackTrace();
+				LOG.debug("No exported object to unexport");
 			}
 
 			return -1;
 		}
 
 		return 0;
+	}
+	
+	private String printHelp() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("=== e-Marketplace help ===").append("\n");
+		sb.append("> * Create bank account").append("\n");
+		sb.append(">\tnewaccount NAME EMAIL INITIAL_BALANCE").append("\n");
+		sb.append("> * Register user to marketplace").append("\n");
+		sb.append(">\tregister NAME EMAIL").append("\n");
+		sb.append("> * Unregister user from marketplace").append("\n");
+		sb.append(">\tunregister EMAIL").append("\n");
+		sb.append("> * Put a sell order").append("\n");
+		sb.append(">\tsell ITEM_NAME PRICE").append("\n");
+		sb.append("> * Buy item").append("\n");
+		sb.append(">\tbuy ITEM_NAME").append("\n");
+		sb.append("> * List available items on marketplace").append("\n");
+		sb.append(">\tlist").append("\n");
+		sb.append("> * Place a wish for a specific order in a specific price").append("\n");
+		sb.append(">\twish ITEM_NAME PRICE").append("\n");
+		sb.append("> * Print the current help menu").append("\n");
+		sb.append(">\thelp").append("\n");
+		sb.append("> * Exit marketplace client").append("\n");
+		sb.append(">\texit").append("\n");
+		
+		return sb.toString();
 	}
 }
