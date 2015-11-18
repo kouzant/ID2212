@@ -12,6 +12,7 @@ import gr.kzps.id2212.marketplace.client.Commands.RegisterMarketplace;
 import gr.kzps.id2212.marketplace.client.Commands.SellCommand;
 import gr.kzps.id2212.marketplace.client.Commands.UnknownCommand;
 import gr.kzps.id2212.marketplace.client.Commands.UnregisterMarketplace;
+import gr.kzps.id2212.marketplace.client.Commands.WishCommand;
 import gr.kzps.id2212.marketplace.server.BaseItem;
 import gr.kzps.id2212.marketplace.server.MarketServer;
 import gr.kzps.id2212.marketplace.server.exceptions.BankBalance;
@@ -33,16 +34,16 @@ import se.kth.id2212.ex2.bankrmi.Bank;
 import se.kth.id2212.ex2.bankrmi.RejectedException;
 
 public class Executor {
-	
+
 	private final static Logger LOG = LogManager.getLogger(Executor.class);
 	private final Bank bank;
 	private final MarketServer market;
-	
+
 	public Executor(Bank bank, MarketServer market) {
 		this.bank = bank;
 		this.market = market;
 	}
-	
+
 	public Integer execute(BaseCommand command) throws RemoteException {
 		if (command instanceof UnknownCommand) {
 			System.out.println("> Unknown command, try help");
@@ -64,22 +65,24 @@ public class Executor {
 
 			// Unexport previously exported callbacks
 			try {
-				UnicastRemoteObject.unexportObject(UserCache.getInstance().getCallbacks(), true);
+				UnicastRemoteObject.unexportObject(UserCache.getInstance()
+						.getCallbacks(), true);
 			} catch (NoSuchObjectException ex) {
 				LOG.debug("No previous callbacks exported");
 			}
-			
+
 			// If this is inside the try-cache block we will have troubles
-			// when quit the program. It will hang waiting for exported callbacks
+			// when quit the program. It will hang waiting for exported
+			// callbacks
 			UserCache.getInstance().setCallbacks(
 					((RegisterMarketplace) command).getCallbacks());
-			
+
 			try {
 				market.register(command.getClient(),
 						((RegisterMarketplace) command).getCallbacks());
 				// currentUser = command.getClient();
 				UserCache.getInstance().setCurrentUser(command.getClient());
-				
+
 				System.out.println("> User registered");
 			} catch (NoBankAccountException ex) {
 				LOG.debug("User does not have a bank account");
@@ -128,6 +131,18 @@ public class Executor {
 			} catch (ItemDoesNotExists | NoUserException | BankBalance ex) {
 				System.out.println("> " + ex.getMessage());
 			}
+		} else if (command instanceof WishCommand) {
+			LOG.debug("Make a wish for: {} at price: {}", new Object[] {
+					((WishCommand) command).getItemName(),
+					((WishCommand) command).getPrice() });
+
+			try {
+				market.wish(command.getClient().getEmail(),
+						((WishCommand) command).getItemName(),
+						((WishCommand) command).getPrice());
+			} catch (NoUserException ex) {
+				System.out.println("> " + ex.getMessage());
+			}
 		} else if (command instanceof Help) {
 			System.out.println("> Help menu");
 			for (Commands com : Commands.values()) {
@@ -141,10 +156,10 @@ public class Executor {
 			} catch (NoSuchObjectException ex) {
 				ex.printStackTrace();
 			}
-			
+
 			return -1;
 		}
-		
+
 		return 0;
 	}
 }

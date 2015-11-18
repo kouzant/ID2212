@@ -21,5 +21,7 @@ public interface MarketServer extends Remote {
 	public List<BaseItem> listItems() throws RemoteException;
 	public void buy(String buyersEmail, String itemName) throws RemoteException,
 		ItemDoesNotExists, NoUserException, BankBalance;
+	public void wish(String userEmail, String itemName, float price)
+		throws RemoteException, NoUserException;
 	public String getName() throws RemoteException;
 }

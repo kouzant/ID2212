@@ -12,6 +12,7 @@ import gr.kzps.id2212.marketplace.client.Commands.RegisterMarketplace;
 import gr.kzps.id2212.marketplace.client.Commands.SellCommand;
 import gr.kzps.id2212.marketplace.client.Commands.UnknownCommand;
 import gr.kzps.id2212.marketplace.client.Commands.UnregisterMarketplace;
+import gr.kzps.id2212.marketplace.client.Commands.WishCommand;
 
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
@@ -103,6 +104,15 @@ public class Parser {
 			String itemName = inputTokens.nextToken();
 
 			return new BuyCommand(UserCache.getInstance().getCurrentUser(), itemName);
+		} else if (Commands.wish.equals(command)) {
+			if (inputTokens.countTokens() != 2) {
+				return new NotEnoughParams(null);
+			}
+			
+			String itemName = inputTokens.nextToken();
+			float price = Float.parseFloat(inputTokens.nextToken());
+			
+			return new WishCommand(UserCache.getInstance().getCurrentUser(), itemName, price);
 		} else if (Commands.exit.equals(command)) {
 
 			return new Exit(null);
