@@ -37,6 +37,10 @@ public class Parser {
 		StringTokenizer inputTokens = new StringTokenizer(input);
 		Commands command = null;
 
+		if (!inputTokens.hasMoreTokens()) {
+			return new UnknownCommand(null);
+		}
+		
 		String commandStr = inputTokens.nextToken();
 
 		try {
