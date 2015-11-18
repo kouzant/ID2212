@@ -19,4 +19,9 @@ public class MarketUsers {
 	public Callbacks getCallbacks() {
 		return callbacks;
 	}
+	
+	@Override
+	public String toString() {
+		return "Name: " + client.getName() + " email: " + client.getEmail();
+	}
 }

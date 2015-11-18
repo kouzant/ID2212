@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import gr.kzps.id2212.marketplace.client.Commands.BankNewAccount;
@@ -13,13 +14,17 @@ import gr.kzps.id2212.marketplace.client.Commands.BaseCommand;
 import gr.kzps.id2212.marketplace.client.Commands.Commands;
 import gr.kzps.id2212.marketplace.client.Commands.Exit;
 import gr.kzps.id2212.marketplace.client.Commands.Help;
+import gr.kzps.id2212.marketplace.client.Commands.ListCommand;
 import gr.kzps.id2212.marketplace.client.Commands.NotEnoughParams;
 import gr.kzps.id2212.marketplace.client.Commands.RegisterMarketplace;
+import gr.kzps.id2212.marketplace.client.Commands.SellCommand;
 import gr.kzps.id2212.marketplace.client.Commands.UnknownCommand;
 import gr.kzps.id2212.marketplace.client.Commands.UnregisterMarketplace;
+import gr.kzps.id2212.marketplace.server.BaseItem;
 import gr.kzps.id2212.marketplace.server.MarketServer;
 import gr.kzps.id2212.marketplace.server.exceptions.NoBankAccountException;
 import gr.kzps.id2212.marketplace.server.exceptions.NoUserException;
+import gr.kzps.id2212.marketplace.server.exceptions.UserAlreadyExists;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,6 +40,7 @@ public class ClientConsole {
 	private final Bank bank;
 	private final MarketServer market;
 	private Callbacks callbacks;
+	private Client currentUser;
 
 
 	public ClientConsole(Bank bank, MarketServer market) {
@@ -42,6 +48,7 @@ public class ClientConsole {
 		this.market = market;
 
 		callbacks = null;
+		currentUser = null;
 		running = true;
 	}
 
@@ -57,13 +64,16 @@ public class ClientConsole {
 
 				execute(command);
 
+			} catch (RemoteException ex) {
+				LOG.error("RMI error");
+				ex.printStackTrace();
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
 		}
 	}
 
-	private void execute(BaseCommand command) {
+	private void execute(BaseCommand command) throws RemoteException {
 		if (command instanceof UnknownCommand) {
 			System.out.println("> Unknown command, try help");
 		} else if (command instanceof NotEnoughParams) {
@@ -74,9 +84,6 @@ public class ClientConsole {
 				Account account = bank.newAccount(command.getClient().getName());
 				account.deposit(((BankNewAccount) command).getInitialBalance());
 				System.out.println("> Account created\n");
-			} catch (RemoteException ex) {
-				LOG.error("RMI error");
-				ex.printStackTrace();
 			} catch (RejectedException ex) {
 				LOG.info("Could not create new account");
 				System.out.println("> Could not create account");
@@ -85,25 +92,40 @@ public class ClientConsole {
 			LOG.debug("Register user to marketplace");
 			try {
 				market.register(command.getClient(), ((RegisterMarketplace) command).getCallbacks());
+				currentUser = command.getClient();
 				System.out.println("> User registered");
-			} catch (RemoteException ex) {
-				LOG.error("RMI error");
-				ex.printStackTrace();
 			} catch (NoBankAccountException ex) {
 				LOG.debug("User does not have a bank account");
-				System.out.println("> You do NOT have a bank account");
+				System.out.println("> " + ex.getMessage());
+			} catch (UserAlreadyExists ex) {
+				LOG.debug(ex.getMessage());
+				System.out.println("> " + ex.getMessage());
 			}
 		} else if (command instanceof UnregisterMarketplace) {
 			LOG.debug("Unregistering user: {}", command.getClient().getEmail());
 			
 			try {
 				market.unregister(command.getClient().getEmail());
-			} catch (RemoteException ex) {
-				LOG.error("RMI error");
-				ex.printStackTrace();
 			} catch (NoUserException ex) {
 				System.out.println("> The user you are trying to unregister, does not exist");
 			}
+			
+		} else if (command instanceof SellCommand) {
+			LOG.debug("Sell an item");
+			
+			try {
+				market.sell(command.getClient().getEmail(), ((SellCommand) command).getItemName(),
+					((SellCommand) command).getPrice());
+			} catch (NoUserException ex) {
+				System.out.println("> " + ex.getMessage());
+			}
+		} else if (command instanceof ListCommand) {
+			List<BaseItem> items = market.listItems();
+			
+			for (BaseItem item: items) {
+				System.out.println("> Name: " + item.getName() + " Price: " + item.getPrice());
+			}
+			
 		} else if (command instanceof Help) {
 			System.out.println("> Help menu");
 			for (Commands com: Commands.values()) {
@@ -158,6 +180,13 @@ public class ClientConsole {
 				String name = inputTokens.nextToken();
 				String email = inputTokens.nextToken();
 				
+				// Unexport previously exported callbacks
+				try {
+					UnicastRemoteObject.unexportObject(callbacks, true);
+				} catch (NoSuchObjectException ex) {
+					LOG.debug("No previous callbacks exported");
+				}
+				
 				try {
 					callbacks = new CallbacksImpl();
 				} catch (RemoteException ex) {
@@ -175,6 +204,17 @@ public class ClientConsole {
 				
 				return new UnregisterMarketplace(new Client(null, email));
 			}
+		} else if (command.equals(Commands.sell)) {
+			if (inputTokens.countTokens() != 2) {
+				return new NotEnoughParams(null);
+			} else {
+				String itemName = inputTokens.nextToken();
+				float price = Float.parseFloat(inputTokens.nextToken());
+				
+				return new SellCommand(currentUser, itemName, price);
+			}
+		} else if (command.equals(Commands.list)) {
+			return new ListCommand(null);
 		} else if (command.equals(Commands.exit)) {
 			
 			return new Exit(null);
