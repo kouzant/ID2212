@@ -4,5 +4,5 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface Callbacks extends Remote {
-	public void itemBought() throws RemoteException;
+	public void itemBought(String itemName, String buyerName) throws RemoteException;
 }

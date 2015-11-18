@@ -2,9 +2,14 @@ package gr.kzps.id2212.marketplace.server;
 
 import gr.kzps.id2212.marketplace.client.Callbacks;
 import gr.kzps.id2212.marketplace.client.Client;
+import gr.kzps.id2212.marketplace.server.exceptions.BankBalance;
+import gr.kzps.id2212.marketplace.server.exceptions.ItemDoesNotExists;
 import gr.kzps.id2212.marketplace.server.exceptions.NoBankAccountException;
 import gr.kzps.id2212.marketplace.server.exceptions.NoUserException;
 import gr.kzps.id2212.marketplace.server.exceptions.UserAlreadyExists;
+
+
+
 
 
 
@@ -19,9 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
-
 import java.util.stream.Collector;
-
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
@@ -29,8 +32,12 @@ import org.apache.logging.log4j.Logger;
 
 
 
+
+
+
 import se.kth.id2212.ex2.bankrmi.Account;
 import se.kth.id2212.ex2.bankrmi.Bank;
+import se.kth.id2212.ex2.bankrmi.RejectedException;
 
 public class MarketServerImpl extends UnicastRemoteObject implements
 		MarketServer {
@@ -144,6 +151,52 @@ public class MarketServerImpl extends UnicastRemoteObject implements
 			LOG.debug("Selling order stored");
 			LOG.debug(newItem.toString());
 		}
+	}
+	
+	@Override
+	public void buy(String buyersEmail, String itemName) throws RemoteException,
+		ItemDoesNotExists, NoUserException, BankBalance {
+		// Check if item exists
+		ExtendedItem item = null;
+		
+		for (ExtendedItem idxItem: sellingItems) {
+			if (idxItem.getName().equals(itemName)) {
+				item = idxItem;
+				break;
+			}
+		}
+		
+		if (item == null) {
+			throw new ItemDoesNotExists("The item you are trying to buy does not exist");
+		} else {
+			// Check user exists
+			// Find user in local db
+			MarketUsers buyer = marketUsers.get(buyersEmail);
+			if (buyer == null) {
+				throw new NoUserException("You are not registered in the marketplace");
+			} else {
+				// Check user balance in bank
+				Account buyerBankAcc = bank.getAccount(buyer.getClient().getName());
+
+				try {
+					// Update buyer balance
+					buyerBankAcc.withdraw(item.getPrice());					
+					// Update seller balance
+					Account sellerBankAcc = bank.getAccount(item.getOwner().getClient().getName());
+					sellerBankAcc.deposit(item.getPrice());
+					// Remove from sellingItems
+					itemsLock.lock();
+					sellingItems.remove(item);
+					itemsLock.unlock();
+					// Notify seller
+					item.getOwner().getCallbacks().itemBought(item.getName(), buyer.getClient().getName());
+				} catch (RejectedException ex) {
+					throw new BankBalance(ex.getMessage());
+				}
+			}
+				
+		}
+		
 	}
 	
 	@Override

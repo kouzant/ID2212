@@ -11,6 +11,7 @@ import java.util.StringTokenizer;
 
 import gr.kzps.id2212.marketplace.client.Commands.BankNewAccount;
 import gr.kzps.id2212.marketplace.client.Commands.BaseCommand;
+import gr.kzps.id2212.marketplace.client.Commands.BuyCommand;
 import gr.kzps.id2212.marketplace.client.Commands.Commands;
 import gr.kzps.id2212.marketplace.client.Commands.Exit;
 import gr.kzps.id2212.marketplace.client.Commands.Help;
@@ -22,6 +23,8 @@ import gr.kzps.id2212.marketplace.client.Commands.UnknownCommand;
 import gr.kzps.id2212.marketplace.client.Commands.UnregisterMarketplace;
 import gr.kzps.id2212.marketplace.server.BaseItem;
 import gr.kzps.id2212.marketplace.server.MarketServer;
+import gr.kzps.id2212.marketplace.server.exceptions.BankBalance;
+import gr.kzps.id2212.marketplace.server.exceptions.ItemDoesNotExists;
 import gr.kzps.id2212.marketplace.server.exceptions.NoBankAccountException;
 import gr.kzps.id2212.marketplace.server.exceptions.NoUserException;
 import gr.kzps.id2212.marketplace.server.exceptions.UserAlreadyExists;
@@ -120,12 +123,23 @@ public class ClientConsole {
 				System.out.println("> " + ex.getMessage());
 			}
 		} else if (command instanceof ListCommand) {
+			LOG.debug("List command");
 			List<BaseItem> items = market.listItems();
 			
-			for (BaseItem item: items) {
-				System.out.println("> Name: " + item.getName() + " Price: " + item.getPrice());
+			if (items.size() == 0) {
+				System.out.println("> No items are available for buying");
+			} else {
+				for (BaseItem item: items) {
+					System.out.println("> Name: " + item.getName() + " Price: " + item.getPrice());
+				}
 			}
-			
+		} else if (command instanceof BuyCommand) {
+			LOG.debug("Buy command");
+			try {
+				market.buy(command.getClient().getEmail(), ((BuyCommand) command).getItemName());
+			} catch (ItemDoesNotExists | NoUserException | BankBalance ex) {
+				System.out.println("> " + ex.getMessage());
+			}
 		} else if (command instanceof Help) {
 			System.out.println("> Help menu");
 			for (Commands com: Commands.values()) {
@@ -215,6 +229,14 @@ public class ClientConsole {
 			}
 		} else if (command.equals(Commands.list)) {
 			return new ListCommand(null);
+		} else if (command.equals(Commands.buy)) {
+			if (inputTokens.countTokens() != 1) {
+				return new NotEnoughParams(null);
+			} else {
+				String itemName = inputTokens.nextToken();
+				
+				return new BuyCommand(currentUser, itemName);
+			}
 		} else if (command.equals(Commands.exit)) {
 			
 			return new Exit(null);

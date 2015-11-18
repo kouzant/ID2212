@@ -17,10 +17,10 @@ public class CallbacksImpl extends UnicastRemoteObject implements Callbacks {
 	private static final long serialVersionUID = 575383121843072296L;
 
 	@Override
-	public void itemBought() throws RemoteException {
+	public void itemBought(String itemName, String buyerName) throws RemoteException {
 		LOG.debug("Item placed in the marketplace is bought");
 		
-		System.out.println("Item bought...");
+		System.out.println("> Your item: " + itemName + " has been bought from: " + buyerName);
 	}
 
 }
