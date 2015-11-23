@@ -158,6 +158,10 @@ public class Executor {
 			}
 
 			return -1;
+		} else if (command == null) {
+			LOG.error("Command is null");
+			
+			return -1;
 		}
 
 		return 0;

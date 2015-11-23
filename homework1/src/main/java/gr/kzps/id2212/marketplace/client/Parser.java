@@ -29,7 +29,7 @@ public class Parser {
 		
 	}
 	
-	public BaseCommand parse(String input) throws UnknownCommand, NotEnoughParams {
+	public <T extends BaseCommand> T parse(String input, Class<T> type) throws UnknownCommand, NotEnoughParams {
 		if (input == null) {
 			throw new UnknownCommand();
 		}
@@ -61,8 +61,8 @@ public class Parser {
 			String email = inputTokens.nextToken();
 			String initialBalance = inputTokens.nextToken();
 
-			return new BankNewAccount(new Client(name, email),
-					Float.parseFloat(initialBalance));
+			return type.cast(new BankNewAccount(new Client(name, email),
+					Float.parseFloat(initialBalance)));
 
 		} else if (Commands.register.equals(command)) {
 			if (inputTokens.countTokens() != 2) {
@@ -81,7 +81,7 @@ public class Parser {
 				ex.printStackTrace();
 			}
 
-			return new RegisterMarketplace(new Client(name, email), newCallbacks);
+			return type.cast(new RegisterMarketplace(new Client(name, email), newCallbacks));
 
 		} else if (Commands.unregister.equals(command)) {
 			if (inputTokens.countTokens() != 1) {
@@ -89,7 +89,7 @@ public class Parser {
 			}
 			String email = inputTokens.nextToken();
 
-			return new UnregisterMarketplace(new Client(null, email));
+			return type.cast(new UnregisterMarketplace(new Client(null, email)));
 
 		} else if (Commands.sell.equals(command)) {
 			if (inputTokens.countTokens() != 2) {
@@ -98,16 +98,16 @@ public class Parser {
 			String itemName = inputTokens.nextToken();
 			float price = Float.parseFloat(inputTokens.nextToken());
 
-			return new SellCommand(UserCache.getInstance().getCurrentUser(), itemName, price);
+			return type.cast(new SellCommand(UserCache.getInstance().getCurrentUser(), itemName, price));
 		} else if (Commands.list.equals(command)) {
-			return new ListCommand(null);
+			return type.cast(new ListCommand(null));
 		} else if (Commands.buy.equals(command)) {
 			if (inputTokens.countTokens() != 1) {
 				throw new NotEnoughParams();
 			}
 			String itemName = inputTokens.nextToken();
 
-			return new BuyCommand(UserCache.getInstance().getCurrentUser(), itemName);
+			return type.cast(new BuyCommand(UserCache.getInstance().getCurrentUser(), itemName));
 		} else if (Commands.wish.equals(command)) {
 			if (inputTokens.countTokens() != 2) {
 				throw new NotEnoughParams();
@@ -116,13 +116,13 @@ public class Parser {
 			String itemName = inputTokens.nextToken();
 			float price = Float.parseFloat(inputTokens.nextToken());
 			
-			return new WishCommand(UserCache.getInstance().getCurrentUser(), itemName, price);
+			return type.cast(new WishCommand(UserCache.getInstance().getCurrentUser(), itemName, price));
 		} else if (Commands.exit.equals(command)) {
 
-			return new Exit(null);
+			return type.cast(new Exit(null));
 		} else if (Commands.help.equals(command)) {
 
-			return new Help(null);
+			return type.cast(new Help(null));
 		} else {
 
 			throw new UnknownCommand();

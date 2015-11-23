@@ -35,23 +35,24 @@ public class ClientConsole {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		System.out.println("> +++ Welcome to " + market.getName() + " +++");
 
+		BaseCommand command = null;
+		Integer returnVal;
+		
 		while (isRunning()) {
 			try {
 				String input = in.readLine();
 				LOG.debug("Raw user input: {}", input);
-				BaseCommand command = null;
 				try {
-					command = parser.parse(input);
+					command = parser.parse(input, BaseCommand.class);
+					returnVal = executor.execute(command);
+					
+					if (returnVal == -1) {
+						exit();
+					}
 				} catch (UnknownCommand ex) {
 					System.out.println("> " + ex.getMessage());
 				} catch (NotEnoughParams ex) {
 					System.out.println("> " + ex.getMessage());
-				}
-
-				Integer returnVal = executor.execute(command);
-				
-				if (returnVal == -1) {
-					exit();
 				}
 
 			} catch (RemoteException ex) {
