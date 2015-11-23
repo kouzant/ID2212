@@ -6,6 +6,10 @@
     </Console>
   </Appenders>
   <Loggers>
+<!-- Do not mess the console of the client -->
+  <Logger name="gr.kzps.id2212.marketplace.client" level="error">
+  	<AppenderRef ref="Console" />
+  </Logger>
     <Root level="DEBUG">
       <AppenderRef ref="Console"/>
     </Root>
