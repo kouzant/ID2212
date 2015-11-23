@@ -44,7 +44,7 @@ public class ClientConsole {
 				String input = in.readLine();
 				LOG.debug("Raw user input: {}", input);
 				try {
-					command = parser.parse(input, BaseCommand.class);
+					command = parser.parse(input);
 					returnVal = executor.execute(command);
 					
 					if (returnVal == -1) {
