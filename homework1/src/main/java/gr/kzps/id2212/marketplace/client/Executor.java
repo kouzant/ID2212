@@ -6,10 +6,8 @@ import gr.kzps.id2212.marketplace.client.Commands.BuyCommand;
 import gr.kzps.id2212.marketplace.client.Commands.Exit;
 import gr.kzps.id2212.marketplace.client.Commands.Help;
 import gr.kzps.id2212.marketplace.client.Commands.ListCommand;
-import gr.kzps.id2212.marketplace.client.Commands.NotEnoughParams;
 import gr.kzps.id2212.marketplace.client.Commands.RegisterMarketplace;
 import gr.kzps.id2212.marketplace.client.Commands.SellCommand;
-import gr.kzps.id2212.marketplace.client.Commands.UnknownCommand;
 import gr.kzps.id2212.marketplace.client.Commands.UnregisterMarketplace;
 import gr.kzps.id2212.marketplace.client.Commands.WishCommand;
 import gr.kzps.id2212.marketplace.server.BaseItem;
@@ -44,11 +42,7 @@ public class Executor {
 	}
 
 	public Integer execute(BaseCommand command) throws RemoteException {
-		if (command instanceof UnknownCommand) {
-			System.out.println("> Unknown command, try help");
-		} else if (command instanceof NotEnoughParams) {
-			System.out.println("> Wrong parameters, try help");
-		} else if (command instanceof BankNewAccount) {
+		if (command instanceof BankNewAccount) {
 			// Create new bank account
 			LOG.debug("Create new bank acount");
 			try {

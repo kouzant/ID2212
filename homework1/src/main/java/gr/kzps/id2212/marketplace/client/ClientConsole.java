@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 
 import gr.kzps.id2212.marketplace.client.Commands.BaseCommand;
+import gr.kzps.id2212.marketplace.client.exceptions.NotEnoughParams;
+import gr.kzps.id2212.marketplace.client.exceptions.UnknownCommand;
 import gr.kzps.id2212.marketplace.server.MarketServer;
 
 import org.apache.logging.log4j.LogManager;
@@ -37,7 +39,14 @@ public class ClientConsole {
 			try {
 				String input = in.readLine();
 				LOG.debug("Raw user input: {}", input);
-				BaseCommand command = parser.parse(input);
+				BaseCommand command = null;
+				try {
+					command = parser.parse(input);
+				} catch (UnknownCommand ex) {
+					System.out.println("> " + ex.getMessage());
+				} catch (NotEnoughParams ex) {
+					System.out.println("> " + ex.getMessage());
+				}
 
 				Integer returnVal = executor.execute(command);
 				

@@ -7,12 +7,12 @@ import gr.kzps.id2212.marketplace.client.Commands.Commands;
 import gr.kzps.id2212.marketplace.client.Commands.Exit;
 import gr.kzps.id2212.marketplace.client.Commands.Help;
 import gr.kzps.id2212.marketplace.client.Commands.ListCommand;
-import gr.kzps.id2212.marketplace.client.Commands.NotEnoughParams;
 import gr.kzps.id2212.marketplace.client.Commands.RegisterMarketplace;
 import gr.kzps.id2212.marketplace.client.Commands.SellCommand;
-import gr.kzps.id2212.marketplace.client.Commands.UnknownCommand;
 import gr.kzps.id2212.marketplace.client.Commands.UnregisterMarketplace;
 import gr.kzps.id2212.marketplace.client.Commands.WishCommand;
+import gr.kzps.id2212.marketplace.client.exceptions.NotEnoughParams;
+import gr.kzps.id2212.marketplace.client.exceptions.UnknownCommand;
 
 import java.rmi.RemoteException;
 import java.util.StringTokenizer;
@@ -29,16 +29,16 @@ public class Parser {
 		
 	}
 	
-	public BaseCommand parse(String input) {
+	public BaseCommand parse(String input) throws UnknownCommand, NotEnoughParams {
 		if (input == null) {
-			return new UnknownCommand(new Client(null, null));
+			throw new UnknownCommand();
 		}
 
 		StringTokenizer inputTokens = new StringTokenizer(input);
 		Commands command = null;
 
 		if (!inputTokens.hasMoreTokens()) {
-			return new UnknownCommand(null);
+			throw new UnknownCommand();
 		}
 		
 		String commandStr = inputTokens.nextToken();
@@ -49,13 +49,13 @@ public class Parser {
 			// If command is not member of the Commands enum
 			// the user has enter a wrong command
 			LOG.debug("Unknown command");
-			return new UnknownCommand(null);
+			throw new UnknownCommand();
 		}
 
 		if (Commands.newaccount.equals(command)) {
 			if (inputTokens.countTokens() != 3) {
 
-				return new NotEnoughParams(null);
+				throw new NotEnoughParams();
 			}
 			String name = inputTokens.nextToken();
 			String email = inputTokens.nextToken();
@@ -67,7 +67,7 @@ public class Parser {
 		} else if (Commands.register.equals(command)) {
 			if (inputTokens.countTokens() != 2) {
 
-				return new NotEnoughParams(null);
+				throw new NotEnoughParams();
 			}
 			String name = inputTokens.nextToken();
 			String email = inputTokens.nextToken();
@@ -85,7 +85,7 @@ public class Parser {
 
 		} else if (Commands.unregister.equals(command)) {
 			if (inputTokens.countTokens() != 1) {
-				return new NotEnoughParams(null);
+				throw new NotEnoughParams();
 			}
 			String email = inputTokens.nextToken();
 
@@ -93,7 +93,7 @@ public class Parser {
 
 		} else if (Commands.sell.equals(command)) {
 			if (inputTokens.countTokens() != 2) {
-				return new NotEnoughParams(null);
+				throw new NotEnoughParams();
 			}
 			String itemName = inputTokens.nextToken();
 			float price = Float.parseFloat(inputTokens.nextToken());
@@ -103,14 +103,14 @@ public class Parser {
 			return new ListCommand(null);
 		} else if (Commands.buy.equals(command)) {
 			if (inputTokens.countTokens() != 1) {
-				return new NotEnoughParams(null);
+				throw new NotEnoughParams();
 			}
 			String itemName = inputTokens.nextToken();
 
 			return new BuyCommand(UserCache.getInstance().getCurrentUser(), itemName);
 		} else if (Commands.wish.equals(command)) {
 			if (inputTokens.countTokens() != 2) {
-				return new NotEnoughParams(null);
+				throw new NotEnoughParams();
 			}
 			
 			String itemName = inputTokens.nextToken();
@@ -125,7 +125,7 @@ public class Parser {
 			return new Help(null);
 		} else {
 
-			return new UnknownCommand(null);
+			throw new UnknownCommand();
 		}
 	}
 }
