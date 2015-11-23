@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 
 import gr.kzps.id2212.marketplace.client.Commands.BaseCommand;
+import gr.kzps.id2212.marketplace.client.Commands.BaseCommandImpl;
 import gr.kzps.id2212.marketplace.client.exceptions.NotEnoughParams;
 import gr.kzps.id2212.marketplace.client.exceptions.UnknownCommand;
 import gr.kzps.id2212.marketplace.server.MarketServer;

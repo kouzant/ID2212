@@ -2,6 +2,7 @@ package gr.kzps.id2212.marketplace.client;
 
 import gr.kzps.id2212.marketplace.client.Commands.BankNewAccount;
 import gr.kzps.id2212.marketplace.client.Commands.BaseCommand;
+import gr.kzps.id2212.marketplace.client.Commands.BaseCommandImpl;
 import gr.kzps.id2212.marketplace.client.Commands.BuyCommand;
 import gr.kzps.id2212.marketplace.client.Commands.Exit;
 import gr.kzps.id2212.marketplace.client.Commands.Help;

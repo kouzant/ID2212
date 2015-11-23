@@ -2,7 +2,7 @@ package gr.kzps.id2212.marketplace.client.Commands;
 
 import gr.kzps.id2212.marketplace.client.Client;
 
-public class WishCommand extends BaseCommand {
+public class WishCommand extends BaseCommandImpl {
 	private final String itemName;
 	private final float price;
 	
