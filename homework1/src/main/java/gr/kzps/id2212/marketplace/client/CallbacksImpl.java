@@ -21,8 +21,9 @@ public class CallbacksImpl extends UnicastRemoteObject implements Callbacks {
 			throws RemoteException {
 		LOG.debug("Item placed in the marketplace is bought");
 
-		System.out.println("> Your item: " + itemName
+		System.out.println("Your item: " + itemName
 				+ " has been bought from: " + buyerName);
+		System.out.print("> ");
 	}
 
 	@Override
@@ -32,6 +33,7 @@ public class CallbacksImpl extends UnicastRemoteObject implements Callbacks {
 
 		System.out.println("Available item fit your wish. Item: " + itemName
 				+ " Price: " + price);
+		System.out.print("> ");
 	}
 
 }

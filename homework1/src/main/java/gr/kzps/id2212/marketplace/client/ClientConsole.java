@@ -35,6 +35,7 @@ public class ClientConsole {
 	public void console() throws RemoteException {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		System.out.println("> +++ Welcome to " + market.getName() + " +++");
+		System.out.print("> ");
 
 		BaseCommand command = null;
 		Integer returnVal;
@@ -52,8 +53,10 @@ public class ClientConsole {
 					}
 				} catch (UnknownCommand ex) {
 					System.out.println("> " + ex.getMessage());
+					System.out.print("> ");
 				} catch (NotEnoughParams ex) {
 					System.out.println("> " + ex.getMessage());
+					System.out.print("> ");
 				}
 
 			} catch (RemoteException ex) {

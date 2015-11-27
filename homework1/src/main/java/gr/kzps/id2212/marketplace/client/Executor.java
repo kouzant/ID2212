@@ -51,9 +51,11 @@ public class Executor {
 						.newAccount(command.getClient().getName());
 				account.deposit(((BankNewAccount) command).getInitialBalance());
 				System.out.println("> Account created");
+				System.out.print("> ");
 			} catch (RejectedException ex) {
 				LOG.info("Could not create new account");
 				System.out.println("> " + ex.getMessage());
+				System.out.print("> ");
 			}
 		} else if (command instanceof RegisterMarketplace) {
 			// Register ourself to the marketplace
@@ -81,12 +83,15 @@ public class Executor {
 				UserCache.getInstance().setCurrentUser(command.getClient());
 
 				System.out.println("> User registered");
+				System.out.print("> ");
 			} catch (NoBankAccountException ex) {
 				LOG.debug("User does not have a bank account");
 				System.out.println("> " + ex.getMessage());
+				System.out.print("> ");
 			} catch (UserAlreadyExists ex) {
 				LOG.debug(ex.getMessage());
 				System.out.println("> " + ex.getMessage());
+				System.out.print("> ");
 			}
 		} else if (command instanceof UnregisterMarketplace) {
 			// Unregister from the marketplace
@@ -94,9 +99,12 @@ public class Executor {
 
 			try {
 				market.unregister(command.getClient().getEmail());
+				System.out.println("> User unregisterd");
+				System.out.print("> ");
 			} catch (NoUserException ex) {
 				System.out
 						.println("> The user you are trying to unregister, does not exist");
+				System.out.print("> ");
 			}
 
 		} else if (command instanceof SellCommand) {
@@ -107,8 +115,11 @@ public class Executor {
 				market.sell(command.getClient().getEmail(),
 						((SellCommand) command).getItemName(),
 						((SellCommand) command).getPrice());
+				System.out.println("> Sell order placed");
+				System.out.print("> ");
 			} catch (NoUserException ex) {
 				System.out.println("> " + ex.getMessage());
+				System.out.print("> ");
 			}
 		} else if (command instanceof ListCommand) {
 			// List available items on the marketplace
@@ -117,11 +128,13 @@ public class Executor {
 
 			if (items.size() == 0) {
 				System.out.println("> No items are available for buying");
+				System.out.print("> ");
 			} else {
 				for (BaseItem item : items) {
 					System.out.println("> Name: " + item.getName() + " Price: "
 							+ item.getPrice());
 				}
+				System.out.print("> ");
 			}
 		} else if (command instanceof BuyCommand) {
 			// Buy a selected item
@@ -129,8 +142,11 @@ public class Executor {
 			try {
 				market.buy(command.getClient().getEmail(),
 						((BuyCommand) command).getItemName());
+				System.out.println("> Item bought");
+				System.out.print("> ");
 			} catch (ItemDoesNotExists | NoUserException | BankBalance ex) {
 				System.out.println("> " + ex.getMessage());
+				System.out.print("> ");
 			}
 		} else if (command instanceof WishCommand) {
 			// Make a wish for an item in a specific price
@@ -142,11 +158,14 @@ public class Executor {
 				market.wish(command.getClient().getEmail(),
 						((WishCommand) command).getItemName(),
 						((WishCommand) command).getPrice());
+				System.out.println("> Wish placed");
+				System.out.print("> ");
 			} catch (NoUserException ex) {
 				System.out.println("> " + ex.getMessage());
+				System.out.print("> ");
 			}
 		} else if (command instanceof Help) {
-			System.out.println(printHelp());
+			System.out.print(printHelp());
 		} else if (command instanceof Exit) {
 			System.out.println("> Bye");
 			
@@ -189,6 +208,7 @@ public class Executor {
 		sb.append(">\thelp").append("\n");
 		sb.append("> * Exit marketplace client").append("\n");
 		sb.append(">\texit").append("\n");
+		sb.append("> ");
 		
 		return sb.toString();
 	}
