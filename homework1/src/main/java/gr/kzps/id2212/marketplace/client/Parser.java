@@ -85,12 +85,12 @@ public class Parser {
 			return new RegisterMarketplace(new Client(name, email), newCallbacks);
 
 		} else if (Commands.unregister.equals(command)) {
-			if (inputTokens.countTokens() != 1) {
+			if (inputTokens.countTokens() != 0) {
 				throw new NotEnoughParams();
 			}
-			String email = inputTokens.nextToken();
 
-			return new UnregisterMarketplace(new Client(null, email));
+			return new UnregisterMarketplace(new Client(null,
+					UserCache.getInstance().getCurrentUser().getEmail()));
 
 		} else if (Commands.sell.equals(command)) {
 			if (inputTokens.countTokens() != 2) {

@@ -195,7 +195,7 @@ public class Executor {
 		sb.append("> * Register user to marketplace").append("\n");
 		sb.append(">\tregister NAME EMAIL").append("\n");
 		sb.append("> * Unregister user from marketplace").append("\n");
-		sb.append(">\tunregister EMAIL").append("\n");
+		sb.append(">\tunregister").append("\n");
 		sb.append("> * Put a sell order").append("\n");
 		sb.append(">\tsell ITEM_NAME PRICE").append("\n");
 		sb.append("> * Buy item").append("\n");

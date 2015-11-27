@@ -62,7 +62,7 @@ public class MarketServerImpl extends UnicastRemoteObject implements
 	@Override
 	public void unregister(String email) throws RemoteException,
 			NoUserException {
-		LOG.debug("Unregistering user");
+		LOG.debug("Unregistering user: {}", email);
 
 		usersLock.lock();
 		MarketUsers user = marketUsers.remove(email);
