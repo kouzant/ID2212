@@ -249,6 +249,8 @@ public class Executor {
         sb.append(">\tlogin EMAIL PASSWORD").append("\n");
         sb.append("> * Logout from the marketplace").append("\n");
         sb.append(">\tlogout EMAIL").append("\n");
+        sb.append(">\tinfo").append("\n");
+        sb.append("> * Account information").append("\n");
         sb.append("> * Put a sell order").append("\n");
         sb.append(">\tsell ITEM_NAME PRICE QUANTITY").append("\n");
         sb.append("> * Buy item").append("\n");
