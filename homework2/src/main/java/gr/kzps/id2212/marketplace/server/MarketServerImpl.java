@@ -167,12 +167,12 @@ public class MarketServerImpl extends UnicastRemoteObject implements
     }
 
     @Override
-    public void logout(Client client) throws RemoteException, NoUserException {
+    public void logout(String email) throws RemoteException, NoUserException {
         LOG.debug("Logging out user");
         MarketUsers user;
         loginLock.lock();
         try {
-            user = loggedInUsers.remove(client.getEmail());
+            user = loggedInUsers.remove(email);
         } finally {
             loginLock.unlock();
         }
@@ -387,10 +387,10 @@ public class MarketServerImpl extends UnicastRemoteObject implements
                 throw new DBConnectionException(ex.getMessage());
             }
             if (clientFromDb == null) {
-                
+
                 // that should never happen
                 throw new NoUserException("User is not registered");
-                
+
             } else {
 
                 info = "> User: " + clientFromDb.getName() + "\n";

@@ -25,7 +25,7 @@ public interface MarketServer extends Remote {
         // User login
         public void login(Client client, Callbacks callbacks) throws RemoteException, DBConnectionException,  IncorrectPasswordException, UserNotRegistered;
         // User logout
-        public void logout(Client client) throws RemoteException, NoUserException;    
+        public void logout(String email) throws RemoteException, NoUserException;    
         // User info
         public String info(String email) throws RemoteException, NoUserException, DBConnectionException;
 	// User wants to sell an item

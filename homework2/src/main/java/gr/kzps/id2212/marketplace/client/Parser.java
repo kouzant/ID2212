@@ -105,12 +105,9 @@ public class Parser {
             return new LoginMarketplace(new Client(null, email, password), newCallbacks);
 
         } else if (Commands.logout.equals(command)) {
-            if (inputTokens.countTokens() != 1) {
-                throw new NotEnoughParams();
-            }
-            String email = inputTokens.nextToken();
+            
 
-            return new LogoutMarketplace(new Client(null, email, null));
+            return new LogoutMarketplace(UserCache.getInstance().getCurrentUser());
 
         } else if (Commands.info.equals(command)) {
             

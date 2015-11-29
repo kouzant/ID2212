@@ -97,14 +97,17 @@ public class Executor {
 
         } else if (command instanceof LogoutMarketplace) {
             LOG.debug("Logout user from the marketplace");
-            try {
-                market.logout(command.getClient());
-                System.out.println("> Logout successful");
-            } catch (NoUserException ex) {
-                LOG.debug("User is not logged in");
-                System.out.println("> " + ex.getMessage());
+            if (command.getClient() != null) {
+                try {
+                    market.logout(command.getClient().getEmail());
+                    System.out.println("> Logout successful");
+                } catch (NoUserException ex) {
+                    LOG.debug("User is not logged in");
+                    System.out.println("> " + ex.getMessage());
+                }
+            } else {
+                System.out.println("> You are not logged in");
             }
-
         } else if (command instanceof InfoCommand) {
             if (command.getClient() != null) {
                 try {
@@ -248,9 +251,9 @@ public class Executor {
         sb.append("> * Login to the marketplace").append("\n");
         sb.append(">\tlogin EMAIL PASSWORD").append("\n");
         sb.append("> * Logout from the marketplace").append("\n");
-        sb.append(">\tlogout EMAIL").append("\n");
-        sb.append(">\tinfo").append("\n");
+        sb.append(">\tlogout").append("\n");
         sb.append("> * Account information").append("\n");
+        sb.append(">\tinfo").append("\n");
         sb.append("> * Put a sell order").append("\n");
         sb.append(">\tsell ITEM_NAME PRICE QUANTITY").append("\n");
         sb.append("> * Buy item").append("\n");
