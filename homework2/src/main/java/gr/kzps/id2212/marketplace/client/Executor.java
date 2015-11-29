@@ -85,7 +85,8 @@ public class Executor {
                 market.login(command.getClient(),
                         ((LoginMarketplace) command).getCallbacks());
                 UserCache.getInstance().setCurrentUser(command.getClient());
-                System.out.println("> User logged in");
+                System.out.println(UserCache.getInstance().getCurrentUser().getName() + "@Market> User logged in");
+                
             } catch (IncorrectPasswordException ex) {
                 System.out.println("> Incorrect password. try again");
             } catch (UserNotRegistered ex) {
@@ -112,7 +113,7 @@ public class Executor {
             if (command.getClient() != null) {
                 try {
                     String info = market.info(command.getClient().getEmail());
-                    System.out.println(info);
+                    System.out.println(UserCache.getInstance().getCurrentUser().getName() + "@Market> " + info);
                 } catch (NoUserException | DBConnectionException ex) {
                     LOG.debug("User info error");
                     System.out.println("> " + ex.getMessage());
@@ -162,7 +163,7 @@ public class Executor {
                             ((SellCommand) command).getItemName(),
                             ((SellCommand) command).getPrice(),
                             ((SellCommand) command).getQuantity());
-                    System.out.println("> Item:" + ((SellCommand) command).getItemName() + " ready for sale");
+                    System.out.println(UserCache.getInstance().getCurrentUser().getName() + "@Market> Item:" + ((SellCommand) command).getItemName() + " ready for sale");
                 } catch (NoUserException | DBConnectionException ex) {
                     System.out.println("> " + ex.getMessage());
                 }
@@ -195,9 +196,11 @@ public class Executor {
                     market.buy(command.getClient().getEmail(),
                             ((BuyCommand) command).getItemName(),
                             ((BuyCommand) command).getQuantity());
-                    System.out.println("> Item bought!");
-                } catch (ItemDoesNotExists | NoUserException | BankBalance | DBConnectionException ex) {
-                    System.out.println("> " + ex.getMessage());
+                    System.out.println(UserCache.getInstance().getCurrentUser().getName() + "@Market> Item bought!");
+                } catch (ItemDoesNotExists | BankBalance | DBConnectionException ex) {
+                    System.out.println(UserCache.getInstance().getCurrentUser().getName() + "@Market> " + ex.getMessage());
+                } catch (NoUserException ex) {
+                	System.out.println("> " + ex.getMessage());
                 }
             } else {
                 System.out.println("> You are not logged in");
@@ -212,7 +215,7 @@ public class Executor {
                 market.wish(command.getClient().getEmail(),
                         ((WishCommand) command).getItemName(),
                         ((WishCommand) command).getPrice());
-                System.out.println("> Wish placed");
+                System.out.println(UserCache.getInstance().getCurrentUser().getName() + "@Market> Wish placed");
             } catch (NoUserException | DBConnectionException ex) {
                 System.out.println("> " + ex.getMessage());
             }
