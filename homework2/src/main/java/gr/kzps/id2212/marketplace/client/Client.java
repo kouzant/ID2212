@@ -7,7 +7,7 @@ public class Client implements Serializable {
 
     private static final long serialVersionUID = 8526692508359233604L;
 
-    private final String name;
+    private String name;
     private final String email;
     private final String password;
 
@@ -27,6 +27,10 @@ public class Client implements Serializable {
         return name;
     }
 
+    public void setName(String name) {
+    	this.name = name;
+    }
+    
     public String getEmail() {
         return email;
     }

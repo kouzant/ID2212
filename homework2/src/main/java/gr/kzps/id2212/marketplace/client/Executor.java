@@ -82,9 +82,10 @@ public class Executor {
                     ((LoginMarketplace) command).getCallbacks());
 
             try {
-                market.login(command.getClient(),
+                String userName = market.login(command.getClient(),
                         ((LoginMarketplace) command).getCallbacks());
                 UserCache.getInstance().setCurrentUser(command.getClient());
+                UserCache.getInstance().getCurrentUser().setName(userName);;
                 System.out.println(UserCache.getInstance().getCurrentUser().getName() + "@Market> User logged in");
                 
             } catch (IncorrectPasswordException ex) {

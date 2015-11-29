@@ -137,7 +137,7 @@ public class MarketServerImpl extends UnicastRemoteObject implements
     }
 
     @Override
-    public void login(Client client, Callbacks callbacks) throws RemoteException, DBConnectionException, IncorrectPasswordException, UserNotRegistered {
+    public String login(Client client, Callbacks callbacks) throws RemoteException, DBConnectionException, IncorrectPasswordException, UserNotRegistered {
         // check if the user is already in the database
         ClientEntity clientFromDb = null;
         try {
@@ -157,10 +157,12 @@ public class MarketServerImpl extends UnicastRemoteObject implements
                 loginLock.lock();
                 try {
                     loggedInUsers.put(client.getEmail(), new MarketUsers(user, callbacks));
+                    LOG.info("User login: {}", client.getEmail());
                 } finally {
                     loginLock.unlock();
                 }
-                LOG.info("User login: {}", client.getEmail());
+                
+                return user.getName();
             }
         }
 
