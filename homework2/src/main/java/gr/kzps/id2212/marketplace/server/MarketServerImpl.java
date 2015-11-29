@@ -137,7 +137,9 @@ public class MarketServerImpl extends UnicastRemoteObject implements
     }
 
     @Override
-    public String login(Client client, Callbacks callbacks) throws RemoteException, DBConnectionException, IncorrectPasswordException, UserNotRegistered {
+    public String login(Client client, Callbacks callbacks) throws RemoteException,
+    	DBConnectionException, IncorrectPasswordException, UserNotRegistered,
+    	UserAlreadyExists {
         // check if the user is already in the database
         ClientEntity clientFromDb = null;
         try {
@@ -150,7 +152,13 @@ public class MarketServerImpl extends UnicastRemoteObject implements
         if (clientFromDb == null) {
             throw new UserNotRegistered("The user " + client.getName() + " does not exist");
         } else {
-            Client user = new Client(clientFromDb);
+        	Client user = new Client(clientFromDb);
+        	
+        	// User is already registered
+        	if (loggedInUsers.containsKey(client.getEmail())) {
+        		throw new UserAlreadyExists("User is already logged in");
+        	}
+            
             if (!user.getPassword().equals(client.getPassword())) {
                 throw new IncorrectPasswordException("The password is incorrect");
             } else {

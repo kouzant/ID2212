@@ -23,7 +23,7 @@ public interface MarketServer extends Remote {
 	// Uregister user from marketplace
 	public void unregister(String email, String password) throws RemoteException, NoUserException, IncorrectPasswordException, DBConnectionException;
         // User login
-        public String login(Client client, Callbacks callbacks) throws RemoteException, DBConnectionException,  IncorrectPasswordException, UserNotRegistered;
+        public String login(Client client, Callbacks callbacks) throws RemoteException, DBConnectionException,  IncorrectPasswordException, UserNotRegistered, UserAlreadyExists;
         // User logout
         public void logout(String email) throws RemoteException, NoUserException;    
         // User info

@@ -7,8 +7,11 @@
   </Appenders>
   <Loggers>
 <!-- Do not mess the console of the client -->
-  <Logger name="gr.kzps.id2212.marketplace.client" level="error">
+  <Logger name="gr.kzps.id2212.marketplace.client" level="ERROR">
   	<AppenderRef ref="Console" />
+  </Logger>
+  <Logger name = "org.hibernate" level="ERROR">
+  	<AppenderRef ref="Console"/>
   </Logger>
     <Root level="DEBUG">
       <AppenderRef ref="Console"/>

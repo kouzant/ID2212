@@ -95,6 +95,8 @@ public class Executor {
             } catch (DBConnectionException ex) {
                 LOG.debug(ex.getMessage());
                 System.out.println("> " + ex.getMessage());
+            } catch (UserAlreadyExists ex) {
+            	System.out.println(UserCache.getInstance().getCurrentUser().getName() + "@Market> " + ex.getMessage());
             }
 
         } else if (command instanceof LogoutMarketplace) {
