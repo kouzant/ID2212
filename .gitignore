@@ -1,3 +1,6 @@
+derby.log
+org.eclipse.jpt.core.prefs
+
 target/
 pom.xml.tag
 pom.xml.releaseBackup

@@ -15,8 +15,7 @@ import javax.persistence.Transient;
 @Table(name = "T_CURRENCY")
 @NamedQueries({
 	@NamedQuery(name = "currency.findAll", query = "SELECT c FROM Currency c"),
-	@NamedQuery(name = "currency.findByCur", query = "SELECT c FROM Currency c "
-			+ "WHERE (c.from = :ffrom AND c.to =: fto) OR (c.from = :fto AND c.to = :ffrom)")
+	@NamedQuery(name = "currency.findByCur", query = "SELECT c FROM Currency c WHERE (c.from = :ffrom AND c.to = :fto) OR (c.from = :fto AND c.to = :from)")
 })
 public class Currency {
 	@Id
