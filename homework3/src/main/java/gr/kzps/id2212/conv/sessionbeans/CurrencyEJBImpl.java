@@ -20,8 +20,10 @@ public class CurrencyEJBImpl implements CurrencyEJB {
 		super();
 	}
 	
-	public void storeCurrency(Currency currency) {
+	public Currency storeCurrency(Currency currency) {
 		em.persist(currency);
+		
+		return currency;
 	}
 	
 	public List<Currency> findAllCurrencies() {

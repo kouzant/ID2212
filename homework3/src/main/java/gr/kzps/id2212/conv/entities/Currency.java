@@ -24,12 +24,18 @@ public class Currency {
 	private Long id;
 	private String from;
 	private String to;
-	private float rate;
+	private Float rate;
 	@Transient
-	private float invertedRate;
+	private Float invertedRate;
 	
 	public Currency() {
 		
+	}
+	
+	public Currency(String from, String to, Float rate) {
+		this.from = from;
+		this.to = to;
+		this.rate = rate;
 	}
 	
 	@PostLoad
