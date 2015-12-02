@@ -15,14 +15,14 @@ import javax.persistence.Transient;
 @Table(name = "T_CURRENCY")
 @NamedQueries({
 	@NamedQuery(name = "currency.findAll", query = "SELECT c FROM Currency c"),
-	@NamedQuery(name = "currency.findByCur", query = "SELECT c FROM Currency c WHERE (c.from = :ffrom AND c.to = :fto) OR (c.from = :fto AND c.to = :from)")
+	@NamedQuery(name = "currency.findByCur", query = "SELECT c FROM Currency c WHERE (c.curFrom = :aFrom AND c.curTo = :aTo) OR (c.curFrom = :aTo AND c.curTo = :aFrom)")
 })
 public class Currency {
 	@Id
 	@GeneratedValue
 	private Long id;
-	private String from;
-	private String to;
+	private String curFrom;
+	private String curTo;
 	private Float rate;
 	@Transient
 	private Float invertedRate;
@@ -31,9 +31,9 @@ public class Currency {
 		
 	}
 	
-	public Currency(String from, String to, Float rate) {
-		this.from = from;
-		this.to = to;
+	public Currency(String curFrom, String curTo, Float rate) {
+		this.curFrom = curFrom;
+		this.curTo = curTo;
 		this.rate = rate;
 	}
 	
@@ -46,7 +46,7 @@ public class Currency {
 
 	@Override
 	public String toString() {
-		return from + " -> " + to + " Rate: " + rate + " Inv. rate: " + invertedRate;
+		return curFrom + " -> " + curTo + " Rate: " + rate + " Inv. rate: " + invertedRate;
 	}
 	
 	public Long getId() {
@@ -57,20 +57,20 @@ public class Currency {
 		this.id = id;
 	}
 
-	public String getFrom() {
-		return from;
+	public String getCurFrom() {
+		return curFrom;
 	}
 
-	public void setFrom(String from) {
-		this.from = from;
+	public void setCurFrom(String curFrom) {
+		this.curFrom = curFrom;
 	}
 
-	public String getTo() {
-		return to;
+	public String getCurTo() {
+		return curTo;
 	}
 
-	public void setTo(String to) {
-		this.to = to;
+	public void setTo(String curTo) {
+		this.curTo = curTo;
 	}
 
 	public float getRate() {
