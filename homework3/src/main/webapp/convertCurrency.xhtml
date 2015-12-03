@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<ui:composition template="layout.xhtml">
+	<ui:define name="title">
+		Convert currency
+	</ui:define>
+	<ui:define name="content">
+		<h:messages style="color:red"/>
+	    <h:panelGrid columns="4" cellpadding="20">
+	    	<h:panelGroup>
+	    		<h:form>
+	    			<h:outputLabel value="From: "/>
+	    			<h:outputText value="No currencies available" rendered="#{empty convertCurrency.storedCurrencies}"/>
+	    			<h:selectOneListbox value="#{convertCurrency.userSelection.curFrom}" required="true">
+	    				<f:selectItems value="#{convertCurrency.curList}" var="fr" itemLabel="#{fr}" itemValue="#{fr}"/>
+	    			</h:selectOneListbox>
+	    			
+	    			<h:outputLabel value="To: "/>
+	    			<h:outputText value="No currencies available" rendered="#{empty convertCurrency.storedCurrencies}"/>
+	    			<h:selectOneListbox value="#{convertCurrency.userSelection.curTo}">
+	    				<f:selectItems value="#{convertCurrency.curList}" var="fr" itemLabel="#{fr}" itemValue="#{fr}"/>
+	    			</h:selectOneListbox>
+	    			
+	    			<h:outputLabel value="Amount: "/>
+	    			<h:inputText value="#{convertCurrency.userSelection.amount}"
+							required="true">
+							<f:convertNumber converterID="javax.faces.Float" />
+					</h:inputText>
+	    			
+	    			<h:outputLabel value="#{convertCurrency.userSelection.converted}"/>
+	    			
+	    			<h:commandButton value="Convert"
+						action="#{convertCurrency.convert}"/>
+					<h:commandButton value="Reset" type="reset" />
+	    		</h:form>
+	    	</h:panelGroup>
+	    </h:panelGrid>
+	</ui:define>
+</ui:composition>
+</html>
