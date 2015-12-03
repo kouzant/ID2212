@@ -11,7 +11,7 @@
 <h:body>
 	<h1>Add new currency</h1>
 	<hr />
-	<h:panelGrid columns="2">
+	<h:panelGrid columns="2" cellpadding="10">
 		<h:panelGroup>
 			<h:form>
 				<h:outputText value="No currencies stored" rendered="#{empty manageCurrency.storedCurrencies}"/>
@@ -61,6 +61,7 @@
 				</h:panelGrid>
 				<h:commandButton value="Add currency"
 					action="#{manageCurrency.storeCurrency}" />
+					<h:commandButton value="Reset" type="reset"/>
 			</h:form>
 		</h:panelGroup>
 	</h:panelGrid>
