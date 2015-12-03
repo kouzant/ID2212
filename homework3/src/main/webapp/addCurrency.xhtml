@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<title>Add new currency</title>
+</h:head>
+<h:body>
+	<h1>Add new currency</h1>
+	<hr />
+	<h:form>
+		<h:panelGrid columns="2">
+			<h:outputLabel value="From: " />
+			<h:inputText value="#{manageCurrency.currency.curFrom}" />
+
+			<h:outputLabel value="To: " />
+			<h:inputText value="#{manageCurrency.currency.curTo}" />
+
+			<h:outputLabel id="rate" value="Rate: " />
+			<h:inputText value="#{manageCurrency.currency.rate}">
+				<f:convertNumber converterID="javax.faces.Float"/>
+			</h:inputText>
+			<h:message for="rate" style="color:red"/>
+		</h:panelGrid>
+		<h:commandButton value="Add currency" action="#{manageCurrency.storeCurrency}"/>
+	</h:form>
+	<hr/>
+	<i>Currency converter</i>
+</h:body>
+</html>

@@ -69,23 +69,23 @@ public class Currency {
 		return curTo;
 	}
 
-	public void setTo(String curTo) {
+	public void setCurTo(String curTo) {
 		this.curTo = curTo;
 	}
 
-	public float getRate() {
+	public Float getRate() {
 		return rate;
 	}
 
-	public void setRate(float rate) {
+	public void setRate(Float rate) {
 		this.rate = rate;
 	}
 
-	public float getInvertedRate() {
+	public Float getInvertedRate() {
 		return invertedRate;
 	}
 
-	public void setInvertedRate(float invertedRate) {
+	public void setInvertedRate(Float invertedRate) {
 		this.invertedRate = invertedRate;
 	}
 }
