@@ -43,6 +43,10 @@ public class ManageCurrency {
 		return "success";
 	}
 	
+	public String currencyConvertor() {
+		return "currencyConvertor";
+	}
+	
 	public String deleteCurrency() {
 		System.out.println("TOKENS: " + selectedCurrency);
 		String[] tokens = selectedCurrency.split("-");

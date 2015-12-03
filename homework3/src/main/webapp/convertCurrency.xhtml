@@ -15,7 +15,6 @@
 		<h:panelGrid columns="2" cellpadding="20">
 			<h:panelGroup>
 				<h:form>
-					<h:outputLabel value="From: " />
 					<h:outputText value="No currencies available"
 						rendered="#{empty convertCurrency.storedCurrencies}" />
 
@@ -53,6 +52,10 @@
 				</b>
 			</h:panelGroup>
 		</h:panelGrid>
+		<h:form>
+			<h:commandLink value="Go to manage currencies page"
+				action="#{convertCurrency.manageCurrencies}"/>
+		</h:form>
 	</ui:define>
 </ui:composition>
 </html>

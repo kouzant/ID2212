@@ -59,6 +59,10 @@ public class ConvertCurrency {
 		return cur.getCurFrom() + "-" + cur.getCurTo();
 	}
 	
+	public String manageCurrencies() {
+		return "manageCurrencies";
+	}
+	
 	public String convert() {
 		String[] tokens = rawUserSelection.split("-");
 		userSelection.setCurFrom(tokens[0]);
