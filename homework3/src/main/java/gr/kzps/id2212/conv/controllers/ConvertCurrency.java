@@ -1,8 +1,7 @@
 package gr.kzps.id2212.conv.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -25,25 +24,26 @@ public class ConvertCurrency {
 	@EJB
 	private ConvertEJB convertEJB;
 	private List<Currency> storedCurrencies;
-	private List<String> curList;
+	private List<String> printableCurrencies;
+	private String rawUserSelection;
 	private UserSelection userSelection;
 	
+	
 	public ConvertCurrency() {
-		userSelection = new UserSelection();
+		userSelection= new UserSelection();
+		printableCurrencies = new ArrayList<>();
 	}
 	
 	@PostConstruct
 	public void init() {
 		try {
 			storedCurrencies = currencyEJB.findAllCurrencies();
-			curList = storedCurrencies.stream()
-					.map(c -> c.getCurFrom())
-					.collect(Collectors.toList());
-			List<String> tmpTo = storedCurrencies.stream()
-					.map(c -> c.getCurTo())
-					.collect(Collectors.toList());
 			
-			curList.addAll(tmpTo);
+			for(Currency cur: storedCurrencies) {
+				printableCurrencies.add(buildString(cur));
+				printableCurrencies.add(buildReverseString(cur));
+			}
+			
 		} catch (ResultNotFound ex) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "No currency", "No currencies stored so far");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -51,7 +51,18 @@ public class ConvertCurrency {
 		
 	}
 	
+	private String buildReverseString(Currency cur) {
+		return cur.getCurTo() + "-" + cur.getCurFrom();
+	}
+	
+	private String buildString(Currency cur) {
+		return cur.getCurFrom() + "-" + cur.getCurTo();
+	}
+	
 	public String convert() {
+		String[] tokens = rawUserSelection.split("-");
+		userSelection.setCurFrom(tokens[0]);
+		userSelection.setCurTo(tokens[1]);
 		if(userSelection.getCurFrom().equals(userSelection.getCurTo())) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Same currency", "You have selected the same currency");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -84,12 +95,21 @@ public class ConvertCurrency {
 	public void setStoredCurrencies(List<Currency> storedCurrencies) {
 		this.storedCurrencies = storedCurrencies;
 	}
-	
-	public List<String> getCurList() {
-		return curList;
+
+	public String getRawUserSelection() {
+		return rawUserSelection;
 	}
 
-	public void setCurList(List<String> curList) {
-		this.curList = curList;
+	public void setRawUserSelection(String rawUserSelection) {
+		this.rawUserSelection = rawUserSelection;
 	}
+
+	public List<String> getPrintableCurrencies() {
+		return printableCurrencies;
+	}
+
+	public void setPrintableCurrencies(List<String> printableCurrencies) {
+		this.printableCurrencies = printableCurrencies;
+	}
+	
 }

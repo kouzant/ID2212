@@ -16,7 +16,7 @@
 				<h:form>
 					<h:outputText value="No currencies stored"
 						rendered="#{empty manageCurrency.storedCurrencies}" />
-					<h:dataTable value="#{manageCurrency.storedCurrencies}" var="sCur"
+					<!-- <h:dataTable value="#{manageCurrency.storedCurrencies}" var="sCur"
 						rendered="#{not empty manageCurrency.storedCurrencies}">
 						<h:column>
 							<f:facet name="header">
@@ -38,7 +38,22 @@
 							</f:facet>
 							<h:outputText value="#{sCur.rate}" />
 						</h:column>
-					</h:dataTable>
+					</h:dataTable> -->
+							
+							
+					<h:selectOneListbox value="#{manageCurrency.selectedCurrency}">
+						<f:selectItems value="#{manageCurrency.storedCurrencies}"
+							var="sCur" itemLabel="#{sCur.curFrom} - #{sCur.curTo}"
+							itemValue="#{sCur.curFrom}-#{sCur.curTo}"/>
+					</h:selectOneListbox>
+					
+					<br/>
+					<br/>
+					
+					<h:commandButton value="Delete currency"
+						action="#{manageCurrency.deleteCurrency}">
+					</h:commandButton>
+					
 				</h:form>
 			</h:panelGroup>
 			<div style="border-left: 1px solid #000; height: 100px"></div>
@@ -65,6 +80,7 @@
 					<h:commandButton value="Add currency"
 						action="#{manageCurrency.storeCurrency}">
 					</h:commandButton>
+					
 					<h:commandButton value="Reset" type="reset" />
 				</h:form>
 			</h:panelGroup>

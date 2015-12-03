@@ -11,36 +11,48 @@
 		Convert currency
 	</ui:define>
 	<ui:define name="content">
-		<h:messages style="color:red"/>
-	    <h:panelGrid columns="4" cellpadding="20">
-	    	<h:panelGroup>
-	    		<h:form>
-	    			<h:outputLabel value="From: "/>
-	    			<h:outputText value="No currencies available" rendered="#{empty convertCurrency.storedCurrencies}"/>
-	    			<h:selectOneListbox value="#{convertCurrency.userSelection.curFrom}" required="true">
-	    				<f:selectItems value="#{convertCurrency.curList}" var="fr" itemLabel="#{fr}" itemValue="#{fr}"/>
-	    			</h:selectOneListbox>
-	    			
-	    			<h:outputLabel value="To: "/>
-	    			<h:outputText value="No currencies available" rendered="#{empty convertCurrency.storedCurrencies}"/>
-	    			<h:selectOneListbox value="#{convertCurrency.userSelection.curTo}">
-	    				<f:selectItems value="#{convertCurrency.curList}" var="fr" itemLabel="#{fr}" itemValue="#{fr}"/>
-	    			</h:selectOneListbox>
-	    			
-	    			<h:outputLabel value="Amount: "/>
-	    			<h:inputText value="#{convertCurrency.userSelection.amount}"
-							required="true">
-							<f:convertNumber converterID="javax.faces.Float" />
+		<h:messages style="color:red" />
+		<h:panelGrid columns="2" cellpadding="20">
+			<h:panelGroup>
+				<h:form>
+					<h:outputLabel value="From: " />
+					<h:outputText value="No currencies available"
+						rendered="#{empty convertCurrency.storedCurrencies}" />
+
+					<h:selectOneListbox value="#{convertCurrency.rawUserSelection}"
+						required="true">
+						<f:selectItems value="#{convertCurrency.printableCurrencies}" var="sCur"
+							itemLabel="#{sCur}" itemValue="#{sCur}"/>
+						
+						
+					</h:selectOneListbox>
+					<br />
+					<br />
+
+					<h:outputLabel value="Amount: " />
+					<h:inputText value="#{convertCurrency.userSelection.amount}"
+						required="true" size="8">
+						<f:convertNumber converterID="javax.faces.Float" />
 					</h:inputText>
-	    			
-	    			<h:outputLabel value="#{convertCurrency.userSelection.converted}"/>
-	    			
-	    			<h:commandButton value="Convert"
-						action="#{convertCurrency.convert}"/>
-					<h:commandButton value="Reset" type="reset" />
-	    		</h:form>
-	    	</h:panelGroup>
-	    </h:panelGrid>
+
+
+					<br />
+					<br />
+
+					<h:commandButton value="Convert"
+						action="#{convertCurrency.convert}" />
+				</h:form>
+			</h:panelGroup>
+			<h:panelGroup>
+				<b> <h:outputLabel value="Result: "
+						rendered="#{convertCurrency.userSelection.converted != null}" />
+					<h:outputText
+						value="#{convertCurrency.userSelection.converted}" size="8"
+						editable="false"
+						rendered="#{convertCurrency.userSelection.converted != null}" />
+				</b>
+			</h:panelGroup>
+		</h:panelGrid>
 	</ui:define>
 </ui:composition>
 </html>

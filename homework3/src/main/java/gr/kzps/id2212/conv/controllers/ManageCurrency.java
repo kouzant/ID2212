@@ -20,6 +20,7 @@ public class ManageCurrency {
 	private CurrencyEJB currencyEJB;
 	private Currency currency;
 	private List<Currency> storedCurrencies;
+	private String selectedCurrency;
 	
 	public ManageCurrency() {
 		currency = new Currency();
@@ -41,6 +42,16 @@ public class ManageCurrency {
 		
 		return "success";
 	}
+	
+	public String deleteCurrency() {
+		System.out.println("TOKENS: " + selectedCurrency);
+		String[] tokens = selectedCurrency.split("-");
+		
+		
+		currencyEJB.removeCurrency(tokens[0], tokens[1]);
+		
+		return "success";
+	}
 
 	public List<Currency> getStoredCurrencies() {
 		return storedCurrencies;
@@ -57,4 +68,13 @@ public class ManageCurrency {
 	public void setCurrency(Currency currency) {
 		this.currency = currency;
 	}
+
+	public String getSelectedCurrency() {
+		return selectedCurrency;
+	}
+
+	public void setSelectedCurrency(String selectedCurrency) {
+		this.selectedCurrency = selectedCurrency;
+	}
+	
 }
