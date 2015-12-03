@@ -1,6 +1,7 @@
 package gr.kzps.id2212.conv.controllers;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -21,38 +22,53 @@ public class ManageCurrency {
 	private Currency currency;
 	private List<Currency> storedCurrencies;
 	private String selectedCurrency;
-	
+
 	public ManageCurrency() {
 		currency = new Currency();
 	}
-	
+
 	@PostConstruct
 	public void init() {
 		try {
 			storedCurrencies = currencyEJB.findAllCurrencies();
 		} catch (ResultNotFound ex) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "No currency", "No currencies stored so far");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "No currency",
+					"No currencies stored so far");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
-		
+
 	}
-	
+
 	public String storeCurrency() {
-		currencyEJB.storeCurrency(currency);
+		Currency newCurrency = currencyEJB.storeCurrency(currency);
 		
+		storedCurrencies.add(newCurrency);
+
 		return "success";
 	}
-	
+
 	public String currencyConvertor() {
 		return "currencyConvertor";
 	}
-	
+
 	public String deleteCurrency() {
-		System.out.println("TOKENS: " + selectedCurrency);
-		String[] tokens = selectedCurrency.split("-");
-		
-		
-		currencyEJB.removeCurrency(tokens[0], tokens[1]);
+
+		if (selectedCurrency != null) {
+			String[] tokens = selectedCurrency.split("-");
+
+			currencyEJB.removeCurrency(tokens[0], tokens[1]);
+			
+			Optional<Currency> deletedCurrencyOpt = storedCurrencies.stream()
+					.filter(c -> c.getCurFrom().equals(tokens[0])
+							&& c.getCurTo().equals(tokens[1]))
+					.findFirst();
+			
+			storedCurrencies.remove(deletedCurrencyOpt.get());
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"No currency selected", "You have not selected any currency to delete");
+			FacesContext.getCurrentInstance().addMessage("listForm:list", msg);
+		}
 		
 		return "success";
 	}
@@ -80,5 +96,5 @@ public class ManageCurrency {
 	public void setSelectedCurrency(String selectedCurrency) {
 		this.selectedCurrency = selectedCurrency;
 	}
-	
+
 }

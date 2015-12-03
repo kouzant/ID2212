@@ -12,5 +12,5 @@ public interface CurrencyEJB {
 	public Currency storeCurrency(Currency currency);
 	public List<Currency> findAllCurrencies() throws ResultNotFound;
 	public Currency findByCur(String from, String to) throws ResultNotFound;
-	public void removeCurrency(String from, String to);
+	public Currency removeCurrency(String from, String to);
 }

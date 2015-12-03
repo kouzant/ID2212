@@ -52,13 +52,15 @@ public class CurrencyEJBImpl implements CurrencyEJB {
 		
 		throw new ResultNotFound("No currency found matching your criteria");
 	}
-	
-	public void removeCurrency(String from, String to) {
+
+	public Currency removeCurrency(String from, String to) {
 		try {
 			Currency attached = findByCur(from, to);
 			em.remove(attached);
-		} catch (ResultNotFound ex) {
 			
+			return attached;
+		} catch (ResultNotFound ex) {
+			return null;
 		}
 	}
 }

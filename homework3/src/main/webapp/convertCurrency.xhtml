@@ -14,11 +14,11 @@
 		<h:messages style="color:red" />
 		<h:panelGrid columns="2" cellpadding="20">
 			<h:panelGroup>
-				<h:form>
+				<h:form id="converter">
 					<h:outputText value="No currencies available"
 						rendered="#{empty convertCurrency.storedCurrencies}" />
 
-					<h:selectOneListbox value="#{convertCurrency.rawUserSelection}"
+					<h:selectOneListbox id="currencies" value="#{convertCurrency.rawUserSelection}"
 						required="true">
 						<f:selectItems value="#{convertCurrency.printableCurrencies}" var="sCur"
 							itemLabel="#{sCur}" itemValue="#{sCur}"/>
@@ -29,7 +29,7 @@
 					<br />
 
 					<h:outputLabel value="Amount: " />
-					<h:inputText value="#{convertCurrency.userSelection.amount}"
+					<h:inputText id="amount" value="#{convertCurrency.userSelection.amount}"
 						required="true" size="8">
 						<f:convertNumber converterID="javax.faces.Float" />
 					</h:inputText>

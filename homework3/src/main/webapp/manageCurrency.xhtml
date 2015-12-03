@@ -13,35 +13,13 @@
 	<ui:define name="content">
 		<h:panelGrid columns="3" cellpadding="20">
 			<h:panelGroup id="currencies">
-				<h:form>
+				<h:form id="stored_currencies">
+					<h:message for="list" style="color:red"/>
+					<br/>
 					<h:outputText value="No currencies stored"
 						rendered="#{empty manageCurrency.storedCurrencies}" />
-					<!-- <h:dataTable value="#{manageCurrency.storedCurrencies}" var="sCur"
-						rendered="#{not empty manageCurrency.storedCurrencies}">
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="To" />
-							</f:facet>
-							<h:outputText value="#{sCur.curTo}" />
-						</h:column>
-
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="From" />
-							</f:facet>
-							<h:outputText value="#{sCur.curFrom}" />
-						</h:column>
-
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Rate" />
-							</f:facet>
-							<h:outputText value="#{sCur.rate}" />
-						</h:column>
-					</h:dataTable> -->
 							
-							
-					<h:selectOneListbox value="#{manageCurrency.selectedCurrency}">
+					<h:selectOneListbox id="list" value="#{manageCurrency.selectedCurrency}">
 						<f:selectItems value="#{manageCurrency.storedCurrencies}"
 							var="sCur" itemLabel="#{sCur.curFrom} - #{sCur.curTo}"
 							itemValue="#{sCur.curFrom}-#{sCur.curTo}"/>
@@ -58,7 +36,7 @@
 			</h:panelGroup>
 			<div style="border-left: 1px solid #000; height: 100px"></div>
 			<h:panelGroup>
-				<h:form>
+				<h:form id="currency_form">
 					<h:panelGrid columns="3">
 						<h:outputLabel value="From: " />
 						<h:inputText id="from" value="#{manageCurrency.currency.curFrom}"

@@ -6,7 +6,7 @@
 	version="2.0">
 
 <navigation-rule>
-	<from-view-id>manageCurrency.xhtml</from-view-id>
+	<from-view-id>/manageCurrency.xhtml</from-view-id>
 	<navigation-case>
 		<from-outcome>success</from-outcome>
 		<to-view-id>/manageCurrency.xhtml</to-view-id>
@@ -14,7 +14,7 @@
 </navigation-rule>
 
 <navigation-rule>
-	<from-view-id>manageCurrency.xhtml</from-view-id>
+	<from-view-id>/manageCurrency.xhtml</from-view-id>
 	<navigation-case>
 		<from-outcome>currencyConvertor</from-outcome>
 		<to-view-id>/convertCurrency.xhtml</to-view-id>
@@ -22,7 +22,7 @@
 </navigation-rule>
 
 <navigation-rule>
-	<from-view-id>convertCurrency.xhtml</from-view-id>
+	<from-view-id>/convertCurrency.xhtml</from-view-id>
 	<navigation-case>
 		<from-outcome>success</from-outcome>
 		<to-view-id>/convertCurrency.xhtml</to-view-id>
@@ -30,7 +30,7 @@
 </navigation-rule>
 
 <navigation-rule>
-	<from-view-id>convertCurrency.xhtml</from-view-id>
+	<from-view-id>/convertCurrency.xhtml</from-view-id>
 	<navigation-case>
 		<from-outcome>manageCurrencies</from-outcome>
 		<to-view-id>/manageCurrency.xhtml</to-view-id>
