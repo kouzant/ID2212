@@ -43,7 +43,7 @@ public class ManageCurrency {
 	public String storeCurrency() {
 		currencyEJB.storeCurrency(currency);
 		
-		return null;
+		return "success";
 	}
 
 	public List<Currency> getStoredCurrencies() {
