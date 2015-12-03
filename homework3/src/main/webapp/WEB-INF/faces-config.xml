@@ -12,4 +12,12 @@
 		<to-view-id>addCurrency.xhtml</to-view-id>
 	</navigation-case>
 </navigation-rule>
+
+<navigation-rule>
+	<from-view-id>convertCurrency.xhtml</from-view-id>
+	<navigation-case>
+		<from-outcome>success</from-outcome>
+		<to-view-id>convertCurrency.xhtml</to-view-id>
+	</navigation-case>
+</navigation-rule>
 </faces-config>
