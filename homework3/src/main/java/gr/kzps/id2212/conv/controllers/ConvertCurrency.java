@@ -65,6 +65,13 @@ public class ConvertCurrency {
 	}
 	
 	public String convert() {
+		if (rawUserSelection == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "No available currency", "There is no currency stored");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			
+			return "success";
+		}
+		
 		String[] tokens = rawUserSelection.split("-");
 		userSelection.setCurFrom(tokens[0]);
 		userSelection.setCurTo(tokens[1]);
