@@ -52,9 +52,6 @@ public class ManageCurrency {
 	public String storeCurrency() {
 		Currency newCurrency = currencyEJB.storeCurrency(currency);
 		
-		if (storedCurrencies == null) {
-			System.out.println("BEFORE CRASH");
-		}
 		storedCurrencies.add(newCurrency);
 
 		return "success";
