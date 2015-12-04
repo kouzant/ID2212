@@ -19,7 +19,8 @@
 					<h:outputText value="No currencies stored"
 						rendered="#{empty manageCurrency.storedCurrencies}" />
 							
-					<h:selectOneListbox id="list" value="#{manageCurrency.selectedCurrency}">
+					<h:selectOneListbox id="list" size="5" value="#{manageCurrency.selectedCurrency}"
+						rendered="#{not empty manageCurrency.storedCurrencies}">
 						<f:selectItems value="#{manageCurrency.storedCurrencies}"
 							var="sCur" itemLabel="#{sCur.curFrom} - #{sCur.curTo}"
 							itemValue="#{sCur.curFrom}-#{sCur.curTo}"/>
@@ -40,18 +41,26 @@
 					<h:panelGrid columns="3">
 						<h:outputLabel value="From: " />
 						<h:inputText id="from" value="#{manageCurrency.currency.curFrom}"
-							required="true" />
+							onfocus="onFocus(this, 'From')"
+							onblur="onBlur(this, 'From')">
+							<f:validator validatorId="stringValidator"/>
+						</h:inputText>
 						<h:message for="from" style="color:red" />
 
 						<h:outputLabel value="To: " />
 						<h:inputText id="to" value="#{manageCurrency.currency.curTo}"
-							required="true" />
+							required="true" onfocus="onFocus(this, 'To')"
+							onblur="onBlur(this, 'To')">
+							<f:validator validatorId="stringValidator"/>
+						</h:inputText>
 						<h:message for="to" style="color:red" />
 
 						<h:outputLabel value="Rate: " />
 						<h:inputText id="rate" value="#{manageCurrency.currency.rate}"
-							required="true">
+							required="true" onfocus="onFocus(this, 0.0)"
+							onblur="onBlur(this, 0.0)">
 							<f:convertNumber converterID="javax.faces.Float" />
+							<f:validator validatorId="numberValidator"/>
 						</h:inputText>
 						<h:message for="rate" style="color:red" />
 					</h:panelGrid>
@@ -59,7 +68,8 @@
 						action="#{manageCurrency.storeCurrency}">
 					</h:commandButton>
 					
-					<h:commandButton value="Reset" type="reset" />
+					<h:commandButton value="Reset" type="reset"
+						action="#{manageCurrency.resetAddCurrencyFields}" />
 				</h:form>
 			</h:panelGroup>
 		</h:panelGrid>

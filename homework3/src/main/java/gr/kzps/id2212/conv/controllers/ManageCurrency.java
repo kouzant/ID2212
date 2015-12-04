@@ -1,5 +1,6 @@
 package gr.kzps.id2212.conv.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +25,7 @@ public class ManageCurrency {
 	private String selectedCurrency;
 
 	public ManageCurrency() {
-		currency = new Currency();
+		currency = new Currency("From", "To", 0.0F);
 	}
 
 	@PostConstruct
@@ -32,6 +33,7 @@ public class ManageCurrency {
 		try {
 			storedCurrencies = currencyEJB.findAllCurrencies();
 		} catch (ResultNotFound ex) {
+			storedCurrencies = new ArrayList<>();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "No currency",
 					"No currencies stored so far");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -39,9 +41,20 @@ public class ManageCurrency {
 
 	}
 
+	public String resetAddCurrencyFields() {
+		currency.setCurFrom("From");
+		currency.setCurTo("To");
+		currency.setRate(0.00F);
+		
+		return "success";
+	}
+	
 	public String storeCurrency() {
 		Currency newCurrency = currencyEJB.storeCurrency(currency);
 		
+		if (storedCurrencies == null) {
+			System.out.println("BEFORE CRASH");
+		}
 		storedCurrencies.add(newCurrency);
 
 		return "success";

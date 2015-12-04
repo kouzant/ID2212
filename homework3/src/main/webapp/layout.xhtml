@@ -8,6 +8,19 @@
 	<title>
 		<ui:insert name="title">Currency Converter</ui:insert>
 	</title>
+	<script>
+			function onBlur(field, defaultValue) {
+				if (field.value == '') {
+					field.value = defaultValue;
+				}
+			}
+			
+			function onFocus(field, defaultValue) {
+				if (field.value == defaultValue) {
+					field.value = '';
+				}
+			}
+		</script>
 </head>
 
 <body>

@@ -18,7 +18,7 @@
 					<h:outputText value="No currencies available"
 						rendered="#{empty convertCurrency.storedCurrencies}" />
 
-					<h:selectOneListbox id="currencies" value="#{convertCurrency.rawUserSelection}"
+					<h:selectOneListbox id="currencies" size="5" value="#{convertCurrency.rawUserSelection}"
 						required="true">
 						<f:selectItems value="#{convertCurrency.printableCurrencies}" var="sCur"
 							itemLabel="#{sCur}" itemValue="#{sCur}"/>
