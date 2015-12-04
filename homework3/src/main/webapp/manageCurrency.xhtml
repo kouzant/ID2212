@@ -69,7 +69,10 @@
 					</h:commandButton>
 					
 					<h:commandButton value="Reset" type="reset"
-						action="#{manageCurrency.resetAddCurrencyFields}" />
+						action="#{manageCurrency.resetAddCurrencyFields}"
+						immediate="true">
+						<f:resetValues render="currency_form:from currency_form:to currency_form:rate"/>
+					</h:commandButton>
 				</h:form>
 			</h:panelGroup>
 		</h:panelGrid>

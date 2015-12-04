@@ -19,7 +19,7 @@
 						rendered="#{empty convertCurrency.storedCurrencies}" />
 
 					<h:selectOneListbox id="currencies" size="5" value="#{convertCurrency.rawUserSelection}"
-						required="true">
+						required="true" rendered="#{not empty convertCurrency.storedCurrencies}">
 						<f:selectItems value="#{convertCurrency.printableCurrencies}" var="sCur"
 							itemLabel="#{sCur}" itemValue="#{sCur}"/>
 						
@@ -30,8 +30,9 @@
 
 					<h:outputLabel value="Amount: " />
 					<h:inputText id="amount" value="#{convertCurrency.userSelection.amount}"
-						required="true" size="8">
+						size="8" onfocus="onFocus(this, 0)" onblur="onBlur(this, 0)">
 						<f:convertNumber converterID="javax.faces.Float" />
+						<f:validator validatorId="numberValidator"/>
 					</h:inputText>
 
 

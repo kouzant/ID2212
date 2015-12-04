@@ -31,6 +31,7 @@ public class ConvertCurrency {
 	
 	public ConvertCurrency() {
 		userSelection= new UserSelection();
+		userSelection.setAmount(0F);
 		printableCurrencies = new ArrayList<>();
 	}
 	
