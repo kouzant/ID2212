@@ -26,7 +26,7 @@
 
  3. Package
 -------------
-> mvn package
+> mvn package -DskipTests=true
 
  4. Deploy
 ------------
