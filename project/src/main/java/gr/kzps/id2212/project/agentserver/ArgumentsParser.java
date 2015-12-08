@@ -3,6 +3,7 @@ package gr.kzps.id2212.project.agentserver;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -13,17 +14,19 @@ import org.apache.commons.cli.ParseException;
 public class ArgumentsParser {
 	private final String[] args;
 	private final Options options;
+	private final CommandLineParser parser;
 	
 	public ArgumentsParser(String[] args) {
 		this.args = args;
 		options = new Options();
+		parser = new DefaultParser();
 	}
 	
 	public CommandLine parseArgs() throws ParseException {
 		Option serverId = Option.builder("i").longOpt("id").hasArg().required(true)
 				.desc("Agent server Identifier").build();
 		
-		Option serverPort = Option.builder("sp").longOpt("serverPort").hasArg()
+		Option serverPort = Option.builder("ap").longOpt("agentPort").hasArg()
 				.desc("Inter-agent communicating port").build();
 		
 		Option basePort = Option.builder("bs").longOpt("basePort").hasArg()
@@ -33,8 +36,10 @@ public class ArgumentsParser {
 		options.addOption(serverPort);
 		options.addOption(basePort);
 		
-		CommandLineParser parser = new DefaultParser();
-		
 		return parser.parse(options, args);
+	}
+	
+	public Options getOptions() {
+		return options;
 	}
 }
