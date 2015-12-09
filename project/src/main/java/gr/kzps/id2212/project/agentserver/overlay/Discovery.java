@@ -29,6 +29,11 @@ public class Discovery implements Runnable {
 		this.sampleSize = sampleSize;
 	}
 
+	// Connect to boostrap node and send its reference
+	public void connectBootstrap(InetAddress bAddress, Integer bPort) {
+		// Send a Hello message with my reference
+	}
+	
 	@Override
 	public void run() {
 

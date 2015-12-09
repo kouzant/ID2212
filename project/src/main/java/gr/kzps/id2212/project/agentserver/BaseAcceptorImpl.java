@@ -27,6 +27,8 @@ public class BaseAcceptorImpl extends Acceptor {
 
 			Object request = inStream.readObject();
 
+			// TODO implement sample update messages
+			// TODO Handle HELLO messages
 			if (request instanceof BaseMessage) {
 				BaseMessage msg = (BaseMessage) request;
 				msg.setAgentPort(Cache.getInstance().getAgentPort());
