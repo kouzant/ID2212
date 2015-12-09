@@ -32,9 +32,17 @@ public class ArgumentsParser {
 		Option basePort = Option.builder("bs").longOpt("basePort").hasArg()
 				.desc("Service discovery port").build();
 		
+		Option bootStrapNode = Option.builder("bn").longOpt("bootstrap").hasArg()
+				.desc("Node to bootstrap from").build();
+		
+		Option bootStrapPort = Option.builder("bp").longOpt("bootstrapPort").hasArg()
+				.desc("Port of the bootstrap node").build();
+		
 		options.addOption(serverId);
 		options.addOption(serverPort);
 		options.addOption(basePort);
+		options.addOption(bootStrapNode);
+		options.addOption(bootStrapPort);
 		
 		return parser.parse(options, args);
 	}

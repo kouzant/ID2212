@@ -14,22 +14,25 @@ import gr.kzps.id2212.project.messages.BaseMessage;
 
 public class BaseAcceptorImpl extends Acceptor {
 	private final Logger LOG = LogManager.getLogger(BaseAcceptorImpl.class);
-	
+
 	public BaseAcceptorImpl(Socket cSocket) {
 		super(cSocket);
 	}
-	
+
 	@Override
 	public void run() {
 		try {
 			inStream = new ObjectInputStream(cSocket.getInputStream());
 			outStream = new ObjectOutputStream(cSocket.getOutputStream());
-			
-			BaseMessage request = (BaseMessage) inStream.readObject();
-			request.setAgentPort(Cache.getInstance().getAgentPort());
-			
-			outStream.writeObject(request);
-			
+
+			Object request = inStream.readObject();
+
+			if (request instanceof BaseMessage) {
+				BaseMessage msg = (BaseMessage) request;
+				msg.setAgentPort(Cache.getInstance().getAgentPort());
+
+				outStream.writeObject(msg);
+			}
 			outStream.flush();
 			outStream.close();
 			inStream.close();
