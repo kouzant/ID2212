@@ -17,6 +17,7 @@ import gr.kzps.id2212.project.agentserver.overlay.PeerNotFound;
 import gr.kzps.id2212.project.agentserver.overlay.PeerStorage;
 import gr.kzps.id2212.project.messages.BaseMessage;
 import gr.kzps.id2212.project.messages.HelloMessage;
+import gr.kzps.id2212.project.messages.GenericMessage;
 import gr.kzps.id2212.project.messages.SampleExchange;
 
 public class BaseAcceptorImpl extends Acceptor {
@@ -36,31 +37,12 @@ public class BaseAcceptorImpl extends Acceptor {
 			inStream = new ObjectInputStream(cSocket.getInputStream());
 			outStream = new ObjectOutputStream(cSocket.getOutputStream());
 
-			Object request = inStream.readObject();
+			GenericMessage request = (GenericMessage) inStream.readObject();
 
-			if (request instanceof BaseMessage) {
-				LOG.debug("Received BaseMessage");
-				BaseMessage msg = (BaseMessage) request;
-				msg.setAgentPort(Cache.getInstance().getAgentPort());
-
-				outStream.writeObject(msg);
-			} else if (request instanceof HelloMessage) {
-				LOG.debug("Received HelloMessage");
-				HelloMessage msg = (HelloMessage) request;
-				try {
-					sample = peerStorage.createSample();
-				} catch (PeerNotFound ex) {
-					LOG.debug(ex.getMessage());
-					sample = new ArrayList<>();
-				}
-				peerStorage.addPeer(msg.getPeer());
-				sample.add(peerStorage.getSelf());
-				outStream.writeObject(new SampleExchange(sample));
-
-			} else if (request instanceof SampleExchange) {
-				LOG.debug("Received SampleExchange");
-				SampleExchange msg = (SampleExchange) request;
-				peerStorage.mergeView(msg.getSample());
+			GenericMessage reply = request.execute(peerStorage);
+			
+			if (reply != null) {
+				outStream.writeObject(reply);
 			}
 
 			outStream.flush();
