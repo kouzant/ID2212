@@ -29,13 +29,13 @@ public class ArgumentsParser {
 		Option serverPort = Option.builder("ap").longOpt("agentPort").hasArg()
 				.desc("Inter-agent communicating port").build();
 		
-		Option basePort = Option.builder("bs").longOpt("basePort").hasArg()
+		Option basePort = Option.builder("bp").longOpt("basePort").hasArg()
 				.desc("Service discovery port").build();
 		
-		Option bootStrapNode = Option.builder("bn").longOpt("bootstrap").hasArg()
+		Option bootStrapNode = Option.builder("bsn").longOpt("bootstrap").hasArg()
 				.desc("Node to bootstrap from").build();
 		
-		Option bootStrapPort = Option.builder("bp").longOpt("bootstrapPort").hasArg()
+		Option bootStrapPort = Option.builder("bsp").longOpt("bootstrapPort").hasArg()
 				.desc("Port of the bootstrap node").build();
 		
 		options.addOption(serverId);

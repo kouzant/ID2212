@@ -22,6 +22,8 @@ public class ServerExecEnv {
 	private static Integer basePort;
 	private static Discovery discoveryService;
 	private static PeerAgent local;
+	private static TcpServer baseServer;
+	private static TcpServer agentServer;
 	
 	public static void main(String[] args) {
 		
@@ -50,16 +52,17 @@ public class ServerExecEnv {
 			
 			Cache.getInstance().setAgentPort(agentPort);
 			
-			//TcpServer agentServer = new AgentServer(agentPort);
-			TcpServer baseServer = new BaseServer(basePort);
-			//threadPool.execute(agentServer);
-			threadPool.execute(baseServer);
-			
 			try {
 				local = new PeerAgent(InetAddress.getLocalHost(), basePort);
-				PeerStorage peerStorage = new PeerStorage(local);
+				// Sample size
+				PeerStorage peerStorage = new PeerStorage(local, 4);
 				
-				discoveryService = new Discovery(local, peerStorage, 5);
+				//TcpServer agentServer = new AgentServer(agentPort);
+				baseServer = new BaseServer(basePort, peerStorage);
+				//threadPool.execute(agentServer);
+				threadPool.execute(baseServer);
+				
+				discoveryService = new Discovery(local, peerStorage);
 				/*
 				 * If I have to connect to a bootstrap server
 				 * discoveryService.connectBootstrap

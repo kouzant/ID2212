@@ -1,8 +1,10 @@
 package gr.kzps.id2212.project.agentserver.overlay;
 
+import java.io.Serializable;
 import java.net.InetAddress;
 
-public class PeerAgent {
+public class PeerAgent implements Serializable {
+	private static final long serialVersionUID = -4740911081188576606L;
 	private final InetAddress address;
 	private final Integer port;
 	
