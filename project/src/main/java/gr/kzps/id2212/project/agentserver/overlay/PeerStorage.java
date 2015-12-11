@@ -29,7 +29,9 @@ public class PeerStorage {
 			storeLock.unlock();
 
 			if (preSize < 2) {
-				notify();
+				synchronized(storeLock) {
+					storeLock.notify();
+				}
 			}
 		}
 	}
@@ -48,7 +50,9 @@ public class PeerStorage {
 	public PeerAgent getRandomPeer() {
 		while (isEmpty()) {
 			try {
-				wait();
+				synchronized(storeLock) {
+					storeLock.wait();
+				}
 			} catch (InterruptedException ex) {
 				ex.printStackTrace();
 			}
