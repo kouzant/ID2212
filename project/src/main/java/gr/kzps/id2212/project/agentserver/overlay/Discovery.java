@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import gr.kzps.id2212.project.messages.GenericMessage;
 import gr.kzps.id2212.project.messages.HelloMessage;
 import gr.kzps.id2212.project.messages.SampleExchange;
 
@@ -48,9 +49,7 @@ public class Discovery implements Runnable {
 			}
 
 			try {
-				LOG.debug("Woke up and searching for a random target");
 				PeerAgent target = peerStorage.getRandomPeer();
-				LOG.debug("Target is: {}", target);
 				// Create a sample
 				sample = peerStorage.createSample();
 				sample.add(local);
@@ -66,18 +65,13 @@ public class Discovery implements Runnable {
 		}
 	}
 
-	private <T extends Object> void send(PeerAgent target, T message) {
+	private <T extends GenericMessage> void send(PeerAgent target, T message) {
 		try {
 			targetSocket = new Socket(target.getAddress(), target.getPort());
 			outStream = new ObjectOutputStream(targetSocket.getOutputStream());
 			outStream.writeObject(message);
 			outStream.flush();
 
-			/*
-			 * if (outStream != null) { outStream.close(); }
-			 * 
-			 * if (targetSocket != null) { targetSocket.close(); }
-			 */
 		} catch (IOException ex) {
 			LOG.error(ex.getMessage());
 		}

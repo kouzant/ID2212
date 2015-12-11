@@ -16,17 +16,16 @@ import gr.kzps.id2212.project.agentserver.overlay.PeerAgent;
 import gr.kzps.id2212.project.agentserver.overlay.PeerStorage;
 
 public class ServerExecEnv {
-	private static final Logger LOG = LogManager.getLogger(ServerExecEnv.class);
-	private static String serverId;
-	private static Integer agentPort;
-	private static Integer basePort;
-	private static Discovery discoveryService;
-	private static PeerAgent local;
-	private static TcpServer baseServer;
-	private static TcpServer agentServer;
+	private final Logger LOG = LogManager.getLogger(ServerExecEnv.class);
+	private String serverId;
+	private Integer agentPort;
+	private Integer basePort;
+	private Discovery discoveryService;
+	private PeerAgent local;
+	private TcpServer baseServer;
+	private TcpServer agentServer;
 	
-	public static void main(String[] args) {
-		
+	public ServerExecEnv(String[] args) {
 		ArgumentsParser argsParser = new ArgumentsParser(args);
 		ExecutorService threadPool = Executors.newCachedThreadPool();
 		
@@ -63,10 +62,7 @@ public class ServerExecEnv {
 				threadPool.execute(baseServer);
 				
 				discoveryService = new Discovery(local, peerStorage);
-				/*
-				 * If I have to connect to a bootstrap server
-				 * discoveryService.connectBootstrap
-				 */
+				
 				if (cmd.hasOption("bootstrap")) {
 					String bootstrap = cmd.getOptionValue("bootstrap");
 					Integer bootstrapPort = 9090;
@@ -85,6 +81,11 @@ public class ServerExecEnv {
 		} catch (ParseException ex) {
 			LOG.error(ex.getMessage());
 		}
+	}
+	
+	public static void main(String[] args) {
+		
+		new ServerExecEnv(args);
 	}
 
 }

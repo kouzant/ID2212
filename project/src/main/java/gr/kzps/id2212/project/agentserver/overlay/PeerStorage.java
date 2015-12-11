@@ -32,15 +32,10 @@ public class PeerStorage {
 			storeLock.lock();
 			peerAgents.add(peer);
 			storeLock.unlock();
-			LOG.debug("Added peer {} to storage", peer);
-		} else {
-			LOG.debug("Storage already contains {}", peer);
 		}
 	}
 
 	public void mergeView(List<PeerAgent> view) {
-		LOG.debug("Merging received view");
-
 		storeLock.lock();
 		List<PeerAgent> toMerge = view.stream()
 				.distinct()
@@ -49,12 +44,9 @@ public class PeerStorage {
 
 		peerAgents.addAll(toMerge);
 		storeLock.unlock();
-
-		LOG.debug("Merged received view!");
 	}
 
 	public List<PeerAgent> createSample() throws PeerNotFound {
-		LOG.debug("Creating sample");
 		Integer actualSize = Math.min(sampleSize, peerAgents.size());
 		List<PeerAgent> sample = new ArrayList<>();
 
@@ -66,12 +58,10 @@ public class PeerStorage {
 	}
 
 	public PeerAgent getRandomPeer() throws PeerNotFound {
-		LOG.debug("Getting random peer BEFORE LOCK");
-
 		if (!isEmpty()) {
 			// Exclude local reference
 			Integer rndPeer = ThreadLocalRandom.current().nextInt(1, peerAgents.size());
-			LOG.debug("Getting random peer AFTER LOCk");
+
 			return peerAgents.get(rndPeer);
 		}
 
