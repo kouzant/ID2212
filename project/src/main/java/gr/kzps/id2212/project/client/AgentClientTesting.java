@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,8 +22,8 @@ public class AgentClientTesting {
 		try {
 			InetAddress server = InetAddress.getByName("localhost");
 			Integer port = 6060;
-			
-			Agent agent = new AgentImpl(InetAddress.getByName("localhost"), 5050);
+			UUID id = UUID.randomUUID();
+			Agent agent = new AgentImpl(id, InetAddress.getByName("localhost"), 5050);
 
 			LOG.debug("Agent created and sending to server");
 			socket = new Socket(server, port);

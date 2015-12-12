@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import gr.kzps.id2212.project.agentserver.AgentRunningContainer;
 import gr.kzps.id2212.project.agentserver.overlay.PeerAgent;
@@ -15,15 +16,17 @@ public class AgentImpl implements Agent, Runnable {
 	
 	private final InetAddress homeAddress;
 	private final Integer homePort;
-	private List<PeerAgent> serversVisited;
+	private final UUID id;
+	private List<PeerAgent> visitedServers;
 	
 	private transient AgentRunningContainer container;
 	private transient PeerAgent currentServer;
 	
-	public AgentImpl(InetAddress homeAddress, Integer homePort) {
+	public AgentImpl(UUID id, InetAddress homeAddress, Integer homePort) {
+		this.id = id;
 		this.homeAddress = homeAddress;
 		this.homePort = homePort;
-		serversVisited = new ArrayList<>();
+		visitedServers = new ArrayList<>();
 	}
 	
 	@Override
@@ -41,7 +44,7 @@ public class AgentImpl implements Agent, Runnable {
 
 	@Override
 	public void agentArrived(AgentRunningContainer container, PeerAgent serverReference) {
-		serversVisited.add(serverReference);
+		visitedServers.add(serverReference);
 		this.container = container;
 		currentServer = serverReference;
 		Thread agentThread = new Thread(this);
@@ -54,7 +57,7 @@ public class AgentImpl implements Agent, Runnable {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Servers visited").append("\n");
 		
-		serversVisited.stream()
+		visitedServers.stream()
 			.forEach(s -> sb.append(s).append("\n"));
 		
 		return sb.toString();
@@ -63,7 +66,7 @@ public class AgentImpl implements Agent, Runnable {
 	private PeerAgent nextServer() throws PeerNotFound {
 		List<PeerAgent> localView = container.getLocalView();
 		Optional<PeerAgent> maybe = localView.parallelStream()
-				.filter(p -> !serversVisited.contains(p))
+				.filter(p -> !visitedServers.contains(p))
 				.findAny();
 		
 		if (maybe.isPresent()) {
