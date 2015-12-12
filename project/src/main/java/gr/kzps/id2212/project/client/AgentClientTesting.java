@@ -1,8 +1,10 @@
 package gr.kzps.id2212.project.client;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 import org.apache.logging.log4j.LogManager;
@@ -20,7 +22,7 @@ public class AgentClientTesting {
 			InetAddress server = InetAddress.getByName("localhost");
 			Integer port = 6060;
 			
-			Agent agent = new AgentImpl();
+			Agent agent = new AgentImpl(InetAddress.getByName("localhost"), 5050);
 
 			LOG.debug("Agent created and sending to server");
 			socket = new Socket(server, port);
@@ -33,7 +35,22 @@ public class AgentClientTesting {
 				outStream.close();
 			if (socket != null)
 				socket.close();
-		} catch (IOException ex) {
+			
+			ServerSocket sSocket = new ServerSocket(5050);
+			Socket cSocket = sSocket.accept();
+			
+			ObjectInputStream inStream = new ObjectInputStream(cSocket.getInputStream());
+			Agent comingAgent = (Agent) inStream.readObject();
+			
+			if (inStream != null)
+				inStream.close();
+			if (cSocket != null)
+				cSocket.close();
+			if (sSocket != null)
+				sSocket.close();
+			
+			LOG.debug(comingAgent.getResult());
+		} catch (IOException | ClassNotFoundException ex) {
 			ex.printStackTrace();
 		}
 

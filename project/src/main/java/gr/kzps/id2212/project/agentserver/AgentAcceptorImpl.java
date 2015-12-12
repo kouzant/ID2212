@@ -7,14 +7,17 @@ import java.net.Socket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import gr.kzps.id2212.project.agentserver.overlay.PeerStorage;
 import gr.kzps.id2212.project.client.Agent;
 
 public class AgentAcceptorImpl extends Acceptor {
 
 	private final Logger LOG = LogManager.getLogger(AgentAcceptorImpl.class);
+	private final PeerStorage peerStorage;
 	
-	public AgentAcceptorImpl(Socket cSocket) {
+	public AgentAcceptorImpl(Socket cSocket, PeerStorage peerStorage) {
 		super(cSocket);
+		this.peerStorage = peerStorage;
 	}
 	
 	@Override
@@ -24,7 +27,8 @@ public class AgentAcceptorImpl extends Acceptor {
 			
 			Agent agent = (Agent) inStream.readObject();
 			
-			agent.agentArrived();
+			AgentRunningContainer container = new AgentRunningContainer(peerStorage, agent);
+			container.executeAgent();
 			
 			if (inStream != null)
 				inStream.close();

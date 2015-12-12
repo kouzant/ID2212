@@ -7,12 +7,17 @@ import java.net.ServerSocket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import gr.kzps.id2212.project.agentserver.overlay.PeerStorage;
+
 public class AgentServer extends TcpServer {
 
 	private final Logger LOG = LogManager.getLogger(AgentServer.class);
+	private final PeerStorage peerStorage;
 	
-	public AgentServer(Integer agentPort) {
+	public AgentServer(Integer agentPort, PeerStorage peerStorage) {
 		super(agentPort);
+		
+		this.peerStorage = peerStorage;
 	}
 
 	@Override
@@ -23,7 +28,8 @@ public class AgentServer extends TcpServer {
 			while(isRunning()) {
 				cSocket = sSocket.accept();
 				LOG.debug("Accepted connection");
-				Thread acceptorThread = new Thread(new AgentAcceptorImpl(cSocket));
+				Thread acceptorThread = new Thread(
+						new AgentAcceptorImpl(cSocket, peerStorage));
 				acceptorThread.start();
 			}
 		} catch (IOException ex) {
