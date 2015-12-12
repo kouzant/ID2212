@@ -1,5 +1,6 @@
 package gr.kzps.id2212.project.agentserver.overlay;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,18 +16,18 @@ import org.apache.logging.log4j.Logger;
 public class PeerStorage {
 	private final Logger LOG = LogManager.getLogger(PeerStorage.class);
 
-	private volatile List<BootstrapPeer> peerAgents;
+	private volatile List<PeerAgent> peerAgents;
 	private Lock storeLock;
 	private Integer sampleSize;
 
-	public PeerStorage(BootstrapPeer local, Integer sampleSize) {
+	public PeerStorage(PeerAgent local, Integer sampleSize) {
 		peerAgents = new ArrayList<>();
 		this.sampleSize = sampleSize;
 		peerAgents.add(local);
 		storeLock = new ReentrantLock();
 	}
 
-	public void addPeer(BootstrapPeer peer) {
+	public void addPeer(PeerAgent peer) {
 
 		if (!peerAgents.contains(peer)) {
 			storeLock.lock();
@@ -35,9 +36,9 @@ public class PeerStorage {
 		}
 	}
 
-	public void mergeView(List<BootstrapPeer> view) {
+	public void mergeView(List<PeerAgent> view) {
 		storeLock.lock();
-		List<BootstrapPeer> toMerge = view.stream()
+		List<PeerAgent> toMerge = view.stream()
 				.distinct()
 				.filter(v -> !peerAgents.contains(v))
 				.collect(Collectors.toList());
@@ -46,9 +47,9 @@ public class PeerStorage {
 		storeLock.unlock();
 	}
 
-	public List<BootstrapPeer> createSample() throws PeerNotFound {
+	public List<PeerAgent> createSample() throws PeerNotFound {
 		Integer actualSize = Math.min(sampleSize, peerAgents.size());
-		List<BootstrapPeer> sample = new ArrayList<>();
+		List<PeerAgent> sample = new ArrayList<>();
 
 		while (sample.size() < actualSize) {
 			sample.add(getRandomPeer());
@@ -57,7 +58,7 @@ public class PeerStorage {
 		return sample;
 	}
 
-	public BootstrapPeer getRandomPeer() throws PeerNotFound {
+	public PeerAgent getRandomPeer() throws PeerNotFound {
 		if (!isEmpty()) {
 			// Exclude local reference
 			Integer rndPeer = ThreadLocalRandom.current().nextInt(1, peerAgents.size());
@@ -68,9 +69,12 @@ public class PeerStorage {
 		throw new PeerNotFound("Local view is empty");
 	}
 
-	public BootstrapPeer getPeer(BootstrapPeer peer) throws PeerNotFound {
+	public PeerAgent getPeer(InetAddress address, Integer servicePort) throws PeerNotFound {
 
-		Optional<BootstrapPeer> maybe = peerAgents.stream().filter(a -> a.equals(peer)).findFirst();
+		Optional<PeerAgent> maybe = peerAgents.stream()
+				.filter(a -> a.getAddress().equals(address)
+						&& a.getServicePort().equals(servicePort))
+				.findFirst();
 
 		if (maybe.isPresent()) {
 			return maybe.get();
@@ -79,13 +83,13 @@ public class PeerStorage {
 		}
 	}
 
-	public void removePeer(BootstrapPeer peer) {
+	public void removePeer(PeerAgent peer) {
 		storeLock.lock();
 		peerAgents.remove(peer);
 		storeLock.unlock();
 	}
 
-	public BootstrapPeer getSelf() {
+	public PeerAgent getSelf() {
 		return peerAgents.get(0);
 	}
 

@@ -22,24 +22,6 @@ public class BootstrapPeer implements Serializable {
 	}
 	
 	@Override
-	public boolean equals(Object other) {
-		if (other instanceof BootstrapPeer) {
-			BootstrapPeer otherPeer = (BootstrapPeer) other;
-			if(otherPeer.getAddress().equals(address)
-				&& otherPeer.getBasePort().equals(basePort)) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	@Override
-	public int hashCode() {
-		return address.hashCode() + basePort.hashCode();
-	}
-	
-	@Override
 	public String toString() {
 		return "Address: " + address.toString() + " Base Port: " + basePort;
 	}
