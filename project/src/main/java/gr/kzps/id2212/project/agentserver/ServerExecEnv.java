@@ -62,9 +62,9 @@ public class ServerExecEnv {
 				// Sample size
 				PeerStorage peerStorage = new PeerStorage(local, 4);
 				
-				//TcpServer agentServer = new AgentServer(agentPort);
+				TcpServer agentServer = new AgentServer(agentPort);
 				baseServer = new BaseServer(basePort, peerStorage);
-				//threadPool.execute(agentServer);
+				threadPool.execute(agentServer);
 				threadPool.execute(baseServer);
 				
 				discoveryService = new Discovery(local, peerStorage);
