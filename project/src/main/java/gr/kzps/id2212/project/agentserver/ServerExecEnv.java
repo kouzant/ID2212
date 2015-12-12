@@ -20,6 +20,7 @@ import gr.kzps.id2212.project.agentserver.overlay.PeerStorage;
 public class ServerExecEnv {
 	private final Logger LOG = LogManager.getLogger(ServerExecEnv.class);
 	private String serverId;
+	private String searchPath;
 	private Integer agentPort;
 	private Integer basePort;
 	private Discovery discoveryService;
@@ -35,6 +36,8 @@ public class ServerExecEnv {
 			CommandLine cmd = argsParser.parseArgs();
 			
 			serverId = cmd.getOptionValue("id");
+			searchPath = cmd.getOptionValue("searchPath");
+			Cache.getInstance().setSearchPath(searchPath);
 			
 			// Add server id to log4j lookup map
 			MainMapLookup.setMainArguments(new String[]{"id", serverId});
@@ -62,7 +65,7 @@ public class ServerExecEnv {
 				// Sample size
 				PeerStorage peerStorage = new PeerStorage(local, 4);
 				
-				TcpServer agentServer = new AgentServer(agentPort, peerStorage);
+				agentServer = new AgentServer(agentPort, peerStorage);
 				baseServer = new BaseServer(basePort, peerStorage);
 				threadPool.execute(agentServer);
 				threadPool.execute(baseServer);

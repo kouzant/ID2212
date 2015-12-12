@@ -26,6 +26,9 @@ public class ArgumentsParser {
 		Option serverId = Option.builder("i").longOpt("id").hasArg().required(true)
 				.desc("Agent server Identifier").build();
 		
+		Option searchPath = Option.builder("s").longOpt("searchPath").hasArg()
+				.required(true).desc("Search path for the agent").build();
+		
 		Option serverPort = Option.builder("ap").longOpt("agentPort").hasArg()
 				.desc("Inter-agent communicating port").build();
 		
@@ -39,6 +42,7 @@ public class ArgumentsParser {
 				.desc("Port of the bootstrap node").build();
 		
 		options.addOption(serverId);
+		options.addOption(searchPath);
 		options.addOption(serverPort);
 		options.addOption(basePort);
 		options.addOption(bootStrapNode);

@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import gr.kzps.id2212.project.agentserver.AgentRunningContainer;
+import gr.kzps.id2212.project.agentserver.Cache;
 import gr.kzps.id2212.project.agentserver.overlay.PeerAgent;
 import gr.kzps.id2212.project.agentserver.overlay.PeerNotFound;
 
@@ -33,6 +34,7 @@ public class AgentImpl implements Agent, Runnable {
 	public void run() {
 		String agentName = Thread.currentThread().getName();
 		System.out.println(agentName + " is doing something in " + currentServer);
+		// Search in Cache.getInstance().getSearchPath()
 		try {
 			PeerAgent nextServer = nextServer();
 			container.agentMigrate(nextServer.getAddress(), nextServer.getServicePort());
