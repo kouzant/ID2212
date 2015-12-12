@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import gr.kzps.id2212.project.agentserver.overlay.PeerAgent;
+import gr.kzps.id2212.project.agentserver.overlay.BootstrapPeer;
 import gr.kzps.id2212.project.agentserver.overlay.PeerNotFound;
 import gr.kzps.id2212.project.agentserver.overlay.PeerStorage;
 
@@ -12,19 +12,19 @@ public class HelloMessage implements Serializable, GenericMessage {
 
 	private static final long serialVersionUID = -2658849552972241367L;
 
-	private final PeerAgent peer;
+	private final BootstrapPeer peer;
 	
-	public HelloMessage(PeerAgent peer) {
+	public HelloMessage(BootstrapPeer peer) {
 		this.peer = peer;
 	}
 	
-	public PeerAgent getPeer() {
+	public BootstrapPeer getPeer() {
 		return peer;
 	}
 
 	@Override
 	public GenericMessage execute(PeerStorage peerStorage) {
-		List<PeerAgent> sample = new ArrayList<>();
+		List<BootstrapPeer> sample = new ArrayList<>();
 		try {
 			sample = peerStorage.createSample();
 		} catch (PeerNotFound ex) {

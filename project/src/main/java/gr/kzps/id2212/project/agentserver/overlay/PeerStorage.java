@@ -15,18 +15,18 @@ import org.apache.logging.log4j.Logger;
 public class PeerStorage {
 	private final Logger LOG = LogManager.getLogger(PeerStorage.class);
 
-	private volatile List<PeerAgent> peerAgents;
+	private volatile List<BootstrapPeer> peerAgents;
 	private Lock storeLock;
 	private Integer sampleSize;
 
-	public PeerStorage(PeerAgent local, Integer sampleSize) {
+	public PeerStorage(BootstrapPeer local, Integer sampleSize) {
 		peerAgents = new ArrayList<>();
 		this.sampleSize = sampleSize;
 		peerAgents.add(local);
 		storeLock = new ReentrantLock();
 	}
 
-	public void addPeer(PeerAgent peer) {
+	public void addPeer(BootstrapPeer peer) {
 
 		if (!peerAgents.contains(peer)) {
 			storeLock.lock();
@@ -35,9 +35,9 @@ public class PeerStorage {
 		}
 	}
 
-	public void mergeView(List<PeerAgent> view) {
+	public void mergeView(List<BootstrapPeer> view) {
 		storeLock.lock();
-		List<PeerAgent> toMerge = view.stream()
+		List<BootstrapPeer> toMerge = view.stream()
 				.distinct()
 				.filter(v -> !peerAgents.contains(v))
 				.collect(Collectors.toList());
@@ -46,9 +46,9 @@ public class PeerStorage {
 		storeLock.unlock();
 	}
 
-	public List<PeerAgent> createSample() throws PeerNotFound {
+	public List<BootstrapPeer> createSample() throws PeerNotFound {
 		Integer actualSize = Math.min(sampleSize, peerAgents.size());
-		List<PeerAgent> sample = new ArrayList<>();
+		List<BootstrapPeer> sample = new ArrayList<>();
 
 		while (sample.size() < actualSize) {
 			sample.add(getRandomPeer());
@@ -57,7 +57,7 @@ public class PeerStorage {
 		return sample;
 	}
 
-	public PeerAgent getRandomPeer() throws PeerNotFound {
+	public BootstrapPeer getRandomPeer() throws PeerNotFound {
 		if (!isEmpty()) {
 			// Exclude local reference
 			Integer rndPeer = ThreadLocalRandom.current().nextInt(1, peerAgents.size());
@@ -68,9 +68,9 @@ public class PeerStorage {
 		throw new PeerNotFound("Local view is empty");
 	}
 
-	public PeerAgent getPeer(PeerAgent peer) throws PeerNotFound {
+	public BootstrapPeer getPeer(BootstrapPeer peer) throws PeerNotFound {
 
-		Optional<PeerAgent> maybe = peerAgents.stream().filter(a -> a.equals(peer)).findFirst();
+		Optional<BootstrapPeer> maybe = peerAgents.stream().filter(a -> a.equals(peer)).findFirst();
 
 		if (maybe.isPresent()) {
 			return maybe.get();
@@ -79,13 +79,13 @@ public class PeerStorage {
 		}
 	}
 
-	public void removePeer(PeerAgent peer) {
+	public void removePeer(BootstrapPeer peer) {
 		storeLock.lock();
 		peerAgents.remove(peer);
 		storeLock.unlock();
 	}
 
-	public PeerAgent getSelf() {
+	public BootstrapPeer getSelf() {
 		return peerAgents.get(0);
 	}
 

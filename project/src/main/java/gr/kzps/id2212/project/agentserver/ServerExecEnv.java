@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.lookup.MainMapLookup;
 
 import gr.kzps.id2212.project.agentserver.overlay.Discovery;
-import gr.kzps.id2212.project.agentserver.overlay.PeerAgent;
+import gr.kzps.id2212.project.agentserver.overlay.BootstrapPeer;
 import gr.kzps.id2212.project.agentserver.overlay.PeerStorage;
 
 public class ServerExecEnv {
@@ -22,7 +22,7 @@ public class ServerExecEnv {
 	private Integer agentPort;
 	private Integer basePort;
 	private Discovery discoveryService;
-	private PeerAgent local;
+	private BootstrapPeer local;
 	private TcpServer baseServer;
 	private TcpServer agentServer;
 	
@@ -35,6 +35,7 @@ public class ServerExecEnv {
 			
 			serverId = cmd.getOptionValue("id");
 			
+			// Add server id to log4j lookup map
 			MainMapLookup.setMainArguments(new String[]{"id", serverId});
 			
 			if (cmd.hasOption("agentPort")) {
@@ -55,7 +56,9 @@ public class ServerExecEnv {
 			Cache.getInstance().setAgentPort(agentPort);
 			
 			try {
-				local = new PeerAgent(InetAddress.getLocalHost(), basePort);
+				local = new BootstrapPeer(InetAddress.getLocalHost(), basePort);
+				local.setServicePort(agentPort);
+				
 				// Sample size
 				PeerStorage peerStorage = new PeerStorage(local, 4);
 				

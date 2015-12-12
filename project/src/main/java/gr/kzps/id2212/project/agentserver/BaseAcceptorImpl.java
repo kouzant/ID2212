@@ -12,7 +12,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import gr.kzps.id2212.project.agentserver.overlay.PeerAgent;
+import gr.kzps.id2212.project.agentserver.overlay.BootstrapPeer;
 import gr.kzps.id2212.project.agentserver.overlay.PeerNotFound;
 import gr.kzps.id2212.project.agentserver.overlay.PeerStorage;
 import gr.kzps.id2212.project.messages.BaseMessage;
@@ -24,7 +24,7 @@ public class BaseAcceptorImpl extends Acceptor {
 	private final Logger LOG = LogManager.getLogger(BaseAcceptorImpl.class);
 
 	private PeerStorage peerStorage;
-	private List<PeerAgent> sample;
+	private List<BootstrapPeer> sample;
 
 	public BaseAcceptorImpl(Socket cSocket, PeerStorage peerStorage) {
 		super(cSocket);

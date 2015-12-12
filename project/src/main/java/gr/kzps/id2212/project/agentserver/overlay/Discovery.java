@@ -20,12 +20,12 @@ public class Discovery implements Runnable {
 	private final Integer SLEEP = 5;
 	
 	private PeerStorage peerStorage;
-	private final PeerAgent local;
-	private List<PeerAgent> sample;
+	private final BootstrapPeer local;
+	private List<BootstrapPeer> sample;
 	private Socket targetSocket;
 	private ObjectOutputStream outStream;
 
-	public Discovery(PeerAgent local, PeerStorage peerStorage) throws UnknownHostException {
+	public Discovery(BootstrapPeer local, PeerStorage peerStorage) throws UnknownHostException {
 		this.local = local;
 		this.peerStorage = peerStorage;
 	}
@@ -34,7 +34,7 @@ public class Discovery implements Runnable {
 	public void connectBootstrap(InetAddress bAddress, Integer bPort) {
 		// Send a Hello message with my reference
 		LOG.debug("Bootstraping from {}:{}", new Object[] { bAddress.toString(), bPort });
-		send(new PeerAgent(bAddress, bPort), new HelloMessage(local));
+		send(new BootstrapPeer(bAddress, bPort), new HelloMessage(local));
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class Discovery implements Runnable {
 			}
 
 			try {
-				PeerAgent target = peerStorage.getRandomPeer();
+				BootstrapPeer target = peerStorage.getRandomPeer();
 				// Create a sample
 				sample = peerStorage.createSample();
 				sample.add(local);
@@ -65,9 +65,9 @@ public class Discovery implements Runnable {
 		}
 	}
 
-	private <T extends GenericMessage> void send(PeerAgent target, T message) {
+	private <T extends GenericMessage> void send(BootstrapPeer target, T message) {
 		try {
-			targetSocket = new Socket(target.getAddress(), target.getPort());
+			targetSocket = new Socket(target.getAddress(), target.getBasePort());
 			outStream = new ObjectOutputStream(targetSocket.getOutputStream());
 			outStream.writeObject(message);
 			outStream.flush();
