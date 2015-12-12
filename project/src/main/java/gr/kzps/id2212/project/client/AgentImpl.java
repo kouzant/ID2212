@@ -3,9 +3,11 @@ package gr.kzps.id2212.project.client;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import gr.kzps.id2212.project.agentserver.AgentRunningContainer;
 import gr.kzps.id2212.project.agentserver.overlay.PeerAgent;
+import gr.kzps.id2212.project.agentserver.overlay.PeerNotFound;
 
 public class AgentImpl implements Agent, Runnable {
 
@@ -28,7 +30,13 @@ public class AgentImpl implements Agent, Runnable {
 	public void run() {
 		String agentName = Thread.currentThread().getName();
 		System.out.println(agentName + " is doing something in " + currentServer);
-		container.agentMigrate(homeAddress, homePort);
+		try {
+			PeerAgent nextServer = nextServer();
+			container.agentMigrate(nextServer.getAddress(), nextServer.getServicePort());
+		} catch (PeerNotFound ex) {
+			System.out.println(ex.getMessage());
+			container.agentMigrate(homeAddress, homePort);
+		}
 	}
 
 	@Override
@@ -50,5 +58,18 @@ public class AgentImpl implements Agent, Runnable {
 			.forEach(s -> sb.append(s).append("\n"));
 		
 		return sb.toString();
+	}
+	
+	private PeerAgent nextServer() throws PeerNotFound {
+		List<PeerAgent> localView = container.getLocalView();
+		Optional<PeerAgent> maybe = localView.parallelStream()
+				.filter(p -> !serversVisited.contains(p))
+				.findAny();
+		
+		if (maybe.isPresent()) {
+			return maybe.get();
+		}
+		
+		throw new PeerNotFound("No more unvisited servers");
 	}
 }

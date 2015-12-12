@@ -46,6 +46,14 @@ public class PeerStorage {
 		peerAgents.addAll(toMerge);
 		storeLock.unlock();
 	}
+	
+	public List<PeerAgent> getLocalView() throws PeerNotFound {
+		if (peerAgents.size() > 1) {
+			return peerAgents;
+		}
+		
+		throw new PeerNotFound("Local view is Empty");
+	}
 
 	public List<PeerAgent> createSample() throws PeerNotFound {
 		Integer actualSize = Math.min(sampleSize, peerAgents.size());

@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 
 import org.apache.logging.log4j.Logger;
 
+import gr.kzps.id2212.project.agentserver.overlay.PeerAgent;
+import gr.kzps.id2212.project.agentserver.overlay.PeerNotFound;
 import gr.kzps.id2212.project.agentserver.overlay.PeerStorage;
 import gr.kzps.id2212.project.client.Agent;
 
@@ -44,5 +47,9 @@ public class AgentRunningContainer {
 		} catch (IOException ex) {
 			LOG.error(ex.getMessage());
 		}
+	}
+	
+	public List<PeerAgent> getLocalView() throws PeerNotFound {
+		return peerStorage.getLocalView();
 	}
 }
