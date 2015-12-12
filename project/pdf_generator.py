@@ -7,14 +7,12 @@ import subprocess
 import tempfile
 import shutil
 
-#dirs = ['NodeA', 'NodeB', 'NodeC', 'NodeD']
+dirs = ['NodeA', 'NodeB', 'NodeC', 'NodeD']
 
-dirs = ['NodeA']
-
-titles = ["Lorem ipsum", "Some title", "Some other title"]
-
-keywords = ["big data", "YARN", "Hadoop", "Hops", "Hops-YARN", "Hops-Hadoop", "Distributed Systems"]
-content = ["application/pdf"]
+titles = ["Lorem ipsum", "Some title", "Some other title", "A very promising title",
+          "A fancy title"]
+keywords = ["big data", "YARN", "Hadoop", "Hops", "Hops-YARN", "Hops-Hadoop", "Distributed Systems",
+            "Cloud", "IoT", "Security", "HDFS", "Hops-HDFS", "Constraint programming"]
 authors = ["Antonis Kouzoupis", "Alice Bar", "Bob Foo", "Joe Smith"]
     
 def gen(template, index, dir, tmp, cwd):
