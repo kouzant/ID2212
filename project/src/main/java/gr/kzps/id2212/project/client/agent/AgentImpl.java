@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.tika.exception.TikaException;
@@ -33,6 +35,7 @@ public class AgentImpl implements Agent, Runnable {
 	private final Integer homePort;
 	private final UUID id;
 	private final Query query;
+	private final Pattern pattern;
 	private List<PeerAgent> visitedServers;
 	// TODO to be removed!!!
 	private List<String> resultFiles;
@@ -49,13 +52,15 @@ public class AgentImpl implements Agent, Runnable {
 		visitedServers = new ArrayList<>();
 		resultFiles = new ArrayList<>();
 		localResultList = new ArrayList<>();
+		// Currently accept only pdf
+		// "\\S+\\s*\\S*.((pdf)|(odt))$"
+		pattern = Pattern.compile("\\S+\\s*\\S*.(pdf)$");
 	}
 
 	@Override
 	public void run() {
 		String agentName = Thread.currentThread().getName();
 		System.out.println(agentName + " is doing something in " + currentServer);
-		// Search in Cache.getInstance().getSearchPath()
 		Path searchDir = Paths.get(Cache.getInstance().getSearchPath());
 		localResultList = filterFiles(listFiles(searchDir));
 		resultFiles.addAll(localResultList);
@@ -102,7 +107,9 @@ public class AgentImpl implements Agent, Runnable {
 				if (Files.isDirectory(file)) {
 					files.addAll(listFiles(file));
 				} else {
-					files.add(file);
+					if (checkType(file)) {
+						files.add(file);	
+					}
 				}
 			}
 		} catch (IOException ex) {
@@ -112,6 +119,15 @@ public class AgentImpl implements Agent, Runnable {
 		return files;
 	}
 
+	private Boolean checkType(Path file) {
+		Matcher matcher = pattern.matcher(file.toAbsolutePath().toString());
+		if (matcher.matches()) {
+			return true;
+		}
+		
+		return false;
+	}
+	
 	private PeerAgent nextServer() throws PeerNotFound {
 		List<PeerAgent> localView = container.getLocalView();
 		Optional<PeerAgent> maybe = localView.parallelStream().filter(p -> !visitedServers.contains(p)).findAny();
@@ -154,9 +170,11 @@ public class AgentImpl implements Agent, Runnable {
 				check = true;
 			}
 
-		} catch (IOException | TikaException | SAXException ex) {
-			System.out.println("SOMETHING FUCKED UP!");
+		} catch (IOException | SAXException ex) {
 			ex.printStackTrace();
+		} catch (TikaException ex) {
+			System.err.println("Document: " + file.toAbsolutePath() + 
+					" could not be parsed");
 		}
 
 		return check;
