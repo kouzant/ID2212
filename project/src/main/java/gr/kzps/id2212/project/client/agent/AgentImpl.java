@@ -26,6 +26,7 @@ import gr.kzps.id2212.project.agentserver.AgentRunningContainer;
 import gr.kzps.id2212.project.agentserver.Cache;
 import gr.kzps.id2212.project.agentserver.overlay.PeerAgent;
 import gr.kzps.id2212.project.agentserver.overlay.PeerNotFound;
+import gr.kzps.id2212.project.client.query.ParameterSwitch;
 import gr.kzps.id2212.project.client.query.Query;
 import gr.kzps.id2212.project.client.query.Result;
 
@@ -186,11 +187,12 @@ public class AgentImpl implements Agent, Runnable {
 	// Check title metadata
 	private Boolean checkTitle(Metadata metadata) {
 		// Ignore title
-		if (query.getTitle().equals("")) {
+		if (query.getTitle().getParameterSwitch().equals(ParameterSwitch.OFF)) {
 			return true;
 		}
 		
-		if (metadata.get("title").toLowerCase().contains(query.getTitle().toLowerCase())) {
+		if (metadata.get("title").toLowerCase().contains(
+				query.getTitle().getParameter().toLowerCase())) {
 			return true;
 		}
 
@@ -200,11 +202,12 @@ public class AgentImpl implements Agent, Runnable {
 	// Check author
 	private Boolean checkAuthor(Metadata metadata) {
 		// Ignore author
-		if (query.getAuthor().equals("")) {
+		if (query.getAuthor().getParameterSwitch().equals(ParameterSwitch.OFF)) {
 			return true;
 		}
 		
-		if(metadata.get("Author").toLowerCase().contains(query.getAuthor().toLowerCase())) {
+		if(metadata.get("Author").toLowerCase().contains(
+				query.getAuthor().getParameter().toLowerCase())) {
 			return true;
 		}
 		
@@ -214,11 +217,12 @@ public class AgentImpl implements Agent, Runnable {
 	// Check keywords. All query keywords should exist
 	private Boolean checkKeywords(Metadata metadata) {
 		// Ignore keywords
-		if (query.getKeywords().size() == 0) {
+		if (query.getKeywords().getParameterSwitch().equals(ParameterSwitch.OFF)) {
 			return true;
 		}
+		
 		// Check keywords. All query keywords should exist
-		List<String> queryKeywords = query.getKeywords();
+		List<String> queryKeywords = query.getKeywords().getParameter();
 		for (String keyword : queryKeywords) {
 			if (!metadata.get("Keywords").toLowerCase().contains(keyword.toLowerCase())) {
 				return false;

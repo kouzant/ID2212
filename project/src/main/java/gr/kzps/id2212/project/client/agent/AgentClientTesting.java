@@ -13,11 +13,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.ws.rs.QueryParam;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import gr.kzps.id2212.project.classloader.QueryPlanClassLoader;
 import gr.kzps.id2212.project.client.query.Query;
+import gr.kzps.id2212.project.client.query.QueryParameter;
 import gr.kzps.id2212.project.client.query.QueryPlan;
 
 /*
@@ -35,12 +38,13 @@ public class AgentClientTesting {
 			QueryPlanClassLoader loader = new QueryPlanClassLoader(AgentClientTesting.class.getClassLoader());
 			QueryPlan queryPlan = loader.loadPlan("userplan.UserQueryPlan");
 			
-			List<String> keywords = new ArrayList<>();
-			keywords.add("Cloud");
-			keywords.add("YARN");
-			Date now = new Date();
+			QueryParameter<String> author = queryPlan.getAuthor();
+			QueryParameter<String> title = queryPlan.getTitle();
+			QueryParameter<Date> date = queryPlan.getDate();
+			QueryParameter<List<String>> keywords = queryPlan.getKeywords();
 			
-			Query query = new Query("", now, keywords, queryPlan.getTitle());
+			Query query = new Query(author, date, keywords, title);
+			
 			Agent agent = new AgentImpl(id, InetAddress.getByName("localhost"),
 					5050, query);
 

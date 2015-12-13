@@ -7,32 +7,32 @@ import java.util.List;
 public class Query implements Serializable {
 	private static final long serialVersionUID = 3344487334305397999L;
 
-	private final String author;
-	private final Date creationDate;
-	private final List<String> keywords;
-	private final String title;
+	private final QueryParameter<String> author;
+	private final QueryParameter<Date> creationDate;
+	private final QueryParameter<List<String>> keywords;
+	private final QueryParameter<String> title;
 	
-	public Query(String author, Date creationDate, List<String> keywords,
-			String title) {
+	public Query(QueryParameter<String> author, QueryParameter<Date> creationDate,
+			QueryParameter<List<String>> keywords, QueryParameter<String> title) {
 		this.author = author;
 		this.creationDate = creationDate;
 		this.keywords = keywords;
 		this.title = title;
 	}
 	
-	public String getAuthor() {
+	public QueryParameter<String> getAuthor() {
 		return author;
 	}
 	
-	public Date creationDate() {
+	public QueryParameter<Date> creationDate() {
 		return creationDate;
 	}
 	
-	public List<String> getKeywords() {
+	public QueryParameter<List<String>> getKeywords() {
 		return keywords;
 	}
 	
-	public String getTitle() {
+	public QueryParameter<String> getTitle() {
 		return title;
 	}
 }
