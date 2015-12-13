@@ -6,6 +6,9 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +26,14 @@ public class AgentClientTesting {
 			InetAddress server = InetAddress.getByName("localhost");
 			Integer port = 6060;
 			UUID id = UUID.randomUUID();
-			Agent agent = new AgentImpl(id, InetAddress.getByName("localhost"), 5050);
+			List<String> keywords = new ArrayList<>();
+			keywords.add("Hadoop");
+			keywords.add("YARN");
+			Date now = new Date();
+			
+			Query query = new Query("Antonis Kouzoupis", now, keywords, "Some title");
+			Agent agent = new AgentImpl(id, InetAddress.getByName("localhost"),
+					5050, query);
 
 			LOG.debug("Agent created and sending to server");
 			socket = new Socket(server, port);
