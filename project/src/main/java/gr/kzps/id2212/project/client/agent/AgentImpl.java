@@ -38,11 +38,11 @@ public class AgentImpl implements Agent, Runnable {
 	private final Pattern pattern;
 	private List<PeerAgent> visitedServers;
 	// TODO to be removed!!!
-	private List<String> resultFiles;
+	private List<Result> resultList;
 
 	private transient AgentRunningContainer container;
 	private transient PeerAgent currentServer;
-	private transient List<String> localResultList;
+	private transient List<Result> localResultList;
 	
 	public AgentImpl(UUID id, InetAddress homeAddress, Integer homePort, Query query) {
 		this.id = id;
@@ -50,7 +50,7 @@ public class AgentImpl implements Agent, Runnable {
 		this.homePort = homePort;
 		this.query = query;
 		visitedServers = new ArrayList<>();
-		resultFiles = new ArrayList<>();
+		resultList = new ArrayList<>();
 		localResultList = new ArrayList<>();
 		// Currently accept only pdf
 		// "\\S+\\s*\\S*.((pdf)|(odt))$"
@@ -63,7 +63,7 @@ public class AgentImpl implements Agent, Runnable {
 		System.out.println(agentName + " is doing something in " + currentServer);
 		Path searchDir = Paths.get(Cache.getInstance().getSearchPath());
 		localResultList = filterFiles(listFiles(searchDir));
-		resultFiles.addAll(localResultList);
+		resultList.addAll(localResultList);
 		localResultList.clear();
 
 		try {
@@ -93,7 +93,7 @@ public class AgentImpl implements Agent, Runnable {
 		visitedServers.stream().forEach(s -> sb.append(s).append("\n"));
 
 		sb.append("Files found").append("\n");
-		resultFiles.stream().forEach(p -> sb.append(p).append("\n"));
+		resultList.stream().forEach(p -> sb.append(p).append("\n"));
 
 		return sb.toString();
 	}
@@ -139,10 +139,11 @@ public class AgentImpl implements Agent, Runnable {
 		throw new PeerNotFound("No more unvisited servers");
 	}
 
-	private List<String> filterFiles(List<Path> files) {
+	private List<Result> filterFiles(List<Path> files) {
 
-		List<String> filtered = files.parallelStream().filter(f -> checkQuery(f))
-				.map(f -> f.toAbsolutePath().toString()).collect(Collectors.toList());
+		List<Result> filtered = files.parallelStream().filter(f -> checkQuery(f))
+				.map(f -> new Result(currentServer, f.toAbsolutePath().toString()))
+				.collect(Collectors.toList());
 
 		return filtered;
 	}
