@@ -49,8 +49,9 @@ public class AgentClientTesting {
 			DateParameter<String> date = queryPlan.getDate();
 			
 			Date parsedDate = new Date();
+			Utilities util = new Utilities();
 			if (!date.getParameterSwitch().equals(ParameterSwitch.OFF)) {
-				parsedDate = Utilities.parseDate(date.getParameter());
+				parsedDate = util.parseDate(date.getParameter());
 			}
 			DateParameter<Date> formDate = new DateParameter<Date>(parsedDate, date.getParameterSwitch(), date.getOperator());
 			QueryParameter<List<String>> keywords = queryPlan.getKeywords();

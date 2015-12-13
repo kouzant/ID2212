@@ -6,8 +6,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Utilities {
-	public static Date parseDate(String date) {
-		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'");
+	private DateFormat formatter;
+	
+	public Utilities() {
+		formatter = new SimpleDateFormat("yyyy-MM-dd'T'");
+	}
+	
+	public Date parseDate(String date) {
 		try {
 			Date parsedDate = formatter.parse(date);
 			

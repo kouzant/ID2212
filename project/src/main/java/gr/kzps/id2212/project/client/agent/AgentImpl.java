@@ -50,6 +50,7 @@ public class AgentImpl implements Agent, Runnable {
 	private transient AgentRunningContainer container;
 	private transient PeerAgent currentServer;
 	private transient List<Result> localResultList;
+	private transient Utilities utils;
 	
 	public AgentImpl(UUID id, InetAddress homeAddress, Integer homePort, Query query) {
 		this.id = id;
@@ -87,6 +88,7 @@ public class AgentImpl implements Agent, Runnable {
 		visitedServers.add(serverReference);
 		this.container = container;
 		currentServer = serverReference;
+		utils = new Utilities();
 		Thread agentThread = new Thread(this);
 		agentThread.setName("Agent-Thread");
 		agentThread.start();
@@ -245,7 +247,7 @@ public class AgentImpl implements Agent, Runnable {
 		if (query.getDate().getParameterSwitch().equals(ParameterSwitch.OFF)) {
 			return true;
 		}
-		Date parsedDate = Utilities.parseDate(metadata.get("meta:creation-date"));
+		Date parsedDate = utils.parseDate(metadata.get("meta:creation-date"));
 		
 		if (DateOperators.AFTER.equals(query.getDate().getOperator())) {
 			if (parsedDate.after(query.getDate().getParameter())) {

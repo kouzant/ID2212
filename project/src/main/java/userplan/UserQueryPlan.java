@@ -1,7 +1,6 @@
 package userplan;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import gr.kzps.id2212.project.client.query.DateParameter;
@@ -22,7 +21,7 @@ public class UserQueryPlan implements QueryPlan {
 		List<String> keys = new ArrayList<>();
 		keys.add("YARN");
 		keys.add("Cloud");
-		keywords = new QueryParameter<List<String>>(keys, ParameterSwitch.ON);
+		keywords = new QueryParameter<List<String>>(keys, ParameterSwitch.OFF);
 		
 		date = new DateParameter<String>("2015-12-14T", ParameterSwitch.ON, DateOperators.BEFORE);
 	}
