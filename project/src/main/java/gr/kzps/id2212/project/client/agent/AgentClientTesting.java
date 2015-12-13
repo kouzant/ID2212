@@ -27,7 +27,7 @@ public class AgentClientTesting {
 			Integer port = 6060;
 			UUID id = UUID.randomUUID();
 			List<String> keywords = new ArrayList<>();
-			keywords.add("Hadoop");
+			keywords.add("Cloud");
 			keywords.add("YARN");
 			Date now = new Date();
 			
