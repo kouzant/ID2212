@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 import gr.kzps.id2212.project.agentserver.overlay.PeerAgent;
 import gr.kzps.id2212.project.agentserver.overlay.PeerNotFound;
 import gr.kzps.id2212.project.agentserver.overlay.PeerStorage;
-import gr.kzps.id2212.project.client.Agent;
+import gr.kzps.id2212.project.client.agent.Agent;
 
 public class AgentRunningContainer {
 	private final Logger LOG = LogManager.getLogger(AgentRunningContainer.class);

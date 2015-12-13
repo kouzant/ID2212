@@ -1,4 +1,4 @@
-package gr.kzps.id2212.project.client;
+package gr.kzps.id2212.project.client.agent;
 
 import java.net.InetAddress;
 import java.util.ArrayList;

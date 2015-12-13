@@ -8,7 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import gr.kzps.id2212.project.agentserver.overlay.PeerStorage;
-import gr.kzps.id2212.project.client.Agent;
+import gr.kzps.id2212.project.client.agent.Agent;
 
 public class AgentAcceptorImpl extends Acceptor {
 
