@@ -14,6 +14,8 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import gr.kzps.id2212.project.client.query.Query;
+
 /*
  * Just for TESTING purposes
  */

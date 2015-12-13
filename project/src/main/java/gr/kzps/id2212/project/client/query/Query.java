@@ -1,4 +1,4 @@
-package gr.kzps.id2212.project.client.agent;
+package gr.kzps.id2212.project.client.query;
 
 import java.io.Serializable;
 import java.util.Date;

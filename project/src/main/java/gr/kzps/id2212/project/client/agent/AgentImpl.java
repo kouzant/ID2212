@@ -26,6 +26,8 @@ import gr.kzps.id2212.project.agentserver.AgentRunningContainer;
 import gr.kzps.id2212.project.agentserver.Cache;
 import gr.kzps.id2212.project.agentserver.overlay.PeerAgent;
 import gr.kzps.id2212.project.agentserver.overlay.PeerNotFound;
+import gr.kzps.id2212.project.client.query.Query;
+import gr.kzps.id2212.project.client.query.Result;
 
 public class AgentImpl implements Agent, Runnable {
 
