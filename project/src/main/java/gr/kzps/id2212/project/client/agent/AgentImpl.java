@@ -1,6 +1,8 @@
 package gr.kzps.id2212.project.client.agent;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -11,6 +13,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.sax.BodyContentHandler;
+import org.xml.sax.SAXException;
 
 import gr.kzps.id2212.project.agentserver.AgentRunningContainer;
 import gr.kzps.id2212.project.agentserver.Cache;
@@ -48,9 +56,7 @@ public class AgentImpl implements Agent, Runnable {
 		System.out.println(agentName + " is doing something in " + currentServer);
 		// Search in Cache.getInstance().getSearchPath()
 		Path searchDir = Paths.get(Cache.getInstance().getSearchPath());
-		resultFiles = listFiles(searchDir).stream()
-				.map(p -> p.toAbsolutePath().toString())
-				.collect(Collectors.toList());
+		resultFiles = filterFiles(listFiles(searchDir));
 		
 		try {
 			PeerAgent nextServer = nextServer();
@@ -116,5 +122,44 @@ public class AgentImpl implements Agent, Runnable {
 		}
 		
 		throw new PeerNotFound("No more unvisited servers");
+	}
+	
+	private List<String> filterFiles(List<Path> files) {
+		AutoDetectParser parser = new AutoDetectParser();
+		BodyContentHandler handler = new BodyContentHandler();
+		
+		List<String> filtered = files.stream()
+				.filter(f -> checkQuery(f, parser, handler))
+				.map(f -> f.toAbsolutePath().toString())
+				.collect(Collectors.toList());
+		
+		return filtered;
+	}
+	
+	private Boolean checkQuery(Path file, AutoDetectParser parser,
+			BodyContentHandler handler) {
+		
+		Boolean check = false;
+		
+		Metadata metadata = new Metadata();
+		try (InputStream in = new FileInputStream(file.toFile())) {
+			System.out.println("Parsing file: " + file.toAbsolutePath());
+			
+			parser.parse(in, handler, metadata);
+			
+			// Check title metadata
+			if (metadata.get("title").toLowerCase()
+					.contains(query.getTitle().toLowerCase())) {
+				check = true;
+			} else {
+				check = false;
+			}
+			
+		} catch (IOException | TikaException | SAXException ex) {
+			System.out.println("SOMETHING FUCKED UP!");
+			ex.printStackTrace();
+		}
+		
+		return check;
 	}
 }
