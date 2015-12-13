@@ -8,7 +8,9 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,9 +28,11 @@ import gr.kzps.id2212.project.agentserver.AgentRunningContainer;
 import gr.kzps.id2212.project.agentserver.Cache;
 import gr.kzps.id2212.project.agentserver.overlay.PeerAgent;
 import gr.kzps.id2212.project.agentserver.overlay.PeerNotFound;
-import gr.kzps.id2212.project.client.query.ParameterSwitch;
 import gr.kzps.id2212.project.client.query.Query;
 import gr.kzps.id2212.project.client.query.Result;
+import gr.kzps.id2212.project.client.query.parameterOperators.DateOperators;
+import gr.kzps.id2212.project.client.query.parameterOperators.ParameterSwitch;
+import gr.kzps.id2212.project.utils.Utilities;
 
 public class AgentImpl implements Agent, Runnable {
 
@@ -170,7 +174,7 @@ public class AgentImpl implements Agent, Runnable {
 			parser.parse(in, handler, metadata);
 
 			if (checkTitle(metadata) && checkKeywords(metadata)
-					&& checkAuthor(metadata)) {
+					&& checkAuthor(metadata) && checkDate(metadata)) {
 				check = true;
 			}
 
@@ -179,6 +183,9 @@ public class AgentImpl implements Agent, Runnable {
 		} catch (TikaException ex) {
 			System.err.println("Document: " + file.toAbsolutePath() + 
 					" could not be parsed");
+		} catch (ParseException ex) {
+			System.err.println("Could not parse meta:creation-date property of file " +
+					file.toAbsolutePath());
 		}
 
 		return check;
@@ -230,5 +237,30 @@ public class AgentImpl implements Agent, Runnable {
 		}
 		
 		return true;
+	}
+	
+	// Check date
+	private Boolean checkDate(Metadata metadata) throws ParseException {
+		// Ignore date
+		if (query.getDate().getParameterSwitch().equals(ParameterSwitch.OFF)) {
+			return true;
+		}
+		Date parsedDate = Utilities.parseDate(metadata.get("meta:creation-date"));
+		
+		if (DateOperators.AFTER.equals(query.getDate().getOperator())) {
+			if (parsedDate.after(query.getDate().getParameter())) {
+				return true;
+			}
+		} else if (DateOperators.EQUALS.equals(query.getDate().getOperator())) {
+			if (parsedDate.equals(query.getDate().getParameter())) {
+				return true;
+			}
+		} else if (DateOperators.BEFORE.equals(query.getDate().getOperator())) {
+			if (parsedDate.before(query.getDate().getParameter())) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

@@ -8,6 +8,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,9 +22,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import gr.kzps.id2212.project.classloader.QueryPlanClassLoader;
+import gr.kzps.id2212.project.client.query.DateParameter;
 import gr.kzps.id2212.project.client.query.Query;
 import gr.kzps.id2212.project.client.query.QueryParameter;
 import gr.kzps.id2212.project.client.query.QueryPlan;
+import gr.kzps.id2212.project.client.query.parameterOperators.ParameterSwitch;
+import gr.kzps.id2212.project.utils.Utilities;
 
 /*
  * Just for TESTING purposes
@@ -30,7 +36,7 @@ public class AgentClientTesting {
 	private static final Logger LOG = LogManager.getLogger(AgentClientTesting.class);
 	private static Socket socket;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
 		try {
 			InetAddress server = InetAddress.getByName("localhost");
 			Integer port = 6060;
@@ -40,10 +46,16 @@ public class AgentClientTesting {
 			
 			QueryParameter<String> author = queryPlan.getAuthor();
 			QueryParameter<String> title = queryPlan.getTitle();
-			QueryParameter<Date> date = queryPlan.getDate();
+			DateParameter<String> date = queryPlan.getDate();
+			
+			Date parsedDate = new Date();
+			if (!date.getParameterSwitch().equals(ParameterSwitch.OFF)) {
+				parsedDate = Utilities.parseDate(date.getParameter());
+			}
+			DateParameter<Date> formDate = new DateParameter<Date>(parsedDate, date.getParameterSwitch(), date.getOperator());
 			QueryParameter<List<String>> keywords = queryPlan.getKeywords();
 			
-			Query query = new Query(author, date, keywords, title);
+			Query query = new Query(author, keywords, title, formDate);
 			
 			Agent agent = new AgentImpl(id, InetAddress.getByName("localhost"),
 					5050, query);

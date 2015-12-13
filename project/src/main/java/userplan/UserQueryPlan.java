@@ -4,24 +4,27 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import gr.kzps.id2212.project.client.query.ParameterSwitch;
+import gr.kzps.id2212.project.client.query.DateParameter;
 import gr.kzps.id2212.project.client.query.QueryParameter;
 import gr.kzps.id2212.project.client.query.QueryPlan;
+import gr.kzps.id2212.project.client.query.parameterOperators.DateOperators;
+import gr.kzps.id2212.project.client.query.parameterOperators.ParameterSwitch;
 
 public class UserQueryPlan implements QueryPlan {
 	private final QueryParameter<String> title;
 	private final QueryParameter<String> author;
 	private final QueryParameter<List<String>> keywords;
-	private final QueryParameter<Date> date;
+	private final DateParameter<String> date;
 	
 	public UserQueryPlan() {
-		title = new QueryParameter<>("Some title", ParameterSwitch.ON);
-		author = new QueryParameter<>("Antonis Kouzoupis", ParameterSwitch.ON);
+		title = new QueryParameter<>("Some title", ParameterSwitch.OFF);
+		author = new QueryParameter<>("Antonis Kouzoupis", ParameterSwitch.OFF);
 		List<String> keys = new ArrayList<>();
 		keys.add("YARN");
 		keys.add("Cloud");
 		keywords = new QueryParameter<List<String>>(keys, ParameterSwitch.ON);
-		date = new QueryParameter<Date>(new Date(), ParameterSwitch.OFF);
+		
+		date = new DateParameter<String>("2015-12-14T", ParameterSwitch.ON, DateOperators.BEFORE);
 	}
 
 	@Override
@@ -40,7 +43,7 @@ public class UserQueryPlan implements QueryPlan {
 	}
 
 	@Override
-	public QueryParameter<Date> getDate() {
+	public DateParameter<String> getDate() {
 		return date;
 	}
 	

@@ -2,6 +2,8 @@ package gr.kzps.id2212.project.client.query;
 
 import java.io.Serializable;
 
+import gr.kzps.id2212.project.client.query.parameterOperators.ParameterSwitch;
+
 public class QueryParameter<T> implements Serializable {
 	private static final long serialVersionUID = 4504299340508028881L;
 	private final T parameter;
