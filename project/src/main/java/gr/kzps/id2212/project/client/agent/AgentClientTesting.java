@@ -3,6 +3,8 @@ package gr.kzps.id2212.project.client.agent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -14,7 +16,9 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import gr.kzps.id2212.project.classloader.QueryPlanClassLoader;
 import gr.kzps.id2212.project.client.query.Query;
+import gr.kzps.id2212.project.client.query.QueryPlan;
 
 /*
  * Just for TESTING purposes
@@ -28,12 +32,15 @@ public class AgentClientTesting {
 			InetAddress server = InetAddress.getByName("localhost");
 			Integer port = 6060;
 			UUID id = UUID.randomUUID();
+			QueryPlanClassLoader loader = new QueryPlanClassLoader(AgentClientTesting.class.getClassLoader());
+			QueryPlan queryPlan = loader.loadPlan("userplan.UserQueryPlan");
+			
 			List<String> keywords = new ArrayList<>();
 			keywords.add("Cloud");
 			keywords.add("YARN");
 			Date now = new Date();
 			
-			Query query = new Query("", now, keywords, "");
+			Query query = new Query("", now, keywords, queryPlan.getTitle());
 			Agent agent = new AgentImpl(id, InetAddress.getByName("localhost"),
 					5050, query);
 
