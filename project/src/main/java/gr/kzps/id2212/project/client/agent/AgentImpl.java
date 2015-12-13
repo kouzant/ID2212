@@ -39,7 +39,8 @@ public class AgentImpl implements Agent, Runnable {
 
 	private transient AgentRunningContainer container;
 	private transient PeerAgent currentServer;
-
+	private transient List<String> localResultList;
+	
 	public AgentImpl(UUID id, InetAddress homeAddress, Integer homePort, Query query) {
 		this.id = id;
 		this.homeAddress = homeAddress;
@@ -47,6 +48,7 @@ public class AgentImpl implements Agent, Runnable {
 		this.query = query;
 		visitedServers = new ArrayList<>();
 		resultFiles = new ArrayList<>();
+		localResultList = new ArrayList<>();
 	}
 
 	@Override
@@ -55,7 +57,9 @@ public class AgentImpl implements Agent, Runnable {
 		System.out.println(agentName + " is doing something in " + currentServer);
 		// Search in Cache.getInstance().getSearchPath()
 		Path searchDir = Paths.get(Cache.getInstance().getSearchPath());
-		resultFiles = filterFiles(listFiles(searchDir));
+		localResultList = filterFiles(listFiles(searchDir));
+		resultFiles.addAll(localResultList);
+		localResultList.clear();
 
 		try {
 			PeerAgent nextServer = nextServer();
@@ -145,7 +149,8 @@ public class AgentImpl implements Agent, Runnable {
 
 			parser.parse(in, handler, metadata);
 
-			if (checkTitle(metadata) && checkKeywords(metadata)) {
+			if (checkTitle(metadata) && checkKeywords(metadata)
+					&& checkAuthor(metadata)) {
 				check = true;
 			}
 
@@ -171,6 +176,20 @@ public class AgentImpl implements Agent, Runnable {
 		return false;
 	}
 
+	// Check author
+	private Boolean checkAuthor(Metadata metadata) {
+		// Ignore author
+		if (query.getAuthor().equals("")) {
+			return true;
+		}
+		
+		if(metadata.get("Author").toLowerCase().contains(query.getAuthor().toLowerCase())) {
+			return true;
+		}
+		
+		return false;
+	}
+	
 	// Check keywords. All query keywords should exist
 	private Boolean checkKeywords(Metadata metadata) {
 		// Ignore keywords

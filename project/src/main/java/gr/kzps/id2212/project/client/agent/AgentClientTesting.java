@@ -31,7 +31,7 @@ public class AgentClientTesting {
 			keywords.add("YARN");
 			Date now = new Date();
 			
-			Query query = new Query("Antonis Kouzoupis", now, keywords, "Some title");
+			Query query = new Query("", now, keywords, "");
 			Agent agent = new AgentImpl(id, InetAddress.getByName("localhost"),
 					5050, query);
 
