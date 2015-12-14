@@ -17,6 +17,8 @@ public class ClientExecEnv {
 		serverThread.start();
 		
 		new ClientConsole(db).console();
+		
+		System.exit(0);
 	}
 
 }
