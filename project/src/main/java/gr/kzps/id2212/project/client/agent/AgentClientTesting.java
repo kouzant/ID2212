@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 import gr.kzps.id2212.project.client.classloader.QueryPlanClassLoader;
 import gr.kzps.id2212.project.client.query.DateParameter;
+import gr.kzps.id2212.project.client.query.KeywordsParameter;
 import gr.kzps.id2212.project.client.query.Query;
 import gr.kzps.id2212.project.client.query.QueryParameter;
 import gr.kzps.id2212.project.client.query.QueryPlan;
@@ -54,7 +55,8 @@ public class AgentClientTesting {
 				parsedDate = util.parseDate(date.getParameter());
 			}
 			DateParameter<Date> formDate = new DateParameter<Date>(parsedDate, date.getParameterSwitch(), date.getOperator());
-			QueryParameter<List<String>> keywords = queryPlan.getKeywords();
+			
+			KeywordsParameter<List<String>> keywords = queryPlan.getKeywords();
 			
 			Query query = new Query(author, keywords, title, formDate);
 			

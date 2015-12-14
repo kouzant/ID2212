@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gr.kzps.id2212.project.client.query.DateParameter;
+import gr.kzps.id2212.project.client.query.KeywordsParameter;
 import gr.kzps.id2212.project.client.query.QueryParameter;
 import gr.kzps.id2212.project.client.query.QueryPlan;
 import gr.kzps.id2212.project.client.query.parameterOperators.DateOperators;
@@ -12,7 +13,7 @@ import gr.kzps.id2212.project.client.query.parameterOperators.ParameterSwitch;
 public class UserQueryPlan implements QueryPlan {
 	private final QueryParameter<String> title;
 	private final QueryParameter<String> author;
-	private final QueryParameter<List<String>> keywords;
+	private final KeywordsParameter<List<String>> keywords;
 	private final DateParameter<String> date;
 	
 	public UserQueryPlan() {
@@ -21,7 +22,7 @@ public class UserQueryPlan implements QueryPlan {
 		List<String> keys = new ArrayList<>();
 		keys.add("YARN");
 		keys.add("Cloud");
-		keywords = new QueryParameter<List<String>>(keys, ParameterSwitch.OFF);
+		keywords = new KeywordsParameter<List<String>>(keys, ParameterSwitch.OFF, 2);
 		
 		date = new DateParameter<String>("2015-12-14T", ParameterSwitch.ON, DateOperators.BEFORE);
 	}
@@ -37,7 +38,7 @@ public class UserQueryPlan implements QueryPlan {
 	}
 
 	@Override
-	public QueryParameter<List<String>> getKeywords() {
+	public KeywordsParameter<List<String>> getKeywords() {
 		return keywords;
 	}
 

@@ -5,7 +5,7 @@ import java.util.List;
 public interface QueryPlan {
 	public QueryParameter<String> getTitle();
 	public QueryParameter<String> getAuthor();
-	public QueryParameter<List<String>> getKeywords();
+	public KeywordsParameter<List<String>> getKeywords();
 	// Date should be in the form "yyyy-MM-ddT" unless if
 	// operation is OFF where date can be empty string or
 	// in any other format

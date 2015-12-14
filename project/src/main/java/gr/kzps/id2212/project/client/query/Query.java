@@ -8,11 +8,11 @@ public class Query implements Serializable {
 	private static final long serialVersionUID = 3344487334305397999L;
 
 	private final QueryParameter<String> author;
-	private final QueryParameter<List<String>> keywords;
+	private final KeywordsParameter<List<String>> keywords;
 	private final QueryParameter<String> title;
 	private final DateParameter<Date> date;
 	
-	public Query(QueryParameter<String> author, QueryParameter<List<String>> keywords,
+	public Query(QueryParameter<String> author, KeywordsParameter<List<String>> keywords,
 			QueryParameter<String> title, DateParameter<Date> date) {
 		this.author = author;
 		this.keywords = keywords;
@@ -24,7 +24,7 @@ public class Query implements Serializable {
 		return author;
 	}
 	
-	public QueryParameter<List<String>> getKeywords() {
+	public KeywordsParameter<List<String>> getKeywords() {
 		return keywords;
 	}
 	

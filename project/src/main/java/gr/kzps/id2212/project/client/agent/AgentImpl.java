@@ -225,6 +225,8 @@ public class AgentImpl implements Agent, Runnable {
 	
 	// Check keywords. All query keywords should exist
 	private Boolean checkKeywords(Metadata metadata) {
+		// TODO check the success threshold
+		Integer successThreshold = query.getKeywords().getSuccessThreshold();
 		// Ignore keywords
 		if (query.getKeywords().getParameterSwitch().equals(ParameterSwitch.OFF)) {
 			return true;
