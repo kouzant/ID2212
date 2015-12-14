@@ -225,8 +225,8 @@ public class AgentImpl implements Agent, Runnable {
 	
 	// Check keywords. All query keywords should exist
 	private Boolean checkKeywords(Metadata metadata) {
-		// TODO check the success threshold
 		Integer successThreshold = query.getKeywords().getSuccessThreshold();
+		Integer matches = 0;
 		// Ignore keywords
 		if (query.getKeywords().getParameterSwitch().equals(ParameterSwitch.OFF)) {
 			return true;
@@ -235,12 +235,16 @@ public class AgentImpl implements Agent, Runnable {
 		// Check keywords. All query keywords should exist
 		List<String> queryKeywords = query.getKeywords().getParameter();
 		for (String keyword : queryKeywords) {
-			if (!metadata.get("Keywords").toLowerCase().contains(keyword.toLowerCase())) {
-				return false;
+			if (metadata.get("Keywords").toLowerCase().contains(keyword.toLowerCase())) {
+				matches++;
+			}
+			
+			if (matches.equals(successThreshold)) {
+				return true;
 			}
 		}
 		
-		return true;
+		return false;
 	}
 	
 	// Check date

@@ -22,7 +22,8 @@ public class UserQueryPlan implements QueryPlan {
 		List<String> keys = new ArrayList<>();
 		keys.add("YARN");
 		keys.add("Cloud");
-		keywords = new KeywordsParameter<List<String>>(keys, ParameterSwitch.OFF, 2);
+		keys.add("lala");
+		keywords = new KeywordsParameter<List<String>>(keys, ParameterSwitch.ON, 2);
 		
 		date = new DateParameter<String>("2015-12-14T", ParameterSwitch.ON, DateOperators.BEFORE);
 	}
