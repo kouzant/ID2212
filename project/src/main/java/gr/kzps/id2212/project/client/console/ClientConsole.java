@@ -20,7 +20,7 @@ public class ClientConsole {
 	
 	public ClientConsole() {
 		running = true;
-		parser = new Parser();
+		parser = new Parser(this);
 		reader = new BufferedReader(new InputStreamReader(System.in));
 	}
 	
@@ -44,11 +44,16 @@ public class ClientConsole {
 		}
 	}
 	
+	public void print(String msg) {
+		System.out.println("> " + msg);
+		System.out.print("> ");
+	}
+	
 	private Boolean isRunning() {
 		return running;
 	}
 	
-	private void halt() {
+	public void halt() {
 		running = false;
 	}
 }

@@ -24,7 +24,7 @@ import gr.kzps.id2212.project.client.query.QueryPlan;
 import gr.kzps.id2212.project.client.query.parameterOperators.ParameterSwitch;
 import gr.kzps.id2212.project.utils.Utilities;
 
-public class CreateAgent implements Command {
+public class CreateAgent extends CommandAbstr {
 	private final Logger LOG = LogManager.getLogger(CreateAgent.class);
 	private final String queryClass;
 	private final String targetIp;
@@ -41,7 +41,7 @@ public class CreateAgent implements Command {
 	@Override
 	public void execute() {
 		UUID agentId = UUID.randomUUID();
-		LOG.debug("Creating agent with ID: {}", agentId);
+		//LOG.debug("Creating agent with ID: {}", agentId);
 
 		QueryPlanClassLoader loader = new QueryPlanClassLoader(this.getClass().getClassLoader());
 		QueryPlan queryPlan = loader.loadPlan(queryClass);
@@ -65,11 +65,12 @@ public class CreateAgent implements Command {
 			// TODO I should fix homeport
 			Agent agent = new AgentImpl(agentId, InetAddress.getByName("localhost"), 5050, query);
 			socket = new Socket(InetAddress.getByName(targetIp), targetPort);
-			LOG.debug("Sending agent to {}:{}", new Object[] { targetIp, targetPort });
+			//LOG.debug("Sending agent to {}:{}", new Object[] { targetIp, targetPort });
 			outStream = new ObjectOutputStream(socket.getOutputStream());
 			outStream.writeObject(agent);
 			outStream.flush();
-			LOG.debug("Agent sent");
+			//LOG.debug("Agent sent");
+			console.print("Agent sent");
 		} catch (ParseException ex) {
 			System.out.println("> " + ex.getMessage());
 			System.out.print("> ");

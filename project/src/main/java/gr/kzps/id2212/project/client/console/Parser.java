@@ -6,19 +6,23 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import gr.kzps.id2212.project.client.commands.Command;
+import gr.kzps.id2212.project.client.commands.CommandAbstr;
 import gr.kzps.id2212.project.client.commands.Commands;
 import gr.kzps.id2212.project.client.commands.CreateAgent;
+import gr.kzps.id2212.project.client.commands.Exit;
 import gr.kzps.id2212.project.client.exceptions.NotEnoughArguments;
 import gr.kzps.id2212.project.client.exceptions.UnknownCommand;
 
 public class Parser {
 	private final Logger LOG = LogManager.getLogger(Parser.class);
+	private final ClientConsole console;
 	private StringTokenizer tokens;
 	private Commands command;
 	private String commandStr;
+	private CommandAbstr execCommand;
 	
-	public Parser() {
-		
+	public Parser(ClientConsole console) {
+		this.console = console;
 	}
 	
 	public Command parse(String rawCommand) throws UnknownCommand, NotEnoughArguments {
@@ -51,9 +55,17 @@ public class Parser {
 			String targetIp = tokens.nextToken();
 			Integer targetPort = Integer.parseInt(tokens.nextToken());
 			
-			return new CreateAgent(queryClass, targetIp, targetPort);
+			execCommand = new CreateAgent(queryClass, targetIp, targetPort);
+			execCommand.setConsole(console);
+			
+			return execCommand; 
+		} else if (Commands.exit.equals(command)) {
+			execCommand = new Exit();
+			execCommand.setConsole(console);
+			
+			return execCommand;
+		} else {
+			throw new UnknownCommand();
 		}
-		
-		return null;
 	}
 }
