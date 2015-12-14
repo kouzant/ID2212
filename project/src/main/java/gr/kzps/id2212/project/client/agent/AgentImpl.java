@@ -59,7 +59,6 @@ public class AgentImpl implements Agent, Runnable {
 		this.query = query;
 		visitedServers = new ArrayList<>();
 		resultList = new ArrayList<>();
-		localResultList = new ArrayList<>();
 		// Currently accept only pdf
 		// "\\S+\\s*\\S*.((pdf)|(odt))$"
 		pattern = Pattern.compile("\\S+\\s*\\S*.(pdf)$");
@@ -88,6 +87,7 @@ public class AgentImpl implements Agent, Runnable {
 		visitedServers.add(serverReference);
 		this.container = container;
 		currentServer = serverReference;
+		localResultList = new ArrayList<>();
 		utils = new Utilities();
 		Thread agentThread = new Thread(this);
 		agentThread.setName("Agent-Thread");
@@ -159,8 +159,6 @@ public class AgentImpl implements Agent, Runnable {
 
 	private Boolean checkQuery(Path file) {
 
-		Boolean check = false;
-
 		// Tika is not thread safe so I have to create separate references
 		// for each file
 		// For the time being this is the 'best' solution
@@ -177,7 +175,7 @@ public class AgentImpl implements Agent, Runnable {
 
 			if (checkTitle(metadata) && checkKeywords(metadata)
 					&& checkAuthor(metadata) && checkDate(metadata)) {
-				check = true;
+				return true;
 			}
 
 		} catch (IOException | SAXException ex) {
@@ -190,7 +188,7 @@ public class AgentImpl implements Agent, Runnable {
 					file.toAbsolutePath());
 		}
 
-		return check;
+		return false;
 	}
 
 	// Check title metadata
