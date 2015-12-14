@@ -11,6 +11,10 @@ public class ClientExecEnv {
 	public static void main(String[] args) {
 		LOG.debug("Client started");
 		AgentDB db = new AgentDB();
+		AgentServer server = new AgentServer(db, 5050);
+		server.start();
+		Thread serverThread = new Thread(server);
+		serverThread.start();
 		
 		new ClientConsole(db).console();
 	}

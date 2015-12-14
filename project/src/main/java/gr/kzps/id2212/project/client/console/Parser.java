@@ -10,6 +10,7 @@ import gr.kzps.id2212.project.client.commands.CommandAbstr;
 import gr.kzps.id2212.project.client.commands.Commands;
 import gr.kzps.id2212.project.client.commands.CreateAgent;
 import gr.kzps.id2212.project.client.commands.Exit;
+import gr.kzps.id2212.project.client.commands.Status;
 import gr.kzps.id2212.project.client.exceptions.NotEnoughArguments;
 import gr.kzps.id2212.project.client.exceptions.UnknownCommand;
 
@@ -58,7 +59,12 @@ public class Parser {
 			execCommand = new CreateAgent(queryClass, targetIp, targetPort);
 			execCommand.setConsole(console);
 			
-			return execCommand; 
+			return execCommand;
+		} else if (Commands.status.equals(command)) {
+			execCommand = new Status();
+			execCommand.setConsole(console);
+			
+			return execCommand;
 		} else if (Commands.exit.equals(command)) {
 			execCommand = new Exit();
 			execCommand.setConsole(console);

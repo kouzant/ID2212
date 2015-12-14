@@ -65,6 +65,11 @@ public class AgentImpl implements Agent, Runnable {
 	}
 
 	@Override
+	public UUID getId() {
+		return id;
+	}
+	
+	@Override
 	public void run() {
 		String agentName = Thread.currentThread().getName();
 		System.out.println(agentName + " is doing something in " + currentServer);
@@ -105,6 +110,20 @@ public class AgentImpl implements Agent, Runnable {
 		resultList.stream().forEach(p -> sb.append(p).append("\n"));
 
 		return sb.toString();
+	}
+	
+	@Override
+	public List<Result> getResultSet() {
+		return resultList;
+	}
+	
+	@Override
+	public List<VisitedServer> getVisitedServers() {
+		List<VisitedServer> result = visitedServers.parallelStream()
+				.map(p -> new VisitedServer(p.getAddress().toString(), p.getServicePort()))
+				.collect(Collectors.toList());
+		
+		return result;
 	}
 
 	private List<Path> listFiles(Path directory) {
@@ -151,7 +170,9 @@ public class AgentImpl implements Agent, Runnable {
 	private List<Result> filterFiles(List<Path> files) {
 
 		List<Result> filtered = files.parallelStream().filter(f -> checkQuery(f))
-				.map(f -> new Result(currentServer, f.toAbsolutePath().toString()))
+				.map(f -> new Result(new VisitedServer(
+						currentServer.getAddress().toString(),
+						currentServer.getServicePort()), f.toAbsolutePath().toString()))
 				.collect(Collectors.toList());
 
 		return filtered;

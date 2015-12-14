@@ -1,5 +1,6 @@
 package gr.kzps.id2212.project.client;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,10 @@ public class AgentDB {
 		} else {
 			return db.get(found.get(0));
 		}
+	}
+	
+	public Collection<AgentItem> getValues() {
+		return db.values();
 	}
 	
 	public void remove(String id) throws AgentNotFound {
