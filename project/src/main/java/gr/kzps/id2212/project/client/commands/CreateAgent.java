@@ -13,6 +13,9 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import gr.kzps.id2212.project.client.AgentDB;
+import gr.kzps.id2212.project.client.AgentItem;
+import gr.kzps.id2212.project.client.AgentStatus;
 import gr.kzps.id2212.project.client.agent.Agent;
 import gr.kzps.id2212.project.client.agent.AgentImpl;
 import gr.kzps.id2212.project.client.classloader.QueryPlanClassLoader;
@@ -39,7 +42,7 @@ public class CreateAgent extends CommandAbstr {
 	}
 
 	@Override
-	public void execute() {
+	public void execute(AgentDB db) {
 		UUID agentId = UUID.randomUUID();
 		//LOG.debug("Creating agent with ID: {}", agentId);
 
@@ -70,6 +73,8 @@ public class CreateAgent extends CommandAbstr {
 			outStream.writeObject(agent);
 			outStream.flush();
 			//LOG.debug("Agent sent");
+			AgentItem item = new AgentItem(agentId, query, AgentStatus.SEARCHING);
+			db.add(item);
 			console.print("Agent sent");
 		} catch (ParseException ex) {
 			System.out.println("> " + ex.getMessage());

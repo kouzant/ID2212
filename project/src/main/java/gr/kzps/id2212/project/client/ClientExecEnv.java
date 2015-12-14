@@ -10,8 +10,9 @@ public class ClientExecEnv {
 	
 	public static void main(String[] args) {
 		LOG.debug("Client started");
+		AgentDB db = new AgentDB();
 		
-		new ClientConsole().console();
+		new ClientConsole(db).console();
 	}
 
 }
