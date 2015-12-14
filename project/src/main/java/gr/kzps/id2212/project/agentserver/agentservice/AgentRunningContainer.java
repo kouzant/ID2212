@@ -1,4 +1,4 @@
-package gr.kzps.id2212.project.agentserver;
+package gr.kzps.id2212.project.agentserver.agentservice;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;

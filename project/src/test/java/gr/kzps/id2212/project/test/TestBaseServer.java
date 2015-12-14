@@ -9,9 +9,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import gr.kzps.id2212.project.agentserver.overlay.messages.BaseMessage;
 
-import gr.kzps.id2212.project.messages.BaseMessage;
+import static org.junit.Assert.assertEquals;
 
 public class TestBaseServer {
 	private static Socket cSocket;

@@ -11,9 +11,9 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import gr.kzps.id2212.project.messages.GenericMessage;
-import gr.kzps.id2212.project.messages.HelloMessage;
-import gr.kzps.id2212.project.messages.SampleExchange;
+import gr.kzps.id2212.project.agentserver.overlay.messages.GenericMessage;
+import gr.kzps.id2212.project.agentserver.overlay.messages.HelloMessage;
+import gr.kzps.id2212.project.agentserver.overlay.messages.SampleExchange;
 
 public class Discovery implements Runnable {
 	private final Logger LOG = LogManager.getLogger(Discovery.class);

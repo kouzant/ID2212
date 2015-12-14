@@ -1,4 +1,4 @@
-package gr.kzps.id2212.project.messages;
+package gr.kzps.id2212.project.agentserver.overlay.messages;
 
 import java.io.Serializable;
 import java.util.ArrayList;

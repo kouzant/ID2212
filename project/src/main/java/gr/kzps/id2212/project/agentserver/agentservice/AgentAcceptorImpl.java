@@ -1,4 +1,4 @@
-package gr.kzps.id2212.project.agentserver;
+package gr.kzps.id2212.project.agentserver.agentservice;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -7,6 +7,7 @@ import java.net.Socket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import gr.kzps.id2212.project.agentserver.Acceptor;
 import gr.kzps.id2212.project.agentserver.overlay.PeerStorage;
 import gr.kzps.id2212.project.client.agent.Agent;
 

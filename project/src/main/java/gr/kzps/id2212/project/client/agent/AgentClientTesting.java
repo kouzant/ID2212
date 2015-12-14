@@ -21,7 +21,7 @@ import javax.ws.rs.QueryParam;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import gr.kzps.id2212.project.classloader.QueryPlanClassLoader;
+import gr.kzps.id2212.project.client.classloader.QueryPlanClassLoader;
 import gr.kzps.id2212.project.client.query.DateParameter;
 import gr.kzps.id2212.project.client.query.Query;
 import gr.kzps.id2212.project.client.query.QueryParameter;

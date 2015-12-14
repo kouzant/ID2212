@@ -1,4 +1,4 @@
-package gr.kzps.id2212.project.classloader;
+package gr.kzps.id2212.project.client.classloader;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

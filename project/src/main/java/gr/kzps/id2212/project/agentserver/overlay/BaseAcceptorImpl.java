@@ -1,4 +1,4 @@
-package gr.kzps.id2212.project.agentserver;
+package gr.kzps.id2212.project.agentserver.overlay;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -12,13 +12,11 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import gr.kzps.id2212.project.agentserver.overlay.BootstrapPeer;
-import gr.kzps.id2212.project.agentserver.overlay.PeerNotFound;
-import gr.kzps.id2212.project.agentserver.overlay.PeerStorage;
-import gr.kzps.id2212.project.messages.BaseMessage;
-import gr.kzps.id2212.project.messages.HelloMessage;
-import gr.kzps.id2212.project.messages.GenericMessage;
-import gr.kzps.id2212.project.messages.SampleExchange;
+import gr.kzps.id2212.project.agentserver.Acceptor;
+import gr.kzps.id2212.project.agentserver.overlay.messages.BaseMessage;
+import gr.kzps.id2212.project.agentserver.overlay.messages.GenericMessage;
+import gr.kzps.id2212.project.agentserver.overlay.messages.HelloMessage;
+import gr.kzps.id2212.project.agentserver.overlay.messages.SampleExchange;
 
 public class BaseAcceptorImpl extends Acceptor {
 	private final Logger LOG = LogManager.getLogger(BaseAcceptorImpl.class);

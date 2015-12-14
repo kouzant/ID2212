@@ -1,4 +1,4 @@
-package gr.kzps.id2212.project.agentserver;
+package gr.kzps.id2212.project.agentserver.agentservice;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -7,6 +7,7 @@ import java.net.ServerSocket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import gr.kzps.id2212.project.agentserver.TcpServer;
 import gr.kzps.id2212.project.agentserver.overlay.PeerStorage;
 
 public class AgentServer extends TcpServer {
