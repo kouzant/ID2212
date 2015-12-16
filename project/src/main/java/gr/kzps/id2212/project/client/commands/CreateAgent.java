@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 import gr.kzps.id2212.project.client.AgentDB;
 import gr.kzps.id2212.project.client.AgentItem;
+import gr.kzps.id2212.project.client.AgentServer;
 import gr.kzps.id2212.project.client.AgentStatus;
 import gr.kzps.id2212.project.client.agent.Agent;
 import gr.kzps.id2212.project.client.agent.AgentImpl;
@@ -31,14 +32,16 @@ public class CreateAgent extends CommandAbstr {
 	private final Logger LOG = LogManager.getLogger(CreateAgent.class);
 	private final String queryClass;
 	private final String targetIp;
-	private final Integer targetPort;
+	private final Integer targetBasePort;
+	private final AgentServer server;
 	private Socket socket;
 	private ObjectOutputStream outStream;
 
-	public CreateAgent(String queryClass, String targetIp, Integer targetPort) {
+	public CreateAgent(String queryClass, AgentServer server, String targetIp, Integer targetBasePort) {
 		this.queryClass = queryClass;
 		this.targetIp = targetIp;
-		this.targetPort = targetPort;
+		this.targetBasePort = targetBasePort;
+		this.server = server;
 	}
 
 	@Override
@@ -67,7 +70,10 @@ public class CreateAgent extends CommandAbstr {
 
 			// TODO I should fix homeport
 			Agent agent = new AgentImpl(agentId, InetAddress.getByName("localhost"), 5050, query);
-			socket = new Socket(InetAddress.getByName(targetIp), targetPort);
+			Integer targetServicePort = server.getServicePort(targetIp, targetBasePort);
+			
+			// Connect to the service port
+			socket = new Socket(InetAddress.getByName(targetIp), targetServicePort);
 			//LOG.debug("Sending agent to {}:{}", new Object[] { targetIp, targetPort });
 			outStream = new ObjectOutputStream(socket.getOutputStream());
 			outStream.writeObject(agent);
@@ -76,15 +82,8 @@ public class CreateAgent extends CommandAbstr {
 			AgentItem item = new AgentItem(agentId, query, AgentStatus.SEARCHING);
 			db.add(item);
 			console.print("Agent sent");
-		} catch (ParseException ex) {
-			System.out.println("> " + ex.getMessage());
-			System.out.print("> ");
-		} catch (UnknownHostException ex) {
-			System.out.println("> " + ex.getMessage());
-			System.out.print("> ");
-		} catch (IOException ex) {
-			System.out.println("> " + ex.getMessage());
-			System.out.print("> ");
+		} catch (ParseException | IOException | ClassNotFoundException ex) {
+			console.print(ex.getMessage());
 		} finally {
 			try {
 				if (outStream != null)

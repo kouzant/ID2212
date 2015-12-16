@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import gr.kzps.id2212.project.client.AgentDB;
+import gr.kzps.id2212.project.client.AgentServer;
 import gr.kzps.id2212.project.client.commands.Command;
 import gr.kzps.id2212.project.client.exceptions.NotEnoughArguments;
 import gr.kzps.id2212.project.client.exceptions.UnknownCommand;
@@ -20,10 +21,10 @@ public class ClientConsole {
 	private String input;
 	private final Parser parser;
 	
-	public ClientConsole(AgentDB db) {
+	public ClientConsole(AgentDB db, AgentServer server) {
 		running = true;
 		this.db = db;
-		parser = new Parser(this);
+		parser = new Parser(this, server);
 		reader = new BufferedReader(new InputStreamReader(System.in));
 	}
 	

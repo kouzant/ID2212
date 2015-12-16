@@ -16,7 +16,7 @@ public class ClientExecEnv {
 		Thread serverThread = new Thread(server);
 		serverThread.start();
 		
-		new ClientConsole(db).console();
+		new ClientConsole(db, server).console();
 		
 		System.exit(0);
 	}
