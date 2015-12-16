@@ -73,6 +73,7 @@ public class CreateAgent extends CommandAbstr {
 			Integer targetServicePort = server.getServicePort(targetIp, targetBasePort);
 			
 			// Connect to the service port
+			LOG.debug("Base port is: {} Service port is: {}", new Object[]{targetBasePort, targetServicePort});
 			socket = new Socket(InetAddress.getByName(targetIp), targetServicePort);
 			//LOG.debug("Sending agent to {}:{}", new Object[] { targetIp, targetPort });
 			outStream = new ObjectOutputStream(socket.getOutputStream());

@@ -15,21 +15,28 @@ public class AgentAcceptorImpl extends Acceptor {
 
 	private final Logger LOG = LogManager.getLogger(AgentAcceptorImpl.class);
 	private final PeerStorage peerStorage;
-	
+
 	public AgentAcceptorImpl(Socket cSocket, PeerStorage peerStorage) {
 		super(cSocket);
 		this.peerStorage = peerStorage;
 	}
-	
+
 	@Override
 	public void run() {
 		try {
 			inStream = new ObjectInputStream(cSocket.getInputStream());
-			
-			Agent agent = (Agent) inStream.readObject();
-			
-			AgentRunningContainer container = new AgentRunningContainer(peerStorage, agent);
-			container.executeAgent();
+
+			Object request = inStream.readObject();
+
+			if (request instanceof Agent) {
+				Agent agent = (Agent) request;
+
+				AgentRunningContainer container = new AgentRunningContainer(peerStorage, agent);
+				container.executeAgent();
+
+			} else {
+				LOG.error("Received request that is not an Agent!");
+			}
 			
 			if (inStream != null)
 				inStream.close();
@@ -38,7 +45,7 @@ public class AgentAcceptorImpl extends Acceptor {
 		} catch (IOException | ClassNotFoundException ex) {
 			LOG.error(ex.getMessage());
 		}
-		
+
 	}
 
 }
