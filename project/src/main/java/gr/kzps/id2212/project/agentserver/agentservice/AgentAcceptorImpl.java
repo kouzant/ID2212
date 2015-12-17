@@ -29,6 +29,7 @@ public class AgentAcceptorImpl extends Acceptor {
 			Object request = inStream.readObject();
 
 			if (request instanceof Agent) {
+				LOG.debug("Received agent!");
 				Agent agent = (Agent) request;
 
 				AgentRunningContainer container = new AgentRunningContainer(peerStorage, agent);

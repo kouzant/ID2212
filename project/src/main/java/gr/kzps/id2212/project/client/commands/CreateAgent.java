@@ -69,7 +69,8 @@ public class CreateAgent extends CommandAbstr {
 			Query query = new Query(author, keywords, title, queryDate);
 
 			// TODO I should fix homeport
-			Agent agent = new AgentImpl(agentId, InetAddress.getByName("localhost"), 5050, query);
+			Agent agent = new AgentImpl(agentId, InetAddress.getByName("localhost"),
+					server.getHomeport(), query);
 			Integer targetServicePort = server.getServicePort(targetIp, targetBasePort);
 			
 			// Connect to the service port

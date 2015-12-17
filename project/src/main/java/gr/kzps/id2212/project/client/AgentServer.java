@@ -42,6 +42,10 @@ public class AgentServer implements Runnable {
 		}
 	}
 
+	public Integer getHomeport() {
+		return port;
+	}
+	
 	public Integer getServicePort(String ipAddress, Integer basePort) throws UnknownHostException, IOException, ClassNotFoundException {
 		Socket socket = new Socket(InetAddress.getByName(ipAddress), basePort);
 		

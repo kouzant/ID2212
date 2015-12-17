@@ -9,9 +9,14 @@ public class ClientExecEnv {
 	private static final Logger LOG = LogManager.getLogger(ClientExecEnv.class);
 	
 	public static void main(String[] args) {
+		if (args.length != 1) {
+			LOG.error("Usage: ClientExecEnv HOME_PORT");
+			System.exit(0);
+		}
+		Integer homePort = Integer.parseInt(args[0]);
 		LOG.debug("Client started");
 		AgentDB db = new AgentDB();
-		AgentServer server = new AgentServer(db, 5050);
+		AgentServer server = new AgentServer(db, homePort);
 		server.start();
 		Thread serverThread = new Thread(server);
 		serverThread.start();
