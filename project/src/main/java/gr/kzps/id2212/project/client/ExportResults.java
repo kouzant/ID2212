@@ -48,7 +48,11 @@ public class ExportResults {
 		sb.append("Keywords: ");
 		sb.append(exportQueryParameter(agentItem.getQuery().getKeywords()));
 		sb.append("\n");
+		sb.append("\n");
 		
+		sb.append(compileVisitedServers());
+		sb.append("\n");
+		sb.append(compileResultSet());
 		writeToFile(agentItem.getId().toString(), sb);
 		
 		return sb.toString();
@@ -63,6 +67,31 @@ public class ExportResults {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	private StringBuilder compileResultSet() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("-> Result set:").append("\n");
+		sb.append("\t Server \t||\tFilename").append("\n");
+		sb.append("-----------------------------------------------").append("\n");
+		agentItem.getResultSet().stream()
+			.forEach(r -> sb.append(r.getServer())
+					.append("\t|| ").append(r.getFileName())
+					.append("\n"));
+		
+		return sb;
+	}
+	
+	private StringBuilder compileVisitedServers() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("-> Visited Servers:").append("\n");
+		agentItem.getVisitedServers().stream()
+			.forEach(s -> sb.append(s.getServer()).append(":").
+					append(s.getPort()).append("\n"));
+		
+		return sb;
 	}
 	
 	private <P extends QueryParameter<T>, T> String exportQueryParameter(P parameter) {
