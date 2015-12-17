@@ -40,8 +40,8 @@ public class AgentDB {
 		return db.values();
 	}
 	
-	public void remove(String id) throws AgentNotFound {
+	public AgentItem remove(String id) throws AgentNotFound {
 		AgentItem agent = get(id);
-		db.remove(agent.getId());
+		 return db.remove(agent.getId());
 	}
 }

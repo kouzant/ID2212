@@ -10,7 +10,9 @@ import gr.kzps.id2212.project.client.commands.Command;
 import gr.kzps.id2212.project.client.commands.CommandAbstr;
 import gr.kzps.id2212.project.client.commands.Commands;
 import gr.kzps.id2212.project.client.commands.CreateAgent;
+import gr.kzps.id2212.project.client.commands.DeleteAgent;
 import gr.kzps.id2212.project.client.commands.Exit;
+import gr.kzps.id2212.project.client.commands.PurgeAgent;
 import gr.kzps.id2212.project.client.commands.Status;
 import gr.kzps.id2212.project.client.exceptions.NotEnoughArguments;
 import gr.kzps.id2212.project.client.exceptions.UnknownCommand;
@@ -53,7 +55,7 @@ public class Parser {
 		
 		if (Commands.create.equals(command)) {
 			if (tokens.countTokens() != 3) {
-				throw new NotEnoughArguments();
+				throw new NotEnoughArguments("Usage: create QUERY_PLAN_CLASS TARGET_IP TARGET_PORT");
 			}
 			String queryClass = tokens.nextToken();
 			String targetIp = tokens.nextToken();
@@ -65,6 +67,26 @@ public class Parser {
 			return execCommand;
 		} else if (Commands.status.equals(command)) {
 			execCommand = new Status();
+			execCommand.setConsole(console);
+			
+			return execCommand;
+		} else if (Commands.delete.equals(command)) {
+			if (tokens.countTokens() != 1) {
+				throw new NotEnoughArguments("Usage: delete AGENT_ID");
+			}
+			
+			String agentId = tokens.nextToken();
+			execCommand = new DeleteAgent(agentId);
+			execCommand.setConsole(console);
+			
+			return execCommand;
+		} else if (Commands.purge.equals(command)) {
+			if (tokens.countTokens() != 1) {
+				throw new NotEnoughArguments("Usage: purge AGENT_ID");
+			}
+			
+			String agentId = tokens.nextToken();
+			execCommand = new PurgeAgent(agentId);
 			execCommand.setConsole(console);
 			
 			return execCommand;
