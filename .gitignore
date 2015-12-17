@@ -3,6 +3,7 @@ org.eclipse.jpt.core.prefs
 .metadata
 *~
 *.pyc
+results/
 find_file.sh
 Node*/
 target/

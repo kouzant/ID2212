@@ -1,5 +1,10 @@
 package gr.kzps.id2212.project.client;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +22,10 @@ public class ExportResults {
 	
 	public ExportResults(AgentItem agentItem) {
 		this.agentItem = agentItem;
+		Path outDir = Paths.get("results");
+		if (!outDir.toFile().exists()) {
+			outDir.toFile().mkdir();
+		}
 	}
 	
 	// Return type is temporal!
@@ -40,7 +49,20 @@ public class ExportResults {
 		sb.append(exportQueryParameter(agentItem.getQuery().getKeywords()));
 		sb.append("\n");
 		
+		writeToFile(agentItem.getId().toString(), sb);
+		
 		return sb.toString();
+	}
+	
+	private void writeToFile(String agentId, StringBuilder sb) {
+		Path resultFile = Paths.get("results", agentId);
+		
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile.toFile()))) {
+			writer.write(sb.toString());
+			writer.flush();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 	}
 	
 	private <P extends QueryParameter<T>, T> String exportQueryParameter(P parameter) {

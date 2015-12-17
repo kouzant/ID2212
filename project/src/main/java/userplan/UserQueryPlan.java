@@ -17,7 +17,7 @@ public class UserQueryPlan implements QueryPlan {
 	private final DateParameter<String> date;
 	
 	public UserQueryPlan() {
-		title = new QueryParameter<>("Some title", ParameterSwitch.OFF);
+		title = new QueryParameter<>("Some title", ParameterSwitch.ON);
 		author = new QueryParameter<>("Antonis Kouzoupis", ParameterSwitch.OFF);
 		List<String> keys = new ArrayList<>();
 		keys.add("YARN");
