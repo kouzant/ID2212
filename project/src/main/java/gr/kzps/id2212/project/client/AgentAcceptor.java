@@ -32,6 +32,10 @@ public class AgentAcceptor implements Runnable {
 			item.setResultSet(agent.getResultSet());
 			item.setVisitedServers(agent.getVisitedServers());
 			item.setStatus(AgentStatus.FINISHED);
+			
+			ExportResults exporter = new ExportResults(item);
+			
+			System.out.print(exporter.export());
 		} catch (IOException | ClassNotFoundException | AgentNotFound ex) {
 			LOG.error(ex.getMessage());
 			ex.printStackTrace();
