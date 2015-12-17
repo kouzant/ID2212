@@ -15,8 +15,11 @@ public class DeleteAgent extends CommandAbstr {
 	public void execute(AgentDB db) {
 		try {
 			db.remove(agentId);
+			console.print("Agent deleted");
+			console.printPrompt();
 		} catch (AgentNotFound ex) {
 			console.print(ex.getMessage());
+			console.printPrompt();
 		}
 	}
 }

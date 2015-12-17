@@ -24,12 +24,16 @@ public class PurgeAgent extends CommandAbstr {
 			// Delete result file
 			if (resultFile.toFile().exists()) {
 				resultFile.toFile().delete();
+				console.print("File " + resultFile.toString() + " and the agent deleted");
 			} else {
 				console.print("Result file for agent " + agent.getId().toString()
 						+ " is missing!");
 			}
+			
+			console.printPrompt();
 		} catch (AgentNotFound ex) {
-			console.print(agentId);
+			console.print(ex.getMessage());
+			console.printPrompt();
 		}
 		
 	}

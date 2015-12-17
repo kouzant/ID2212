@@ -8,13 +8,21 @@ import gr.kzps.id2212.project.client.AgentItem;
 public class Status extends CommandAbstr {
 
 	@Override
-	// TODO I should complete this
 	public void execute(AgentDB db) {
 		Collection<AgentItem> agents = db.getValues();
-		
-		agents.stream().forEach(a -> {
-			console.print(a.getStatus().toString());
-		});
+
+		console.print("\t Agent-ID \t\t\t || Status");
+
+		if (agents.isEmpty()) {
+			console.print("No agents stored");
+			console.printPrompt();
+		} else {
+			agents.stream().forEach(a -> {
+				console.print(a.getId() + "\t|| " + a.getStatus().toString());
+			});
+			
+			console.printPrompt();
+		}
 	}
 
 }

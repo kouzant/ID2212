@@ -4,14 +4,10 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import gr.kzps.id2212.project.client.AgentDB;
 import gr.kzps.id2212.project.client.AgentItem;
@@ -29,7 +25,6 @@ import gr.kzps.id2212.project.client.query.parameterOperators.ParameterSwitch;
 import gr.kzps.id2212.project.utils.Utilities;
 
 public class CreateAgent extends CommandAbstr {
-	private final Logger LOG = LogManager.getLogger(CreateAgent.class);
 	private final String queryClass;
 	private final String targetIp;
 	private final Integer targetBasePort;
@@ -51,7 +46,13 @@ public class CreateAgent extends CommandAbstr {
 
 		QueryPlanClassLoader loader = new QueryPlanClassLoader(this.getClass().getClassLoader());
 		QueryPlan queryPlan = loader.loadPlan(queryClass);
-
+		
+		if (queryPlan == null) {
+			console.print("Fatal! Could not find query class file " + queryClass);
+			
+			return;
+		}
+		
 		QueryParameter<String> author = queryPlan.getAuthor();
 		QueryParameter<String> title = queryPlan.getTitle();
 		KeywordsParameter<List<String>> keywords = queryPlan.getKeywords();
@@ -73,18 +74,17 @@ public class CreateAgent extends CommandAbstr {
 			Integer targetServicePort = server.getServicePort(targetIp, targetBasePort);
 			
 			// Connect to the service port
-			LOG.debug("Base port is: {} Service port is: {}", new Object[]{targetBasePort, targetServicePort});
 			socket = new Socket(InetAddress.getByName(targetIp), targetServicePort);
-			//LOG.debug("Sending agent to {}:{}", new Object[] { targetIp, targetPort });
 			outStream = new ObjectOutputStream(socket.getOutputStream());
 			outStream.writeObject(agent);
 			outStream.flush();
-			//LOG.debug("Agent sent");
 			AgentItem item = new AgentItem(agentId, query, AgentStatus.SEARCHING);
 			db.add(item);
 			console.print("Agent sent");
+			console.printPrompt();
 		} catch (ParseException | IOException | ClassNotFoundException ex) {
 			console.print(ex.getMessage());
+			console.printPrompt();
 		} finally {
 			try {
 				if (outStream != null)

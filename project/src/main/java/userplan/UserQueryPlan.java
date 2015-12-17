@@ -25,7 +25,7 @@ public class UserQueryPlan implements QueryPlan {
 		keys.add("lala");
 		keywords = new KeywordsParameter<List<String>>(keys, ParameterSwitch.ON, 2);
 		
-		date = new DateParameter<String>("2015-12-14T", ParameterSwitch.ON, DateOperators.BEFORE);
+		date = new DateParameter<String>("2015-12-14T", ParameterSwitch.ON, DateOperators.AFTER);
 	}
 
 	@Override

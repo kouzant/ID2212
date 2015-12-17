@@ -19,7 +19,7 @@ import gr.kzps.id2212.project.client.query.parameterOperators.ParameterSwitch;
 public class ExportResults {
 	private final Logger LOG = LogManager.getLogger(ExportResults.class);
 	private final AgentItem agentItem;
-	
+
 	public ExportResults(AgentItem agentItem) {
 		this.agentItem = agentItem;
 		Path outDir = Paths.get("results");
@@ -27,7 +27,7 @@ public class ExportResults {
 			outDir.toFile().mkdir();
 		}
 	}
-	
+
 	// Return type is temporal!
 	public String export() {
 		StringBuilder sb = new StringBuilder();
@@ -36,31 +36,31 @@ public class ExportResults {
 		sb.append("Title: ");
 		sb.append(exportQueryParameter(agentItem.getQuery().getTitle()));
 		sb.append("\n");
-		
+
 		sb.append("Author: ");
 		sb.append(exportQueryParameter(agentItem.getQuery().getAuthor()));
 		sb.append("\n");
-		
+
 		sb.append("Date: ");
 		sb.append(exportQueryParameter(agentItem.getQuery().getDate()));
 		sb.append("\n");
-		
+
 		sb.append("Keywords: ");
 		sb.append(exportQueryParameter(agentItem.getQuery().getKeywords()));
 		sb.append("\n");
 		sb.append("\n");
-		
+
 		sb.append(compileVisitedServers());
 		sb.append("\n");
 		sb.append(compileResultSet());
 		writeToFile(agentItem.getId().toString(), sb);
-		
+
 		return sb.toString();
 	}
-	
+
 	private void writeToFile(String agentId, StringBuilder sb) {
 		Path resultFile = Paths.get("results", agentId);
-		
+
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile.toFile()))) {
 			writer.write(sb.toString());
 			writer.flush();
@@ -68,36 +68,40 @@ public class ExportResults {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	private StringBuilder compileResultSet() {
 		StringBuilder sb = new StringBuilder();
-		
+
 		sb.append("-> Result set:").append("\n");
 		sb.append("\t Server \t||\tFilename").append("\n");
 		sb.append("-----------------------------------------------").append("\n");
-		agentItem.getResultSet().stream()
-			.forEach(r -> sb.append(r.getServer())
-					.append("\t|| ").append(r.getFileName())
-					.append("\n"));
+
+		if (agentItem.getResultSet().isEmpty()) {
+			sb.append("\tEmpty \t\t\t Empty\n");
+		} else {
+			agentItem.getResultSet().stream()
+					.forEach(r -> sb.append(r.getServer()).append("\t|| ")
+							.append(r.getFileName()).append("\n"));
+
+		}
 		
 		return sb;
 	}
-	
+
 	private StringBuilder compileVisitedServers() {
 		StringBuilder sb = new StringBuilder();
-		
+
 		sb.append("-> Visited Servers:").append("\n");
 		agentItem.getVisitedServers().stream()
-			.forEach(s -> sb.append(s.getServer()).append(":").
-					append(s.getPort()).append("\n"));
-		
+				.forEach(s -> sb.append(s.getServer()).append(":").append(s.getPort()).append("\n"));
+
 		return sb;
 	}
-	
+
 	private <P extends QueryParameter<T>, T> String exportQueryParameter(P parameter) {
 		if (parameter.getParameterSwitch().equals(ParameterSwitch.ON)) {
 			T field = parameter.getParameter();
-			
+
 			if (field instanceof String) {
 				return (String) field;
 			} else if (field instanceof Date) {
@@ -105,7 +109,7 @@ public class ExportResults {
 				return date.getOperator().toString() + " " + (String) field.toString();
 			} else if (field instanceof List<?>) {
 				KeywordsParameter<List<String>> keywords = (KeywordsParameter<List<String>>) parameter;
- 				return field.toString() + " Success threshold: " + keywords.getSuccessThreshold(); 
+				return field.toString() + " Success threshold: " + keywords.getSuccessThreshold();
 			} else {
 				return "Unknown parameter";
 			}

@@ -35,7 +35,8 @@ public class AgentAcceptor implements Runnable {
 			
 			ExportResults exporter = new ExportResults(item);
 			
-			System.out.print(exporter.export());
+			exporter.export();
+			//System.out.print(exporter.export());
 		} catch (IOException | ClassNotFoundException | AgentNotFound ex) {
 			LOG.error(ex.getMessage());
 			ex.printStackTrace();

@@ -14,7 +14,6 @@ import gr.kzps.id2212.project.client.exceptions.NotEnoughArguments;
 import gr.kzps.id2212.project.client.exceptions.UnknownCommand;
 
 public class ClientConsole {
-	private final Logger LOG = LogManager.getLogger(ClientConsole.class);
 	private AgentDB db;
 	private Boolean running;
 	private BufferedReader reader;
@@ -29,19 +28,18 @@ public class ClientConsole {
 	}
 	
 	public void console() {
-		LOG.debug("Client console");
 		System.out.println("++ Hi my name is Moneypenny ++");
+		printPrompt();
 		
 		while(isRunning()) {
 			try {
 				input = reader.readLine();
-				LOG.debug("Raw user input: {}", input);
 				Command command = parser.parse(input);
 				command.execute(db);
 				
 			} catch (UnknownCommand | NotEnoughArguments ex) {
-				System.out.println("> " + ex.getMessage());
-				System.out.print("> ");
+				print(ex.getMessage());
+				printPrompt();
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
@@ -50,7 +48,10 @@ public class ClientConsole {
 	
 	public void print(String msg) {
 		System.out.println("> " + msg);
-		System.out.print("> ");
+	}
+	
+	public void printPrompt() {
+		System.out.println("> ");
 	}
 	
 	private Boolean isRunning() {

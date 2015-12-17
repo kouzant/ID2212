@@ -62,14 +62,8 @@ public class Parser {
 			Integer targetBasePort = Integer.parseInt(tokens.nextToken());
 			
 			execCommand = new CreateAgent(queryClass, server, targetIp, targetBasePort);
-			execCommand.setConsole(console);
-			
-			return execCommand;
 		} else if (Commands.status.equals(command)) {
 			execCommand = new Status();
-			execCommand.setConsole(console);
-			
-			return execCommand;
 		} else if (Commands.delete.equals(command)) {
 			if (tokens.countTokens() != 1) {
 				throw new NotEnoughArguments("Usage: delete AGENT_ID");
@@ -77,9 +71,6 @@ public class Parser {
 			
 			String agentId = tokens.nextToken();
 			execCommand = new DeleteAgent(agentId);
-			execCommand.setConsole(console);
-			
-			return execCommand;
 		} else if (Commands.purge.equals(command)) {
 			if (tokens.countTokens() != 1) {
 				throw new NotEnoughArguments("Usage: purge AGENT_ID");
@@ -87,16 +78,13 @@ public class Parser {
 			
 			String agentId = tokens.nextToken();
 			execCommand = new PurgeAgent(agentId);
-			execCommand.setConsole(console);
-			
-			return execCommand;
 		} else if (Commands.exit.equals(command)) {
 			execCommand = new Exit();
-			execCommand.setConsole(console);
-			
-			return execCommand;
 		} else {
 			throw new UnknownCommand();
 		}
+		
+		execCommand.setConsole(console);
+		return execCommand;
 	}
 }
