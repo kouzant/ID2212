@@ -12,6 +12,7 @@ import gr.kzps.id2212.project.client.commands.Commands;
 import gr.kzps.id2212.project.client.commands.CreateAgent;
 import gr.kzps.id2212.project.client.commands.DeleteAgent;
 import gr.kzps.id2212.project.client.commands.Exit;
+import gr.kzps.id2212.project.client.commands.Help;
 import gr.kzps.id2212.project.client.commands.PurgeAgent;
 import gr.kzps.id2212.project.client.commands.Status;
 import gr.kzps.id2212.project.client.exceptions.NotEnoughArguments;
@@ -78,6 +79,8 @@ public class Parser {
 			
 			String agentId = tokens.nextToken();
 			execCommand = new PurgeAgent(agentId);
+		} else if (Commands.help.equals(command)) {
+			execCommand = new Help();
 		} else if (Commands.exit.equals(command)) {
 			execCommand = new Exit();
 		} else {

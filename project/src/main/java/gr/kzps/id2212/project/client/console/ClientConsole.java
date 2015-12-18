@@ -51,7 +51,7 @@ public class ClientConsole {
 	}
 	
 	public void printPrompt() {
-		System.out.println("> ");
+		System.out.print("> ");
 	}
 	
 	private Boolean isRunning() {
