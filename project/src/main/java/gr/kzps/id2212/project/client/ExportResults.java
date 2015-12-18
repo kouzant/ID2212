@@ -98,25 +98,7 @@ public class ExportResults {
 		return sb;
 	}
 
-	@SuppressWarnings("unchecked")
 	private <P extends QueryParameter<T>, T> String exportQueryParameter(P parameter) {
-		/*if (parameter.getParameterSwitch().equals(ParameterSwitch.ON)) {
-			T field = parameter.getParameter();
-
-			if (field instanceof String) {
-				return (String) field;
-			} else if (field instanceof Date) {
-				DateParameter<Date> date = (DateParameter<Date>) parameter;
-				return date.getOperator().toString() + " " + (String) field.toString();
-			} else if (field instanceof List<?>) {
-				KeywordsParameter<List<String>> keywords = (KeywordsParameter<List<String>>) parameter;
-				return field.toString() + " Success threshold: " + keywords.getSuccessThreshold();
-			} else {
-				return "Unknown parameter";
-			}
-		} else {
-			return "Inactive field";
-		}*/
 		
 		return parameter.export();
 	}
