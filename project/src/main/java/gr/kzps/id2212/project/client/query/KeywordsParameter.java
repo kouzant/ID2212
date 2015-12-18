@@ -15,4 +15,13 @@ public class KeywordsParameter<T> extends QueryParameter<T> {
 	public Integer getSuccessThreshold() {
 		return successThreshold;
 	}
+	
+	@Override
+	public String export() {
+		if (getParameterSwitch().equals(ParameterSwitch.OFF)) {
+			return "Inactive field";
+		}
+		
+		return getParameter().toString() + " Success threshold: " + successThreshold;
+	}
 }

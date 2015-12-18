@@ -98,8 +98,9 @@ public class ExportResults {
 		return sb;
 	}
 
+	@SuppressWarnings("unchecked")
 	private <P extends QueryParameter<T>, T> String exportQueryParameter(P parameter) {
-		if (parameter.getParameterSwitch().equals(ParameterSwitch.ON)) {
+		/*if (parameter.getParameterSwitch().equals(ParameterSwitch.ON)) {
 			T field = parameter.getParameter();
 
 			if (field instanceof String) {
@@ -115,6 +116,8 @@ public class ExportResults {
 			}
 		} else {
 			return "Inactive field";
-		}
+		}*/
+		
+		return parameter.export();
 	}
 }

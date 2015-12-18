@@ -21,4 +21,12 @@ public class QueryParameter<T> implements Serializable {
 	public ParameterSwitch getParameterSwitch() {
 		return parameterSwitch;
 	}
+
+	public String export() {
+		if (parameterSwitch.equals(ParameterSwitch.OFF)) {
+			return "Inactive field";
+		}
+		
+		return (String) parameter;
+	}
 }

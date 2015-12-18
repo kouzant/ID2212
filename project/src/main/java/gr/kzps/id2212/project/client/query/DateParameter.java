@@ -16,4 +16,12 @@ public class DateParameter<T> extends QueryParameter<T> {
 	public DateOperators getOperator() {
 		return operator;
 	}
+	
+	public String export() {
+		if (getParameterSwitch().equals(ParameterSwitch.OFF)) {
+			return "Inactive field";
+		}
+		
+		return operator.toString() + " " + (String) getParameter().toString();
+	}
 }
