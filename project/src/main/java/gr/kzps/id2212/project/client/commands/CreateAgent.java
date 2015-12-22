@@ -80,7 +80,7 @@ public class CreateAgent extends CommandAbstr {
 			outStream.flush();
 			AgentItem item = new AgentItem(agentId, query, AgentStatus.SEARCHING);
 			db.add(item);
-			console.print("Agent sent");
+			console.print("Agent ID: " + agentId.toString());
 			console.printPrompt();
 		} catch (ParseException | IOException | ClassNotFoundException ex) {
 			console.print(ex.getMessage());

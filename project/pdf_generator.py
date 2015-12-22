@@ -26,9 +26,9 @@ def gen(template, index, dir, tmp, cwd):
 
     rendered = template.render(author=author, keywords=keys_str, title=title)
 
-    tex_file = os.path.join(tmp, "file%i.tex" % (index))
-    pdf_file_src = os.path.join(tmp, "file%i.pdf" % (index))
-    pdf_file_dst = os.path.join(cwd, dir, "file%i.pdf" % (index))
+    tex_file = os.path.join(tmp, "another_file%i.tex" % (index))
+    pdf_file_src = os.path.join(tmp, "another_file%i.pdf" % (index))
+    pdf_file_dst = os.path.join(cwd, dir, "another_file%i.pdf" % (index))
     
     with open(tex_file, 'w') as f:
         f.write(rendered)

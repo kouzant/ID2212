@@ -15,6 +15,7 @@ import gr.kzps.id2212.project.client.commands.Exit;
 import gr.kzps.id2212.project.client.commands.Help;
 import gr.kzps.id2212.project.client.commands.PurgeAgent;
 import gr.kzps.id2212.project.client.commands.Status;
+import gr.kzps.id2212.project.client.commands.WhereIs;
 import gr.kzps.id2212.project.client.exceptions.NotEnoughArguments;
 import gr.kzps.id2212.project.client.exceptions.UnknownCommand;
 
@@ -81,6 +82,13 @@ public class Parser {
 			execCommand = new PurgeAgent(agentId);
 		} else if (Commands.help.equals(command)) {
 			execCommand = new Help();
+		} else if (Commands.whereis.equals(command)) {
+			if (tokens.countTokens() != 1) {
+				throw new NotEnoughArguments("Usage: whereis AGENT_ID");
+			}
+			
+			String agentId = tokens.nextToken();
+			execCommand = new WhereIs(agentId);
 		} else if (Commands.exit.equals(command)) {
 			execCommand = new Exit();
 		} else {

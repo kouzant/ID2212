@@ -8,6 +8,8 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,13 +40,13 @@ public class AgentImpl implements Agent, Runnable {
 
 	private static final long serialVersionUID = 4772482720958169130L;
 
+	private RemoteAgent remoteInterface;
 	private final InetAddress homeAddress;
 	private final Integer homePort;
 	private final UUID id;
 	private final Query query;
 	private final Pattern pattern;
 	private List<PeerAgent> visitedServers;
-	// TODO to be removed!!!
 	private List<Result> resultList;
 
 	private transient AgentRunningContainer container;
@@ -52,7 +54,8 @@ public class AgentImpl implements Agent, Runnable {
 	private transient List<Result> localResultList;
 	private transient Utilities utils;
 	
-	public AgentImpl(UUID id, InetAddress homeAddress, Integer homePort, Query query) {
+	public AgentImpl(UUID id, InetAddress homeAddress, Integer homePort, Query query)
+		throws RemoteException {
 		this.id = id;
 		this.homeAddress = homeAddress;
 		this.homePort = homePort;
@@ -88,10 +91,12 @@ public class AgentImpl implements Agent, Runnable {
 	}
 
 	@Override
-	public void agentArrived(AgentRunningContainer container, PeerAgent serverReference) {
+	public void agentArrived(AgentRunningContainer container,
+			PeerAgent serverReference) throws RemoteException {
 		visitedServers.add(serverReference);
 		this.container = container;
 		currentServer = serverReference;
+		remoteInterface = new RemoteAgentImpl(currentServer);
 		localResultList = new ArrayList<>();
 		utils = new Utilities();
 		Thread agentThread = new Thread(this);
@@ -99,6 +104,11 @@ public class AgentImpl implements Agent, Runnable {
 		agentThread.start();
 	}
 
+	@Override
+	public RemoteAgent getRemoteInterface() {
+		return remoteInterface;
+	}
+	
 	@Override
 	public String getResult() {
 		StringBuilder sb = new StringBuilder();
