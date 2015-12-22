@@ -50,7 +50,7 @@ public class AgentRunningContainer {
 	public void executeAgent() {
 		try {
 			// I should never register the remote interface before that call!
-			agent.agentArrived(this, peerStorage.getSelf());
+			agent.agentArrived(this);
 			
 			// Register agent remote interface
 			registry.rebind(agent.getId().toString(), agent.getRemoteInterface());
@@ -82,6 +82,14 @@ public class AgentRunningContainer {
 		}
 	}
 
+	public void cancelAgent() {
+		// Get homeaddress from agent
+	}
+	
+	public PeerAgent getSelf() {
+		return peerStorage.getSelf();
+	}
+	
 	public List<PeerAgent> getLocalView() throws PeerNotFound {
 		return peerStorage.getLocalView();
 	}

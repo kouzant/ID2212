@@ -5,4 +5,5 @@ import java.rmi.RemoteException;
 
 public interface RemoteAgent extends Remote {
 	public VisitedServer whereAreYou() throws RemoteException;
+	public void cancel() throws RemoteException;
 }

@@ -40,7 +40,6 @@ public class AgentImpl implements Agent, Runnable {
 
 	private static final long serialVersionUID = 4772482720958169130L;
 
-	private RemoteAgent remoteInterface;
 	private final InetAddress homeAddress;
 	private final Integer homePort;
 	private final UUID id;
@@ -49,6 +48,7 @@ public class AgentImpl implements Agent, Runnable {
 	private List<PeerAgent> visitedServers;
 	private List<Result> resultList;
 
+	private transient RemoteAgent remoteInterface;
 	private transient AgentRunningContainer container;
 	private transient PeerAgent currentServer;
 	private transient List<Result> localResultList;
@@ -91,12 +91,12 @@ public class AgentImpl implements Agent, Runnable {
 	}
 
 	@Override
-	public void agentArrived(AgentRunningContainer container,
-			PeerAgent serverReference) throws RemoteException {
-		visitedServers.add(serverReference);
+	public void agentArrived(AgentRunningContainer container)
+			throws RemoteException {
+		visitedServers.add(container.getSelf());
 		this.container = container;
-		currentServer = serverReference;
-		remoteInterface = new RemoteAgentImpl(currentServer);
+		currentServer = container.getSelf();
+		remoteInterface = new RemoteAgentImpl(container);
 		localResultList = new ArrayList<>();
 		utils = new Utilities();
 		Thread agentThread = new Thread(this);
