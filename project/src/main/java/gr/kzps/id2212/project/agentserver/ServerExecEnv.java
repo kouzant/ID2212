@@ -6,7 +6,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,11 +15,17 @@ import gr.kzps.id2212.project.agentserver.overlay.Discovery;
 import gr.kzps.id2212.project.agentserver.overlay.PeerAgent;
 import gr.kzps.id2212.project.agentserver.agentservice.AgentServer;
 import gr.kzps.id2212.project.agentserver.overlay.BaseServer;
-import gr.kzps.id2212.project.agentserver.overlay.BootstrapPeer;
 import gr.kzps.id2212.project.agentserver.overlay.PeerStorage;
 
+/**
+ * Entry point of the agent server. Parse command-line arguments and
+ * start the services for discovery and agent host
+ * @author Antonis Kouzoupis
+ *
+ */
 public class ServerExecEnv {
 	private final Logger LOG = LogManager.getLogger(ServerExecEnv.class);
+	private final Integer SAMPLE_SIZE = 4;
 	private String serverId;
 	private String searchPath;
 	private Integer agentPort;
@@ -64,9 +69,10 @@ public class ServerExecEnv {
 			try {
 				local = new PeerAgent(InetAddress.getLocalHost(), basePort, agentPort);
 				
-				// Sample size
-				PeerStorage peerStorage = new PeerStorage(local, 4);
+				// Discovered peers
+				PeerStorage peerStorage = new PeerStorage(local, SAMPLE_SIZE);
 				
+				// Start the services
 				agentServer = new AgentServer(agentPort, peerStorage);
 				baseServer = new BaseServer(basePort, peerStorage);
 				threadPool.execute(agentServer);
@@ -81,6 +87,7 @@ public class ServerExecEnv {
 						bootstrapPort = Integer.parseInt(cmd.getOptionValue("bootstrapPort"));
 					}
 					
+					// Initialize discovery service
 					discoveryService.connectBootstrap(InetAddress.getByName(bootstrap),
 							bootstrapPort);
 				}

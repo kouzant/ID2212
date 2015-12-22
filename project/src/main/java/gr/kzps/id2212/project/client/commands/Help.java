@@ -2,8 +2,16 @@ package gr.kzps.id2212.project.client.commands;
 
 import gr.kzps.id2212.project.client.AgentDB;
 
+/**
+ * Command to print the help menu
+ * @author Antonis Kouzoupis
+ *
+ */
 public class Help extends CommandAbstr {
 
+	/**
+	 * Print the help menu
+	 */
 	@Override
 	public void execute(AgentDB db) {
 		StringBuilder sb = new StringBuilder();

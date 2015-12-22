@@ -3,12 +3,12 @@ package gr.kzps.id2212.project.agentserver;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-public abstract class TcpServer implements Runnable {
-	private final Logger LOG = LogManager.getLogger(TcpServer.class);
-	
+/**
+ * Abstract class for implementing a non-blocking TCP server
+ * @author Antonis Kouzoupis
+ *
+ */
+public abstract class TcpServer implements Runnable {	
 	private Integer tcpPort;
 	private Boolean running = true;
 	
@@ -21,14 +21,25 @@ public abstract class TcpServer implements Runnable {
 	
 	public abstract void run();
 	
+	/**
+	 * Get running port
+	 * @return Running port
+	 */
 	protected Integer getPort() {
 		return tcpPort;
 	}
 		
+	/**
+	 * Control whether server should be running
+	 * @return Should be running?
+	 */
 	protected Boolean isRunning() {
 		return running;
 	}
 	
+	/**
+	 * Stop the server
+	 */
 	protected void stopRunning() {
 		running = false;
 	}

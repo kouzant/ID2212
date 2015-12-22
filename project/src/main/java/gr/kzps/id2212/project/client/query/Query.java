@@ -4,6 +4,11 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Query used to match files metadata by the agent
+ * @author Antonis Kouzoupis
+ *
+ */
 public class Query implements Serializable {
 	private static final long serialVersionUID = 3344487334305397999L;
 

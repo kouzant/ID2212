@@ -5,6 +5,11 @@ import org.apache.logging.log4j.Logger;
 
 import gr.kzps.id2212.project.client.console.ClientConsole;
 
+/**
+ * Entry point for the client
+ * @author Antonis Kouzoupis
+ *
+ */
 public class ClientExecEnv {
 	private static final Logger LOG = LogManager.getLogger(ClientExecEnv.class);
 	
@@ -13,6 +18,7 @@ public class ClientExecEnv {
 			LOG.error("Usage: ClientExecEnv HOME_PORT");
 			System.exit(0);
 		}
+		
 		Integer homePort = Integer.parseInt(args[0]);
 		LOG.debug("Client started");
 		AgentDB db = new AgentDB();

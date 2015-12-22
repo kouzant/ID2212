@@ -7,13 +7,24 @@ import gr.kzps.id2212.project.client.AgentDB;
 import gr.kzps.id2212.project.client.AgentItem;
 import gr.kzps.id2212.project.client.exceptions.AgentNotFound;
 
+/**
+ * Command to delete both the agent from the store and its result file
+ * @author Antonis Kouzoupis
+ *
+ */
 public class PurgeAgent extends CommandAbstr {
 	private final String agentId;
 	
+	/**
+	 * @param agentId Partial ID of the agent to purge
+	 */
 	public PurgeAgent(String agentId) {
 		this.agentId = agentId;
 	}
 	
+	/**
+	 * Purge the agent
+	 */
 	@Override
 	public void execute(AgentDB db) {
 		// Remove it from db

@@ -7,6 +7,12 @@ import gr.kzps.id2212.project.client.agent.VisitedServer;
 import gr.kzps.id2212.project.client.query.Query;
 import gr.kzps.id2212.project.client.query.Result;
 
+/**
+ * Representation of an agent stored in the client. It stores the UUID of the agent,
+ * the status, the provided query, the result set and the visited servers.
+ * @author Antonis Kouzoupis
+ *
+ */
 public class AgentItem {
 	private final UUID id;
 	private final Query query;
@@ -14,6 +20,11 @@ public class AgentItem {
 	private List<Result> resultSet;
 	private List<VisitedServer> visitedServers;
 	
+	/**
+	 * @param id The UUID of the agent
+	 * @param query The query used by that agent
+	 * @param Status of the agent
+	 */
 	public AgentItem(UUID id, Query query, AgentStatus status) {
 		this.id = id;
 		this.query = query;

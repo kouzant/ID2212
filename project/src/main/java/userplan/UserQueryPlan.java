@@ -10,6 +10,12 @@ import gr.kzps.id2212.project.client.query.QueryPlan;
 import gr.kzps.id2212.project.client.query.parameterOperators.DateOperators;
 import gr.kzps.id2212.project.client.query.parameterOperators.ParameterSwitch;
 
+/**
+ * Example user query plan
+ * 
+ * @author Antonis Kouzoupis
+ *
+ */
 public class UserQueryPlan implements QueryPlan {
 	private final QueryParameter<String> title;
 	private final QueryParameter<String> author;

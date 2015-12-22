@@ -12,6 +12,11 @@ import java.util.stream.Collectors;
 
 import gr.kzps.id2212.project.client.exceptions.AgentNotFound;
 
+/**
+ * Local store of the created agents
+ * @author Antonis Kouzoupis
+ *
+ */
 public class AgentDB {
 	private Map<UUID, AgentItem> db;
 	private final Lock lock;
@@ -21,12 +26,23 @@ public class AgentDB {
 		lock = new ReentrantLock();
 	}
 	
+	/**
+	 * Add a new agent in the store
+	 * @param item Agent representation
+	 */
 	public void add(AgentItem item) {
 		lock.lock();
 		db.put(item.getId(), item);
 		lock.unlock();
 	}
 	
+	/**
+	 * Get an agent reference by its ID. The ID can be the first characters of 
+	 * the UUID of the agent. In case of ambiguity, an exception will be thrown
+	 * @param id Partial ID of the agent
+	 * @return Agent with the given ID
+	 * @throws AgentNotFound
+	 */
 	public AgentItem get(String id) throws AgentNotFound {
 		Set<UUID> keySet = db.keySet();
 		// Id might be a subset of the whole UUID
@@ -42,10 +58,20 @@ public class AgentDB {
 		}
 	}
 	
+	/**
+	 * Get all the values of the local store
+	 * @return All the values stored
+	 */
 	public Collection<AgentItem> getValues() {
 		return db.values();
 	}
 	
+	/**
+	 * Remove an agent with the corresponding ID
+	 * @param id Partial ID of the agent
+	 * @return The removed agent
+	 * @throws AgentNotFound
+	 */
 	public AgentItem remove(String id) throws AgentNotFound {
 		AgentItem agent = get(id);
 		lock.lock();

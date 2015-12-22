@@ -3,13 +3,14 @@ package gr.kzps.id2212.project.agentserver;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-/*
+/**
  * Parse command line arguments
+ * @author Antonis Kouzoupis
+ *
  */
 public class ArgumentsParser {
 	private final String[] args;
@@ -22,6 +23,11 @@ public class ArgumentsParser {
 		parser = new DefaultParser();
 	}
 	
+	/**
+	 * Parse command-line arguments
+	 * @return Command-line arguments
+	 * @throws ParseException
+	 */
 	public CommandLine parseArgs() throws ParseException {
 		Option serverId = Option.builder("i").longOpt("id").hasArg().required(true)
 				.desc("Agent server Identifier").build();
@@ -51,6 +57,10 @@ public class ArgumentsParser {
 		return parser.parse(options, args);
 	}
 	
+	/**
+	 * Get argument options
+	 * @return Command-line options
+	 */
 	public Options getOptions() {
 		return options;
 	}

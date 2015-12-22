@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,6 +35,11 @@ import gr.kzps.id2212.project.client.query.parameterOperators.DateOperators;
 import gr.kzps.id2212.project.client.query.parameterOperators.ParameterSwitch;
 import gr.kzps.id2212.project.utils.Utilities;
 
+/**
+ * Agent class traveling around the network gathering information
+ * @author Antonis Kouzoupis
+ *
+ */
 public class AgentImpl implements Agent, Runnable {
 
 	private static final long serialVersionUID = 4772482720958169130L;
@@ -54,6 +58,13 @@ public class AgentImpl implements Agent, Runnable {
 	private transient List<Result> localResultList;
 	private transient Utilities utils;
 	
+	/**
+	 * @param id UUID of the agent
+	 * @param homeAddress Home IP address of the agent
+	 * @param homePort Running port of the client service
+	 * @param query Search query for files
+	 * @throws RemoteException
+	 */
 	public AgentImpl(UUID id, InetAddress homeAddress, Integer homePort, Query query)
 		throws RemoteException {
 		this.id = id;
@@ -62,8 +73,8 @@ public class AgentImpl implements Agent, Runnable {
 		this.query = query;
 		visitedServers = new ArrayList<>();
 		resultList = new ArrayList<>();
-		// Currently accept only pdf
 		// "\\S+\\s*\\S*.((pdf)|(odt))$"
+		// Currently accept only pdf
 		pattern = Pattern.compile("\\S+\\s*\\S*.(pdf)$");
 	}
 
@@ -86,11 +97,14 @@ public class AgentImpl implements Agent, Runnable {
 	public void run() {
 		String agentName = Thread.currentThread().getName();
 		System.out.println(agentName + " is doing something in " + currentServer);
+		// Search directory of the server
 		Path searchDir = Paths.get(Cache.getInstance().getSearchPath());
 		localResultList = filterFiles(listFiles(searchDir));
 		resultList.addAll(localResultList);
 		localResultList.clear();
 
+		// Calculate next destination
+		// If there are no unvisited servers, go home
 		try {
 			PeerAgent nextServer = nextServer();
 			container.agentMigrate(nextServer.getAddress(), nextServer.getServicePort());
@@ -100,15 +114,22 @@ public class AgentImpl implements Agent, Runnable {
 		}
 	}
 
+	/**
+	 * Callback called from the agent server container when the agent arrives the server
+	 * @param container Running container in the server
+	 * @throws RemoteException
+	 */
 	@Override
 	public void agentArrived(AgentRunningContainer container)
 			throws RemoteException {
 		visitedServers.add(container.getSelf());
 		this.container = container;
 		currentServer = container.getSelf();
+		// Create the remote interface reference
 		remoteInterface = new RemoteAgentImpl(container);
 		localResultList = new ArrayList<>();
 		utils = new Utilities();
+		// Start the agent in a new thread
 		Thread agentThread = new Thread(this);
 		agentThread.setName("Agent-Thread");
 		agentThread.start();
@@ -117,19 +138,6 @@ public class AgentImpl implements Agent, Runnable {
 	@Override
 	public RemoteAgent getRemoteInterface() {
 		return remoteInterface;
-	}
-	
-	@Override
-	public String getResult() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Servers visited").append("\n");
-
-		visitedServers.stream().forEach(s -> sb.append(s).append("\n"));
-
-		sb.append("Files found").append("\n");
-		resultList.stream().forEach(p -> sb.append(p).append("\n"));
-
-		return sb.toString();
 	}
 	
 	@Override
@@ -146,6 +154,11 @@ public class AgentImpl implements Agent, Runnable {
 		return result;
 	}
 
+	/**
+	 * Create a list with all the files in the search path, recursively...
+	 * @param directory Search path of the agent server
+	 * @return A list with all files in the search directory
+	 */
 	private List<Path> listFiles(Path directory) {
 		List<Path> files = new ArrayList<>();
 
@@ -167,6 +180,11 @@ public class AgentImpl implements Agent, Runnable {
 		return files;
 	}
 
+	/**
+	 * Check whether a file matches the type pattern. Currently only
+	 * pdf's are accepted
+	 * @param file A file in the search directory
+	 */
 	private Boolean checkType(Path file) {
 		Matcher matcher = pattern.matcher(file.toAbsolutePath().toString());
 		if (matcher.matches()) {
@@ -176,9 +194,16 @@ public class AgentImpl implements Agent, Runnable {
 		return false;
 	}
 	
+	/**
+	 * Calculate the next agent server to migrate. If there are no more
+	 * unvisited server, throw an exception
+	 * @return Next agent server
+	 * @throws PeerNotFound
+	 */
 	private PeerAgent nextServer() throws PeerNotFound {
 		List<PeerAgent> localView = container.getLocalView();
-		Optional<PeerAgent> maybe = localView.parallelStream().filter(p -> !visitedServers.contains(p)).findAny();
+		Optional<PeerAgent> maybe = localView.parallelStream()
+				.filter(p -> !visitedServers.contains(p)).findAny();
 
 		if (maybe.isPresent()) {
 			return maybe.get();
@@ -187,6 +212,11 @@ public class AgentImpl implements Agent, Runnable {
 		throw new PeerNotFound("No more unvisited servers");
 	}
 
+	/**
+	 * Filter files in the search path according to the given query
+	 * @param files List of file in search directory
+	 * @return List of files that their metadata comply with the user query
+	 */
 	private List<Result> filterFiles(List<Path> files) {
 
 		List<Result> filtered = files.parallelStream().filter(f -> checkQuery(f))
@@ -198,6 +228,10 @@ public class AgentImpl implements Agent, Runnable {
 		return filtered;
 	}
 
+	/**
+	 * Wrapper method to check whether a file's metadata complies with the query
+	 * @param A file in the search directory
+	 */
 	private Boolean checkQuery(Path file) {
 
 		// Tika is not thread safe so I have to create separate references
@@ -232,7 +266,10 @@ public class AgentImpl implements Agent, Runnable {
 		return false;
 	}
 
-	// Check title metadata
+	/**
+	 * Check title metadata of a file
+	 * @param metadata Metadata variable 
+	 */
 	private Boolean checkTitle(Metadata metadata) {
 		// Ignore title
 		if (query.getTitle().getParameterSwitch().equals(ParameterSwitch.OFF)) {
@@ -247,7 +284,10 @@ public class AgentImpl implements Agent, Runnable {
 		return false;
 	}
 
-	// Check author
+	/**
+	 * Check author metadata of a file
+	 * @param metadata Metadata variable 
+	 */
 	private Boolean checkAuthor(Metadata metadata) {
 		// Ignore author
 		if (query.getAuthor().getParameterSwitch().equals(ParameterSwitch.OFF)) {
@@ -262,7 +302,12 @@ public class AgentImpl implements Agent, Runnable {
 		return false;
 	}
 	
-	// Check keywords. All query keywords should exist
+
+	/**
+	 * Check keywords metadata of a file. A user can specify in the Query
+	 * how many keywords should be present for the query to be successful
+	 * @param metadata Metadata variable 
+	 */
 	private Boolean checkKeywords(Metadata metadata) {
 		Integer successThreshold = query.getKeywords().getSuccessThreshold();
 		Integer matches = 0;
@@ -271,7 +316,8 @@ public class AgentImpl implements Agent, Runnable {
 			return true;
 		}
 		
-		// Check keywords. All query keywords should exist
+		// Check keywords. Consider query success threshold for a query to be
+		// successful
 		List<String> queryKeywords = query.getKeywords().getParameter();
 		for (String keyword : queryKeywords) {
 			if (metadata.get("Keywords").toLowerCase().contains(keyword.toLowerCase())) {
@@ -286,7 +332,11 @@ public class AgentImpl implements Agent, Runnable {
 		return false;
 	}
 	
-	// Check date
+	/**
+	 * Check date metadata of a file. Consider also the operation in the query
+	 * if the date should be BEFORE, EQUAL or AFTER the given one
+	 * @param metadata Metadata variable 
+	 */
 	private Boolean checkDate(Metadata metadata) throws ParseException {
 		// Ignore date
 		if (query.getDate().getParameterSwitch().equals(ParameterSwitch.OFF)) {

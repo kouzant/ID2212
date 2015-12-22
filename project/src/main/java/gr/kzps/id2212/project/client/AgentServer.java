@@ -15,6 +15,11 @@ import org.apache.logging.log4j.Logger;
 
 import gr.kzps.id2212.project.agentserver.overlay.messages.BaseMessage;
 
+/**
+ * A non-blocking TCP server for receiving agents returning home
+ * @author Antonis Kouzoupis
+ *
+ */
 public class AgentServer implements Runnable {
 	private final Logger LOG = LogManager.getLogger(AgentServer.class);
 	private final AgentDB db;
@@ -42,11 +47,25 @@ public class AgentServer implements Runnable {
 		}
 	}
 
+	/**
+	 * Get running port of the client service
+	 * @return Port of the client service
+	 */
 	public Integer getHomeport() {
 		return port;
 	}
 	
-	public Integer getServicePort(String ipAddress, Integer basePort) throws UnknownHostException, IOException, ClassNotFoundException {
+	/**
+	 * Get the agent service port of an agent server before create the agent
+	 * @param ipAddress Target IP address
+	 * @param basePort Running port of the Base service of an agent server
+	 * @return The service port of an agent server
+	 * @throws UnknownHostException
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public Integer getServicePort(String ipAddress, Integer basePort)
+			throws UnknownHostException, IOException, ClassNotFoundException {
 		Socket socket = new Socket(InetAddress.getByName(ipAddress), basePort);
 		
 		ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
@@ -63,6 +82,9 @@ public class AgentServer implements Runnable {
 		return reply.getAgentPort();
 	}
 	
+	/**
+	 * Start the client service in a new thread
+	 */
 	public void start() {
 		threadPool = Executors.newCachedThreadPool();
 		try {

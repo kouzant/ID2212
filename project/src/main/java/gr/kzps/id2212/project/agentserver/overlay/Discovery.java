@@ -15,8 +15,14 @@ import gr.kzps.id2212.project.agentserver.overlay.messages.GenericMessage;
 import gr.kzps.id2212.project.agentserver.overlay.messages.HelloMessage;
 import gr.kzps.id2212.project.agentserver.overlay.messages.SampleExchange;
 
+/**
+ * Discovery service
+ * @author Antonis Kouzoupis
+ *
+ */
 public class Discovery implements Runnable {
 	private final Logger LOG = LogManager.getLogger(Discovery.class);
+	// Seconds
 	private final Integer SLEEP = 5;
 	
 	private PeerStorage peerStorage;
@@ -25,18 +31,29 @@ public class Discovery implements Runnable {
 	private Socket targetSocket;
 	private ObjectOutputStream outStream;
 
+	/**
+	 * @param local Self reference
+	 * @param peerStorage Storage of the discovery service
+	 */
 	public Discovery(PeerAgent local, PeerStorage peerStorage) throws UnknownHostException {
 		this.local = local;
 		this.peerStorage = peerStorage;
 	}
 
-	// Connect to boostrap node and send its reference
+	/**
+	 * Introduce ourself to the bootstrap node
+	 * @param bAddress IP address of the bootstrap node
+	 * @param bPort Running port of the Base service of the bootstrap node
+	 */
 	public void connectBootstrap(InetAddress bAddress, Integer bPort) {
 		// Send a Hello message with my reference
 		LOG.debug("Bootstraping from {}:{}", new Object[] { bAddress.toString(), bPort });
 		send(new BootstrapPeer(bAddress, bPort), new HelloMessage(local));
 	}
 
+	/**
+	 * Every a fixed interval exchange views with a random peer
+	 */
 	@Override
 	public void run() {
 
@@ -65,6 +82,11 @@ public class Discovery implements Runnable {
 		}
 	}
 
+	/**
+	 * Send a message to a peer
+	 * @param target node
+	 * @param message Message to send
+	 */
 	private <T extends GenericMessage> void send(BootstrapPeer target, T message) {
 		try {
 			targetSocket = new Socket(target.getAddress(), target.getBasePort());

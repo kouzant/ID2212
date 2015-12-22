@@ -24,6 +24,11 @@ import gr.kzps.id2212.project.client.query.QueryPlan;
 import gr.kzps.id2212.project.client.query.parameterOperators.ParameterSwitch;
 import gr.kzps.id2212.project.utils.Utilities;
 
+/**
+ * Command to create and send a new agent
+ * @author Antonis Kouzoupis
+ *
+ */
 public class CreateAgent extends CommandAbstr {
 	private final String queryClass;
 	private final String targetIp;
@@ -32,13 +37,25 @@ public class CreateAgent extends CommandAbstr {
 	private Socket socket;
 	private ObjectOutputStream outStream;
 
-	public CreateAgent(String queryClass, AgentServer server, String targetIp, Integer targetBasePort) {
+	/**
+	 * @param queryClass The user defined query plan class name
+	 * @param server Reference of the local client service
+	 * @param targetIp IP address of the agent server
+	 * @param targetBasePort Running port of the Base service of the target agent
+	 * server
+	 */
+	public CreateAgent(String queryClass, AgentServer server, String targetIp,
+			Integer targetBasePort) {
 		this.queryClass = queryClass;
 		this.targetIp = targetIp;
 		this.targetBasePort = targetBasePort;
 		this.server = server;
 	}
 
+	/**
+	 * Discover the service port through the Base service, load the user defined
+	 * query and send the agent
+	 */
 	@Override
 	public void execute(AgentDB db) {
 		UUID agentId = UUID.randomUUID();
@@ -78,6 +95,8 @@ public class CreateAgent extends CommandAbstr {
 			outStream = new ObjectOutputStream(socket.getOutputStream());
 			outStream.writeObject(agent);
 			outStream.flush();
+			
+			// Add agent to the local store
 			AgentItem item = new AgentItem(agentId, query, AgentStatus.SEARCHING);
 			db.add(item);
 			console.print("Agent ID: " + agentId.toString());

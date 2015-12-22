@@ -4,6 +4,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.net.Socket;
 
+/**
+ * Abstract class for implementing a non-blocking acceptor
+ * @author Antonis Kouzoupis
+ *
+ */
 public abstract class Acceptor implements Runnable {
 	protected Socket cSocket;
 	protected ObjectInputStream inStream;

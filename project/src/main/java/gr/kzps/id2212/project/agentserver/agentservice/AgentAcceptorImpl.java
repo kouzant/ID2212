@@ -11,11 +11,20 @@ import gr.kzps.id2212.project.agentserver.Acceptor;
 import gr.kzps.id2212.project.agentserver.overlay.PeerStorage;
 import gr.kzps.id2212.project.client.agent.Agent;
 
+/**
+ * Implementation of agent service acceptor
+ * @author Antonis Kouzoupis
+ *
+ */
 public class AgentAcceptorImpl extends Acceptor {
 
 	private final Logger LOG = LogManager.getLogger(AgentAcceptorImpl.class);
 	private final PeerStorage peerStorage;
 
+	/**
+	 * @param cSocket Client socket reference
+	 * @param peerStorage Service discovery storage
+	 */
 	public AgentAcceptorImpl(Socket cSocket, PeerStorage peerStorage) {
 		super(cSocket);
 		this.peerStorage = peerStorage;
@@ -32,6 +41,7 @@ public class AgentAcceptorImpl extends Acceptor {
 				LOG.debug("Received agent!");
 				Agent agent = (Agent) request;
 
+				// Execute agent in the container
 				AgentRunningContainer container = new AgentRunningContainer(peerStorage, agent);
 				container.executeAgent();
 

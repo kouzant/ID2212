@@ -4,15 +4,17 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import gr.kzps.id2212.project.client.AgentDB;
 import gr.kzps.id2212.project.client.AgentServer;
 import gr.kzps.id2212.project.client.commands.Command;
 import gr.kzps.id2212.project.client.exceptions.NotEnoughArguments;
 import gr.kzps.id2212.project.client.exceptions.UnknownCommand;
 
+/**
+ * Implement the console presented to the client
+ * @author Antonis Kouzoupis
+ *
+ */
 public class ClientConsole {
 	private AgentDB db;
 	private Boolean running;
@@ -20,6 +22,10 @@ public class ClientConsole {
 	private String input;
 	private final Parser parser;
 	
+	/**
+	 * @param db The local agents store
+	 * @param server Local client service
+	 */
 	public ClientConsole(AgentDB db, AgentServer server) {
 		running = true;
 		this.db = db;
@@ -27,6 +33,9 @@ public class ClientConsole {
 		reader = new BufferedReader(new InputStreamReader(System.in));
 	}
 	
+	/**
+	 * REPL
+	 */
 	public void console() {
 		System.out.println("++ Hi my name is Moneypenny ++");
 		printPrompt();
@@ -46,10 +55,17 @@ public class ClientConsole {
 		}
 	}
 	
+	/**
+	 * Print a message to user
+	 * @param msg Message to be printed to the user
+	 */
 	public void print(String msg) {
 		System.out.println("> " + msg);
 	}
 	
+	/**
+	 * Print the command line prompt
+	 */
 	public void printPrompt() {
 		System.out.print("> ");
 	}

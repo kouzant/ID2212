@@ -10,6 +10,11 @@ import org.apache.logging.log4j.Logger;
 import gr.kzps.id2212.project.client.agent.Agent;
 import gr.kzps.id2212.project.client.exceptions.AgentNotFound;
 
+/**
+ * Implementation of the acceptor of the client service
+ * @author Antonis Kouzoupis
+ *
+ */
 public class AgentAcceptor implements Runnable {
 	private final Logger LOG = LogManager.getLogger(AgentAcceptor.class);
 	private final AgentDB db;
@@ -17,6 +22,10 @@ public class AgentAcceptor implements Runnable {
 	private ObjectInputStream inStream;
 	private Agent agent;
 	
+	/**
+	 * @param cSocket Reference of the client socket
+	 * @param db Local store of agents
+	 */
 	public AgentAcceptor(Socket cSocket, AgentDB db) {
 		this.db = db;
 		this.cSocket = cSocket;
