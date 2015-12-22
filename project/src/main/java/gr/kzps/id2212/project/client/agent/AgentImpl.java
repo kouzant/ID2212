@@ -73,6 +73,16 @@ public class AgentImpl implements Agent, Runnable {
 	}
 	
 	@Override
+	public InetAddress getHomeAddress() {
+		return homeAddress;
+	}
+	
+	@Override
+	public Integer getHomePort() {
+		return homePort;
+	}
+	
+	@Override
 	public void run() {
 		String agentName = Thread.currentThread().getName();
 		System.out.println(agentName + " is doing something in " + currentServer);

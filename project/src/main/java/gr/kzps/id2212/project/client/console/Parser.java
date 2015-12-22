@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import gr.kzps.id2212.project.client.AgentServer;
+import gr.kzps.id2212.project.client.commands.Cancel;
 import gr.kzps.id2212.project.client.commands.Command;
 import gr.kzps.id2212.project.client.commands.CommandAbstr;
 import gr.kzps.id2212.project.client.commands.Commands;
@@ -35,14 +36,12 @@ public class Parser {
 	
 	public Command parse(String rawCommand) throws UnknownCommand, NotEnoughArguments {
 		if (rawCommand == null) {
-			LOG.debug("rawCommand is null");
 			throw new UnknownCommand();
 		}
 		
 		tokens = new StringTokenizer(rawCommand);
 		
 		if (!tokens.hasMoreTokens()) {
-			LOG.debug("rawCommand has no tokens");
 			throw new UnknownCommand();
 		}
 		
@@ -51,7 +50,6 @@ public class Parser {
 		try {
 			command = Commands.getCommand(commandStr);
 		} catch (IllegalArgumentException ex) {
-			LOG.debug("Command is not member of Commands enum");
 			throw new UnknownCommand();
 		}
 		
@@ -89,6 +87,13 @@ public class Parser {
 			
 			String agentId = tokens.nextToken();
 			execCommand = new WhereIs(agentId);
+		} else if (Commands.cancel.equals(command)) {
+			if (tokens.countTokens() != 1) {
+				throw new NotEnoughArguments("Usage: cancel AGENT_ID");
+			}
+			
+			String agentId = tokens.nextToken();
+			execCommand = new Cancel(agentId);
 		} else if (Commands.exit.equals(command)) {
 			execCommand = new Exit();
 		} else {

@@ -83,7 +83,10 @@ public class AgentRunningContainer {
 	}
 
 	public void cancelAgent() {
-		// Get homeaddress from agent
+		InetAddress homeAddress = agent.getHomeAddress();
+		Integer homePort = agent.getHomePort();
+		
+		agentMigrate(homeAddress, homePort);
 	}
 	
 	public PeerAgent getSelf() {

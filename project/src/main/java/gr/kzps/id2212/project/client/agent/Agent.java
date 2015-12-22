@@ -1,6 +1,7 @@
 package gr.kzps.id2212.project.client.agent;
 
 import java.io.Serializable;
+import java.net.InetAddress;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.UUID;
@@ -17,4 +18,6 @@ public interface Agent extends Serializable {
 	public List<Result> getResultSet();
 	public RemoteAgent getRemoteInterface();
 	public UUID getId();
+	public InetAddress getHomeAddress();
+	public Integer getHomePort();
 }

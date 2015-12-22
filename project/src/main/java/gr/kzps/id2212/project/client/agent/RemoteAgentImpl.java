@@ -24,6 +24,6 @@ public class RemoteAgentImpl extends UnicastRemoteObject implements RemoteAgent 
 	
 	@Override
 	public void cancel() throws RemoteException {
-		
+		container.cancelAgent();
 	}
 }
