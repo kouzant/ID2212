@@ -30,7 +30,7 @@ public class AgentDB {
 	public AgentItem get(String id) throws AgentNotFound {
 		Set<UUID> keySet = db.keySet();
 		// Id might be a subset of the whole UUID
-		List<UUID> found = keySet.stream().filter(k -> k.toString().contains(id))
+		List<UUID> found = keySet.stream().filter(k -> k.toString().startsWith(id))
 				.collect(Collectors.toList());
 		
 		if (found.size() > 1) {

@@ -35,10 +35,12 @@ public class AgentRunningContainer {
 		this.agent = agent;
 		try {
 			registry = LocateRegistry.createRegistry(1099);
+			LOG.debug("Created new RMI registry");
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			try {
 				registry = LocateRegistry.getRegistry();
+				LOG.debug("Got an existing RMI registry");
 			} catch (RemoteException e1) {
 				e1.printStackTrace();
 			}
@@ -51,9 +53,7 @@ public class AgentRunningContainer {
 			agent.agentArrived(this, peerStorage.getSelf());
 			
 			// Register agent remote interface
-			LOG.debug("BEFORE REGISTER AGENT");
 			registry.rebind(agent.getId().toString(), agent.getRemoteInterface());
-			LOG.debug("JUST REGISTERED AGENT");
 		} catch (RemoteException ex) {
 			LOG.error("Could not create registry: {}", ex.getMessage());
 			ex.printStackTrace();

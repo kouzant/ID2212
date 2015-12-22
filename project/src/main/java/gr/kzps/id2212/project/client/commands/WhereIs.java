@@ -29,7 +29,7 @@ public class WhereIs extends CommandAbstr {
 			VisitedServer hostAgent = agent.whereAreYou();
 			console.print("Agent " + uuid + " is at " + hostAgent.getServer()
 				+ ":" + hostAgent.getPort());
-			
+			console.printPrompt();
 			hostAgent = null;
 			agent = null;
 		} catch (AgentNotFound | RemoteException

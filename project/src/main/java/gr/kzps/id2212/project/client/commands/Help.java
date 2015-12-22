@@ -17,6 +17,8 @@ public class Help extends CommandAbstr {
 		sb.append(">\t* Remove the agent with that (partial) ID from memory \n\t but keep the result file\n");
 		sb.append("> purge AGENT_ID\n");
 		sb.append(">\t* Remove both the agent from memory and the result file\n");
+		sb.append("> whereis AGENT_ID\n");
+		sb.append(">\t* Locates the specified agent in the network\n");
 		sb.append("> help\n");
 		sb.append(">\t* Print this menu\n");
 		sb.append("> exit\n");
