@@ -4,6 +4,7 @@ org.eclipse.jpt.core.prefs
 *~
 *.pyc
 results/
+doc/
 find_file.sh
 Node*/
 target/
